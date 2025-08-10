@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signal Found</title>
+  <style>
+    body {
+      background-color: black;
+      color: lime;
+      font-family: monospace;
+      text-align: center;
+      padding-top: 15%;
+    }
+    .blink {
+      animation: blink-animation 1s steps(5, start) infinite;
+    }
+    @keyframes blink-animation {
+      to {
+        visibility: hidden;
+      }
+    }
+    a {
+      color: lime;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="blink">...SIGNAL FOUND...</h1>
+  <p>You've entered the static. Transmission loading...</p>
+  <p><a href="https://youtu.be/awrJQiITrqA" target="_blank">▶ Access Transmission</a></p>
+</body>
+</html>
