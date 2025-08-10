@@ -2,9 +2,40 @@
 <html>
 <head>
   <title>Signal Found</title>
+  <style>
+    body {
+      background-color: black;
+      color: lime;
+      font-family: monospace, monospace;
+      text-align: center;
+      padding-top: 15%;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .blink {
+      animation: blink-animation 1s steps(5, start) infinite;
+    }
+    @keyframes blink-animation {
+      to {
+        visibility: hidden;
+      }
+    }
+    a {
+      color: lime;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+  </style>
 </head>
 <body>
-  <h1>You’ve entered the static.</h1>
-  <p>Transmission loading...</p>
+  <h1 class="blink">...SIGNAL FOUND...</h1>
+  <p>You’ve entered the static. Transmission loading...</p>
+  <p><a href="https://youtu.be/awrJQiITrqA" target="_blank" rel="noopener noreferrer">▶ Access Transmission</a></p>
 </body>
 </html>
