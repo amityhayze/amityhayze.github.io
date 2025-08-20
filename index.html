@@ -3,141 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amity Hayze — Static Transmission</title>
+  <title>Signal Found</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
-      font-family: 'Courier New', monospace;
-      color: #f5f5f5;
-      background: black;
+      margin: 0;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      background: radial-gradient(circle at center, #0a0a0a, #000000 80%);
+      font-family: 'Courier New', Courier, monospace;
       overflow: hidden;
-      position: relative;
-    }
-
-    /* Background static */
-    body::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: url('https://giphy.com/gifs/static-10ogjPgZ5nKfle') repeat;
-      opacity: 0.2;
-      z-index: -2;
-    }
-
-    /* CRT scanline effect */
-    body::after {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.05) 0px,
-        rgba(0,0,0,0.05) 2px
-      );
-      mix-blend-mode: overlay;
-      animation: scan 6s linear infinite;
-      z-index: -1;
-    }
-    @keyframes scan {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(4px); }
     }
 
     .container {
-      background: rgba(20, 20, 20, 0.85);
-      border: 1px solid #666;
-      padding: 2rem;
-      border-radius: 12px;
       text-align: center;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+      color: #fff;
+      z-index: 2;
       position: relative;
-      z-index: 10;
     }
 
     h1 {
-      font-size: 1.6rem;
-      margin-bottom: 1rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      font-size: 3em;
+      position: relative;
+      color: #00fff9;
+      text-shadow: 0 0 10px #00fff9, 0 0 20px #ff00ff;
+      animation: flicker 2s infinite alternate;
+      cursor: pointer; /* makes it feel interactive */
+    }
+
+    h1::before,
+    h1::after {
+      content: "SIGNAL FOUND";
+      position: absolute;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      clip: rect(0, 900px, 0, 0);
+      color: #ff00ff;
+    }
+
+    h1::before {
+      animation: glitchTop 2s infinite linear alternate-reverse;
+    }
+
+    h1::after {
+      animation: glitchBottom 1.5s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitchTop {
+      0% { clip: rect(0, 9999px, 0, 0); transform: translate(-2px, -2px); }
+      50% { clip: rect(0, 9999px, 50px, 0); transform: translate(2px, 2px); }
+      100% { clip: rect(0, 9999px, 0, 0); transform: translate(-1px, -1px); }
+    }
+
+    @keyframes glitchBottom {
+      0% { clip: rect(60px, 9999px, 100px, 0); transform: translate(2px, 2px); }
+      50% { clip: rect(20px, 9999px, 80px, 0); transform: translate(-2px, -2px); }
+      100% { clip: rect(60px, 9999px, 100px, 0); transform: translate(1px, 1px); }
+    }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+      }
+      20%, 24%, 55% {
+        opacity: 0.6;
+      }
+    }
+
+    .links {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
     .links a {
-      display: block;
-      margin: 0.8rem 0;
-      padding: 0.8rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid #777;
+      padding: 12px 30px;
+      border: 2px solid #00fff9;
       border-radius: 8px;
-      color: #f5f5f5;
+      color: #00fff9;
       text-decoration: none;
+      font-size: 1.1em;
+      letter-spacing: 1px;
       transition: 0.3s;
-      position: relative;
-      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,255,249,0.5);
+      animation: pulse 2.5s infinite ease-in-out;
     }
 
-    /* Glitch hover effect */
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px rgba(0,255,249,0.5); }
+      50% { box-shadow: 0 0 20px rgba(0,255,249,1), 0 0 40px rgba(0,255,249,0.8); }
+      100% { box-shadow: 0 0 10px rgba(0,255,249,0.5); }
+    }
+
     .links a:hover {
-      background: rgba(255,255,255,0.15);
-    }
-    .links a:hover::before {
-      content: attr(data-text);
-      position: absolute;
-      left: 2px;
-      top: 2px;
-      color: #ff00ff;
-      clip: rect(0, 900px, 0, 0);
-      animation: glitch 0.5s infinite linear alternate-reverse;
-    }
-    .links a:hover::after {
-      content: attr(data-text);
-      position: absolute;
-      left: -2px;
-      top: -2px;
-      color: #00ffff;
-      clip: rect(0, 900px, 0, 0);
-      animation: glitch 0.5s infinite linear alternate-reverse;
-    }
-    @keyframes glitch {
-      0% { clip: rect(10px, 9999px, 20px, 0); }
-      50% { clip: rect(50px, 9999px, 60px, 0); }
-      100% { clip: rect(30px, 9999px, 40px, 0); }
+      background: #00fff9;
+      color: black;
+      transform: scale(1.08);
+      box-shadow: 0 0 25px rgba(0,255,249,1), 0 0 50px rgba(0,255,249,0.8);
     }
 
-    .footer {
-      font-size: 0.7rem;
-      margin-top: 1rem;
-      opacity: 0.6;
+    /* Hidden link styling (optional button version) */
+    .secret-link {
+      font-size: 0.9em;
+      margin-top: 40px;
+      opacity: 0.2;
+      transition: opacity 0.3s;
+    }
+
+    .secret-link:hover {
+      opacity: 1;
+      color: #ff00ff;
+      text-shadow: 0 0 10px #ff00ff;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Amity Hayze</h1>
-    <p>Enter the Static.</p>
+    <h1 id="title">SIGNAL FOUND</h1>
     <div class="links">
-      <a href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=fZQyJeUNRmOklapjp76VYg&nd=1&dlsi=caf158be2009457e" target="_blank" data-text="🎵 Listen">🎵 Listen</a>
-      <a href="https://youtu.be/aC2udz_ww2s?si=pfwlxkW1PorHK_V1" target="_blank" data-text="📺 Watch">📺 Watch</a>
-      <a href="https://docs.google.com/forms/d/1q978N6WFFuzQX9mLXdFBTzD4_YAXrtDuWWjOXqFwcD4/edit" target="_blank" data-text="📮 Stickers">📮 Stickers</a>
-      <a href="secret.html" data-text="🌀 Signal Found">🌀 Signal Found</a>
+      <a href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=fZQyJeUNRmOklapjp76VYg&nd=1&dlsi=caf158be2009457e" target="_blank">Listen to the Song</a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdWJ20iMmaXIrWKYeDRfgUII9iEUXBrr6gmYctKci1X8bzA3Q/viewform?usp=dialog" target="_blank">Free Stickers</a>
+      <a href="https://youtu.be/aC2udz_ww2s?si=pfwlxkW1PorHK_V1" target="_blank">Watch "Gone is the Time"</a>
     </div>
-    <div class="footer">© 2025 Amity Hayze</div>
+
+    <!-- Option 1: Secret button -->
+    <a class="secret-link" href="secret.html">[Hidden Transmission]</a>
   </div>
 
   <script>
-    // Easter Egg: background click unlocks secret page
-    document.body.addEventListener('click', (e) => {
-      if(e.target === document.body) {
-        window.location.href = "secret.html";
-      }
+    // Option 2: Make the TITLE itself an Easter egg link
+    document.getElementById("title").addEventListener("click", function() {
+      window.location.href = "secret.html";
     });
   </script>
 </body>
