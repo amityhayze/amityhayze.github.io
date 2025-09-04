@@ -6,71 +6,127 @@
   <title>Wiki Unlock</title>
   <style>
     body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier New', monospace;
       background: black;
       color: #0ff;
-      font-family: monospace;
+      text-align: center;
+      height: 100vh;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      text-align: center;
+      overflow: hidden;
     }
+
+    /* Static animated background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url("https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif") center/cover;
+      opacity: 0.25;
+      z-index: -1;
+    }
+
+    /* CRT glow effect */
+    .container {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 40px;
+      border-radius: 10px;
+      border: 2px solid #0ff;
+      box-shadow: 0 0 25px rgba(0,255,255,0.6), inset 0 0 10px rgba(0,255,255,0.3);
+      animation: flicker 2s infinite;
+      max-width: 600px;
+    }
+
+    @keyframes flicker {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        opacity: 1;
+      }
+      20%, 24%, 55% {
+        opacity: 0.9;
+      }
+    }
+
     h1 {
       font-size: 2rem;
-      margin-bottom: 20px;
-      text-shadow: 0 0 10px #0ff;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+      letter-spacing: 2px;
     }
-    input {
-      padding: 10px;
+
+    p {
       font-size: 1rem;
+      margin-bottom: 25px;
+      opacity: 0.9;
+      color: #aef;
+    }
+
+    input {
+      padding: 12px;
+      width: 70%;
+      font-family: 'Courier New', monospace;
       border: 2px solid #0ff;
-      border-radius: 5px;
+      border-radius: 6px;
       background: black;
       color: #0ff;
       text-align: center;
       outline: none;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px #0ff inset;
     }
+
     button {
-      padding: 10px 20px;
-      font-size: 1rem;
+      padding: 12px 24px;
+      border: 2px solid #0ff;
+      border-radius: 6px;
+      background: black;
+      color: #0ff;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px #0ff, inset 0 0 5px #0ff;
+    }
+
+    button:hover {
       background: #0ff;
       color: black;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
+      text-shadow: none;
+      box-shadow: 0 0 20px #0ff;
     }
-    button:hover {
-      background: #00bcd4;
-    }
-    p#error {
-      color: red;
+
+    .error {
+      color: #f55;
+      font-size: 0.9rem;
       margin-top: 10px;
-      display: none;
+      text-shadow: 0 0 8px #f00;
     }
   </style>
 </head>
 <body>
-  <h1>Enter Access Code</h1>
-  <input type="password" id="codeInput" placeholder="••••••••">
-  <button onclick="checkCode()">Unlock</button>
-  <p id="error">Access Denied</p>
+  <div class="container">
+    <h1>TRANSMISSION LOCKED</h1>
+    <p>Only those who know the word may enter.<br>Type the unlock code to access the archive.</p>
+    <input type="text" id="unlockInput" placeholder="Enter code...">
+    <br>
+    <button onclick="checkCode()">Unlock</button>
+    <p class="error" id="errorMsg"></p>
+  </div>
 
   <script>
     function checkCode() {
-      const code = document.getElementById("codeInput").value;
-      if (code === "staticwaves") { // change this to your secret
-        window.location.href = "wiki.html";
+      const input = document.getElementById('unlockInput').value.trim().toLowerCase();
+      const errorMsg = document.getElementById('errorMsg');
+      
+      if (input === "static") {  // <-- unlock word
+        window.location.href = "wiki.html"; // actual wiki page
       } else {
-        document.getElementById("error").style.display = "block";
+        errorMsg.textContent = "Incorrect code. Signal scrambled.";
       }
     }
   </script>
 </body>
-<!-- Hidden Wiki Unlock Link -->
-<a href="wiki_unlock.html" style="position: fixed; bottom: 5px; right: 5px; font-size: 10px; color: rgba(0,255,255,0.1); text-decoration: none;">
-  wiki?
-</a>
 </html>
+
