@@ -2,72 +2,164 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Amity Hayze Wiki</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amity Hayze - Wiki</title>
   <style>
     body {
-      background: #0a0a0a;
+      margin: 0;
+      padding: 0;
+      font-family: 'Georgia', serif;
+      background: black;
       color: #ddd;
-      font-family: Georgia, serif;
       line-height: 1.6;
-      max-width: 800px;
-      margin: auto;
-      padding: 2rem;
+      overflow-x: hidden;
+    }
+
+    /* Static background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url("https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif") center/cover;
+      opacity: 0.15;
+      z-index: -1;
+    }
+
+    /* Wiki style container */
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 20px;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid #555;
+      box-shadow: 0 0 20px rgba(0,255,255,0.3);
+      border-radius: 6px;
+      animation: subtleFlicker 3s infinite;
+    }
+
+    @keyframes subtleFlicker {
+      0%, 97%, 100% { opacity: 1; }
+      98%, 99% { opacity: 0.96; }
     }
 
     h1 {
-      color: #6fc3ff;
-      border-bottom: 2px solid #6fc3ff;
-      padding-bottom: 0.3em;
+      font-size: 2rem;
+      border-bottom: 2px solid #444;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      color: #0ff;
+      text-shadow: 0 0 8px #0ff;
     }
 
     h2 {
-      color: #6fc3ff;
-      margin-top: 2em;
+      font-size: 1.4rem;
+      margin-top: 30px;
+      color: #aef;
+      text-shadow: 0 0 6px #0ff;
+    }
+
+    p {
+      margin-bottom: 15px;
     }
 
     a {
-      color: #6fc3ff;
+      color: #0ff;
       text-decoration: none;
+      border-bottom: 1px dashed #0ff;
     }
 
     a:hover {
-      text-decoration: underline;
+      color: #fff;
+      background: #0ff;
+      text-shadow: none;
     }
 
-    /* Easter egg link - nearly invisible */
-    .hidden-link {
-      font-size: 12px;
-      color: #0a0a0a; /* same as background */
+    .infobox {
+      float: right;
+      width: 250px;
+      background: rgba(0,0,0,0.8);
+      border: 1px solid #666;
+      padding: 10px;
+      margin: 0 0 20px 20px;
+      font-size: 0.9rem;
+      box-shadow: 0 0 12px rgba(0,255,255,0.2);
     }
-    .hidden-link:hover {
-      color: #6fc3ff; /* reveal on hover */
+
+    .infobox img {
+      max-width: 100%;
+      border: 1px solid #444;
+      margin-bottom: 10px;
+    }
+
+    .glitch {
+      display: inline-block;
+      position: relative;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+    }
+
+    .glitch::before {
+      animation: glitchTop 2s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+      color: #f0f;
+    }
+
+    .glitch::after {
+      animation: glitchBottom 1.5s infinite;
+      clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+      color: #0ff;
+    }
+
+    @keyframes glitchTop {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, -2px); }
+      40% { transform: translate(-2px, 2px); }
+      60% { transform: translate(2px, -1px); }
+      80% { transform: translate(2px, 1px); }
+      100% { transform: translate(0); }
+    }
+
+    @keyframes glitchBottom {
+      0% { transform: translate(0); }
+      20% { transform: translate(2px, 1px); }
+      40% { transform: translate(-1px, -1px); }
+      60% { transform: translate(1px, 2px); }
+      80% { transform: translate(-2px, -1px); }
+      100% { transform: translate(0); }
     }
   </style>
 </head>
 <body>
-  <h1>Amity Hayze</h1>
-  <p><strong>Amity Hayze</strong> is an independent alternative artist blending surfer rock, shoegaze, and Midwest emo influences. She is known for self-producing her music and visuals, creating a DIY aesthetic that incorporates VHS textures, CRT visuals, and 360° video editing.</p>
+  <div class="container">
+    <h1><span class="glitch" data-text="Amity Hayze">Amity Hayze</span></h1>
 
-  <h2>Early Life</h2>
-  <p>Although a born Californian, Hayze began recording music in Oregon, where her surroundings and the Pacific Northwest weather influenced her sound. She has roots in Native American, Mexican, and white heritage, which inform her perspective and identity as an artist.</p>
+    <div class="infobox">
+      <img src="your-artist-photo.jpg" alt="Amity Hayze">
+      <p><strong>Origin:</strong> Torrance,CA, U.S.</p>
+      <p><strong>Genres:</strong> Alternative, Surfer Rock, Shoegaze, Midwest Emo</p>
+      <p><strong>Years active:</strong> 2020 – present</p>
+      <p><strong>Former alias:</strong> SXREY</p>
+    </div>
 
-  <h2>Music Career</h2>
-  <p>Before performing as <em>Amity Hayze</em>, she released music under the name SXREY for four years, gradually developing her sound and building a small audience. In 2025, she began releasing fully self-produced work under her alias "Amity Hayze" where she battles her struggles of self worth and image through alternative tones .</p>
+    <p><strong>Amity Hayze</strong> (stylized in static transmissions as <em>"Hayze"</em>) is an American multi-instrumentalist, producer, and visual artist. Her work fuses <em>surfer rock guitar tones</em>, <em>shoegaze textures</em>, and <em>Midwest emo lyricism</em>, all recorded and produced independently in Los Angeles.</p>
 
-  <h2>Discography</h2>
-  <ul>
-    <li><strong>2025</strong> — <em>Gone is the Time</em> (single)</li>
-  </ul>
+    <h2>Background</h2>
+    <p>Hayze began creating music under the alias <strong>SXREY</strong>, cultivating a small audience before fully re-emerging as <strong>Amity Hayze</strong> in 2025. The project emphasizes DIY ethos, analog aesthetics, and hidden transmissions in media — including VHS visuals, CRT distortion, and coded easter eggs in her website.</p>
 
-  <h2>External Links</h2>
-  <ul>
-    <li><a href="https://instagram.com/amityhayze">Instagram</a></li>
-    <li><a href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=rBpFoYMNSWqc5u4-PDqBfw">Spotify</a></li>
-  </ul>
+    <h2>Music</h2>
+    <p>Her debut single, <strong>"Gone is the Time"</strong> (2025), was recorded in a rural Oregon cabin during a rainstorm. The track reflects themes of <em>lost potential, time, and self-worth</em>, while capturing a nostalgic, atmospheric sound.</p>
 
-  <!-- Easter egg link -->
-  <p class="hidden-link">
-    <a href="secret.html">static_wiki()</a>
-  </p>
+    <h2>Trivia</h2>
+    <ul>
+      <li>Fans who receive <a href="#">secret stickers</a> can unlock unreleased transmissions.</li>
+      <li>Her site hides <em>alternate realities</em> for those who know the codes.</li>
+      <li>The phrase <em>"You've entered the static"</em> is often used to mark entry into the project’s hidden layers.</li>
+    </ul>
+  </div>
 </body>
 </html>
