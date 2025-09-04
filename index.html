@@ -3,124 +3,156 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amity Hayze</title>
+  <title>Amity Hayze - Transmission</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Courier New', monospace;
       background: black;
-      color: #fff;
+      color: #0ff;
+      font-family: monospace;
       text-align: center;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
-    /* Background effect */
+    /* CRT static background */
     body::before {
       content: "";
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(135deg, #0a0a0a, #050d2c);
-      background-size: 400% 400%;
-      animation: backgroundShift 20s ease infinite;
-      z-index: -2;
+      background: url("https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif") center/cover;
+      opacity: 0.15;
+      z-index: -1;
     }
 
-    @keyframes backgroundShift {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
-
-    /* Neon glow effect */
-    .neon-button {
-      display: block;
-      margin: 15px auto;
-      padding: 15px 30px;
-      border: 2px solid #0ff;
-      border-radius: 12px;
-      color: #0ff;
-      text-decoration: none;
-      font-size: 1.2rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      background: transparent;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px #0ff, 0 0 20px transparent;
-    }
-
-    .neon-button:hover {
-      background: #0ff;
-      color: #000;
-      box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
-    }
-
-    /* Container */
     .container {
-      margin-top: 15vh;
+      position: relative;
+      top: 20vh;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid #555;
+      box-shadow: 0 0 15px rgba(0,255,255,0.3);
+      border-radius: 8px;
+      animation: flicker 3s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 97%, 100% { opacity: 1; }
+      98%, 99% { opacity: 0.97; }
     }
 
     h1 {
-      font-size: 2rem;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #0ff;
       text-shadow: 0 0 8px #0ff;
     }
 
-    /* Footer / fun socials */
-    footer {
-      margin-top: 60px;
-      font-size: 0.9rem;
-      opacity: 0.7;
+    .glitch {
+      display: inline-block;
+      position: relative;
     }
 
-    footer a {
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+    }
+
+    .glitch::before {
+      animation: glitchTop 2s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+      color: #f0f;
+    }
+
+    .glitch::after {
+      animation: glitchBottom 1.5s infinite;
+      clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
       color: #0ff;
-      margin: 0 10px;
+    }
+
+    @keyframes glitchTop {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, -2px); }
+      40% { transform: translate(-2px, 2px); }
+      60% { transform: translate(2px, -1px); }
+      80% { transform: translate(2px, 1px); }
+      100% { transform: translate(0); }
+    }
+
+    @keyframes glitchBottom {
+      0% { transform: translate(0); }
+      20% { transform: translate(2px, 1px); }
+      40% { transform: translate(-1px, -1px); }
+      60% { transform: translate(1px, 2px); }
+      80% { transform: translate(-2px, -1px); }
+      100% { transform: translate(0); }
+    }
+
+    .links {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .links a {
+      color: #0ff;
       text-decoration: none;
-      transition: opacity 0.3s;
-    }
-
-    footer a:hover {
-      opacity: 1;
-      text-shadow: 0 0 6px #0ff;
-    }
-
-    /* Faint secret button */
-    .secret-link {
-      margin-top: 40px;
-      font-size: 0.8rem;
-      opacity: 0.1;
-      transition: opacity 0.3s;
-    }
-
-    .secret-link:hover {
-      opacity: 0.6;
+      padding: 10px 20px;
+      border: 1px solid #0ff;
+      border-radius: 5px;
       text-shadow: 0 0 5px #0ff;
+      transition: 0.2s;
+    }
+
+    .links a:hover {
+      background: #0ff;
+      color: black;
+      text-shadow: none;
+    }
+
+    /* Hidden wiki unlock */
+    .secret {
+      margin-top: 40px;
+      opacity: 0.1;
+      font-size: 0.9rem;
+      transition: opacity 0.3s ease;
+    }
+    .secret:hover {
+      opacity: 0.8;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>listen to amity hayze</h1>
+    <h1><span class="glitch" data-text="Transmission Found">Transmission Found</span></h1>
+    <p>You’ve entered the static. Signals converge here.</p>
 
-    <!-- MAIN CTA buttons -->
-    <a href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=YnehXQK0Toml_sGwUyoa5g" class="neon-button" target="_blank">Listen HERE</a>
-    <a href="https://youtu.be/aC2udz_ww2s?si=Lg8iIFl2JgkZ05g9" class="neon-button" target="_blank">Gone is the Time</a>
+       <!-- MAIN CTA buttons -->
+    <a href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=9Eo9U6fsQUOmJ2t1GYzsEw" class="neon-button" target="_blank">Listen HERE</a>
+    <a href="https://youtu.be/aC2udz_ww2s?si=Lg8iIFl2JgkZ05g9" class="neon-button" target="_blank">"Gone is the Time" (Music Video)</a>
 
     <!-- Mid-level engagement -->
-    <a href="https://share.amuse.io/track/amity-hayze-how-could-you-love-me" class="neon-button" target="_blank">Presave New Track✨</a>
-    <a href="https://forms.gle/TDCQ6t8YRSfWvh157" class="neon-button" target="_blank">📀 Join the Sticker Club</a>
+    <a href="https://share.amuse.io/track/amity-hayze-how-could-you-love-me" class="neon-button" target="_blank">✨ Presave New Track</a>
+    <a href="https://forms.gle/eNDdZYaUNVk2nhe19" class="neon-button" target="_blank">📀 Join the Sticker Club</a>
     <a href="wiki-unlock.html" class="neon-button">Lore...</a>
 
-    <!-- Faint easter egg -->
-    <div class="secret-link">
-      <a href="secret.html">enter the static...</a>
-    </div>
-  </div>
 
+    <!-- Wiki unlock button (faint) -->
+    <div class="secret" onclick="location.href='wiki.html'">
+      [data archive access?]
+    </div>
+    
   <footer>
     <p>
-      <a href="https://instagram.com/amityhayze" target="_blank">📷 Transmission</a> |
-      <a href="https://bandcamp.com/amityhayze" target="_blank">🖤 Support the Signal</a>
+     
+      <a href="https://instagram.com/amityhayze" target="_blank">Transmission</a> |
+      <a href="https://amityhayze.bandcamp.com/" target="_blank">Support the Signal</a>
     </p>
   </footer>
 </body>
