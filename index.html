@@ -4,129 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amity Hayze - Transmission</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      color: #0ff;
-      font-family: monospace;
-      text-align: center;
-      overflow: hidden;
-    }
+ <style>
+  .links {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 
-    /* CRT static background */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url("https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif") center/cover;
-      opacity: 0.15;
-      z-index: -1;
-    }
+  .links a {
+    position: relative;
+    display: inline-block;
+    color: #0ff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 15px rgba(0,255,255,0.6),
+                0 0 30px rgba(0,255,255,0.3),
+                inset 0 0 8px rgba(0,255,255,0.5);
+    transition: all 0.25s ease-in-out;
+  }
 
-    .container {
-      position: relative;
-      top: 20vh;
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-      background: rgba(0,0,0,0.7);
-      border: 1px solid #555;
-      box-shadow: 0 0 15px rgba(0,255,255,0.3);
-      border-radius: 8px;
-      animation: flicker 3s infinite;
-    }
+  .links a::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    background: radial-gradient(circle, rgba(0,255,255,0.3) 0%, transparent 70%);
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+  }
 
-    @keyframes flicker {
-      0%, 97%, 100% { opacity: 1; }
-      98%, 99% { opacity: 0.97; }
-    }
+  .links a:hover {
+    color: black;
+    background: #0ff;
+    text-shadow: none;
+    box-shadow: 0 0 25px rgba(0,255,255,0.9),
+                0 0 50px rgba(0,255,255,0.6);
+  }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      color: #0ff;
-      text-shadow: 0 0 8px #0ff;
-    }
+  .links a:hover::before {
+    opacity: 0.8;
+  }
+</style>
 
-    .glitch {
-      display: inline-block;
-      position: relative;
-    }
-
-    .glitch::before,
-    .glitch::after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-    }
-
-    .glitch::before {
-      animation: glitchTop 2s infinite;
-      clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-      color: #f0f;
-    }
-
-    .glitch::after {
-      animation: glitchBottom 1.5s infinite;
-      clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
-      color: #0ff;
-    }
-
-    @keyframes glitchTop {
-      0% { transform: translate(0); }
-      20% { transform: translate(-2px, -2px); }
-      40% { transform: translate(-2px, 2px); }
-      60% { transform: translate(2px, -1px); }
-      80% { transform: translate(2px, 1px); }
-      100% { transform: translate(0); }
-    }
-
-    @keyframes glitchBottom {
-      0% { transform: translate(0); }
-      20% { transform: translate(2px, 1px); }
-      40% { transform: translate(-1px, -1px); }
-      60% { transform: translate(1px, 2px); }
-      80% { transform: translate(-2px, -1px); }
-      100% { transform: translate(0); }
-    }
-
-    .links {
-      margin-top: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .links a {
-      color: #0ff;
-      text-decoration: none;
-      padding: 10px 20px;
-      border: 1px solid #0ff;
-      border-radius: 5px;
-      text-shadow: 0 0 5px #0ff;
-      transition: 0.2s;
-    }
-
-    .links a:hover {
-      background: #0ff;
-      color: black;
-      text-shadow: none;
-    }
-
-    /* Hidden wiki unlock */
-    .secret {
-      margin-top: 40px;
-      opacity: 0.1;
-      font-size: 0.9rem;
-      transition: opacity 0.3s ease;
-    }
-    .secret:hover {
-      opacity: 0.8;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
