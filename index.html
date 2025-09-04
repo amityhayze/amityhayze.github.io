@@ -3,158 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signal Found</title>
+  <title>Amity Hayze</title>
   <style>
     body {
       margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: radial-gradient(circle at center, #0a0a0a, #000000 80%);
-      font-family: 'Courier New', Courier, monospace;
-      overflow: hidden;
+      padding: 0;
+      font-family: 'Courier New', monospace;
+      background: black;
+      color: #fff;
+      text-align: center;
+      overflow-x: hidden;
     }
 
+    /* Background effect */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, #0a0a0a, #050d2c);
+      background-size: 400% 400%;
+      animation: backgroundShift 20s ease infinite;
+      z-index: -2;
+    }
+
+    @keyframes backgroundShift {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    /* Neon glow effect */
+    .neon-button {
+      display: block;
+      margin: 15px auto;
+      padding: 15px 30px;
+      border: 2px solid #0ff;
+      border-radius: 12px;
+      color: #0ff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      background: transparent;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px #0ff, 0 0 20px transparent;
+    }
+
+    .neon-button:hover {
+      background: #0ff;
+      color: #000;
+      box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
+    }
+
+    /* Container */
     .container {
-      text-align: center;
-      color: #fff;
-      z-index: 2;
-      position: relative;
+      margin-top: 15vh;
     }
 
     h1 {
-      font-size: 3em;
-      position: relative;
-      color: #00fff9;
-      text-shadow: 0 0 10px #00fff9, 0 0 20px #ff00ff;
-      animation: flicker 2s infinite alternate;
-      cursor: pointer; /* makes it feel interactive */
+      font-size: 2rem;
+      text-shadow: 0 0 8px #0ff;
     }
 
-    h1::before,
-    h1::after {
-      content: "SIGNAL FOUND";
-      position: absolute;
-      left: 0;
-      width: 100%;
-      overflow: hidden;
-      clip: rect(0, 900px, 0, 0);
-      color: #ff00ff;
+    /* Footer / fun socials */
+    footer {
+      margin-top: 60px;
+      font-size: 0.9rem;
+      opacity: 0.7;
     }
 
-    h1::before {
-      animation: glitchTop 2s infinite linear alternate-reverse;
-    }
-
-    h1::after {
-      animation: glitchBottom 1.5s infinite linear alternate-reverse;
-    }
-
-    @keyframes glitchTop {
-      0% { clip: rect(0, 9999px, 0, 0); transform: translate(-2px, -2px); }
-      50% { clip: rect(0, 9999px, 50px, 0); transform: translate(2px, 2px); }
-      100% { clip: rect(0, 9999px, 0, 0); transform: translate(-1px, -1px); }
-    }
-
-    @keyframes glitchBottom {
-      0% { clip: rect(60px, 9999px, 100px, 0); transform: translate(2px, 2px); }
-      50% { clip: rect(20px, 9999px, 80px, 0); transform: translate(-2px, -2px); }
-      100% { clip: rect(60px, 9999px, 100px, 0); transform: translate(1px, 1px); }
-    }
-
-    @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        opacity: 1;
-      }
-      20%, 24%, 55% {
-        opacity: 0.6;
-      }
-    }
-
-    .links {
-      margin-top: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .links a {
-      padding: 12px 30px;
-      border: 2px solid #00fff9;
-      border-radius: 8px;
-      color: #00fff9;
+    footer a {
+      color: #0ff;
+      margin: 0 10px;
       text-decoration: none;
-      font-size: 1.1em;
-      letter-spacing: 1px;
-      transition: 0.3s;
-      box-shadow: 0 0 10px rgba(0,255,249,0.5);
-      animation: pulse 2.5s infinite ease-in-out;
+      transition: opacity 0.3s;
     }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 10px rgba(0,255,249,0.5); }
-      50% { box-shadow: 0 0 20px rgba(0,255,249,1), 0 0 40px rgba(0,255,249,0.8); }
-      100% { box-shadow: 0 0 10px rgba(0,255,249,0.5); }
+    footer a:hover {
+      opacity: 1;
+      text-shadow: 0 0 6px #0ff;
     }
 
-    .links a:hover {
-      background: #00fff9;
-      color: black;
-      transform: scale(1.08);
-      box-shadow: 0 0 25px rgba(0,255,249,1), 0 0 50px rgba(0,255,249,0.8);
-    }
-
-    /* Hidden link styling (optional button version) */
+    /* Faint secret button */
     .secret-link {
-      font-size: 0.9em;
       margin-top: 40px;
-      opacity: 0.2;
+      font-size: 0.8rem;
+      opacity: 0.1;
       transition: opacity 0.3s;
     }
 
     .secret-link:hover {
-      opacity: 1;
-      color: #ff00ff;
-      text-shadow: 0 0 10px #ff00ff;
-          /* Secret wiki link */
-   
-      .wiki-link {
-      position: fixed;
-      bottom: 10px;
-      right: 15px;
-      font-size: 0.9em;
-      color: rgba(0, 255, 255, 0.4); /* faint but visible */
-      text-decoration: none;
-      transition: 0.3s;
-      z-index: 2;
-    }
-
-    .wiki-link:hover {
-      color: #00f0ff;
-      text-shadow: 0 0 8px #00f0ff;
+      opacity: 0.6;
+      text-shadow: 0 0 5px #0ff;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 id="title">SIGNAL FOUND</h1>
-    <div class="links">
-      <a href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=fZQyJeUNRmOklapjp76VYg&nd=1&dlsi=caf158be2009457e" target="_blank">Listen HERE</a>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdWJ20iMmaXIrWKYeDRfgUII9iEUXBrr6gmYctKci1X8bzA3Q/viewform?usp=dialog" target="_blank">FREE Stickers</a>
-      <a href="https://youtu.be/aC2udz_ww2s?si=pfwlxkW1PorHK_V1" target="_blank">Watch "Gone is the Time"</a>
-      <a href="https://share.amuse.io/track/amity-hayze-how-could-you-love-me" target="_blank">How Could You Love Me? (PRESAVE)</a>
-    </div>
+    <h1>listen to amity hayze</h1>
 
-    <!-- Option 1: Secret button -->
-    <a class="secret-link" href="secret.html">[Hidden Transmission]</a>
+    <!-- MAIN CTA buttons -->
+    <a href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=YnehXQK0Toml_sGwUyoa5g" class="neon-button" target="_blank">Listen HERE</a>
+    <a href="https://youtu.be/aC2udz_ww2s?si=Lg8iIFl2JgkZ05g9" class="neon-button" target="_blank">Gone is the Time</a>
+
+    <!-- Mid-level engagement -->
+    <a href="https://share.amuse.io/track/amity-hayze-how-could-you-love-me" class="neon-button" target="_blank">Presave New Track✨</a>
+    <a href="https://forms.gle/TDCQ6t8YRSfWvh157" class="neon-button" target="_blank">📀 Join the Sticker Club</a>
+    <a href="wiki-unlock.html" class="neon-button">Lore...</a>
+
+    <!-- Faint easter egg -->
+    <div class="secret-link">
+      <a href="secret.html">enter the static...</a>
+    </div>
   </div>
 
-  <script>
-    // Option 2: Make the TITLE itself an Easter egg link
-    document.getElementById("title").addEventListener("click", function() {
-      window.location.href = "secret.html";
-    });
-  </script>
+  <footer>
+    <p>
+      <a href="https://instagram.com/amityhayze" target="_blank">📷 Transmission</a> |
+      <a href="https://bandcamp.com/amityhayze" target="_blank">🖤 Support the Signal</a>
+    </p>
+  </footer>
 </body>
 </html>
+
