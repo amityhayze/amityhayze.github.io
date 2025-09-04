@@ -3,82 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amity Hayze - Transmission</title>
- <style>
-  .links {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+  <title>Amity Hayze</title>
+  <style>
+    /* Background glitch/static */
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: black;
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+      color: #0ff;
+    }
 
-  .links a {
-    position: relative;
-    display: inline-block;
-    color: #0ff;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-decoration: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 0 15px rgba(0,255,255,0.6),
-                0 0 30px rgba(0,255,255,0.3),
-                inset 0 0 8px rgba(0,255,255,0.5);
-    transition: all 0.25s ease-in-out;
-  }
+    /* Static flicker effect */
+    @keyframes flicker {
+      0% { opacity: 1; }
+      50% { opacity: 0.85; }
+      100% { opacity: 1; }
+    }
 
-  .links a::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 8px;
-    background: radial-gradient(circle, rgba(0,255,255,0.3) 0%, transparent 70%);
-    opacity: 0.4;
-    transition: opacity 0.3s ease;
-  }
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') repeat;
+      opacity: 0.08;
+      animation: flicker 1.5s infinite;
+      z-index: 0;
+    }
 
-  .links a:hover {
-    color: black;
-    background: #0ff;
-    text-shadow: none;
-    box-shadow: 0 0 25px rgba(0,255,255,0.9),
-                0 0 50px rgba(0,255,255,0.6);
-  }
+    /* Container */
+    .container {
+      position: relative;
+      text-align: center;
+      z-index: 2;
+    }
 
-  .links a:hover::before {
-    opacity: 0.8;
-  }
-</style>
+    /* Glitch header */
+    h1 {
+      font-size: 3rem;
+      text-transform: uppercase;
+      position: relative;
+      animation: glitch 1s infinite;
+    }
 
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 blue; }
+      20% { text-shadow: -2px -2px lime, 2px 2px magenta; }
+      40% { text-shadow: 2px -2px cyan, -2px 2px yellow; }
+      60% { text-shadow: -2px 2px orange, 2px -2px pink; }
+      80% { text-shadow: 2px 2px purple, -2px -2px teal; }
+      100% { text-shadow: 2px 0 red, -2px 0 blue; }
+    }
+
+    /* Neon glowing links */
+    .links {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .links a {
+      position: relative;
+      display: inline-block;
+      color: #0ff;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.85);
+      box-shadow: 0 0 15px rgba(0,255,255,0.6),
+                  0 0 30px rgba(0,255,255,0.3),
+                  inset 0 0 8px rgba(0,255,255,0.5);
+      transition: all 0.25s ease-in-out;
+    }
+
+    .links a::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      background: radial-gradient(circle, rgba(0,255,255,0.3) 0%, transparent 70%);
+      opacity: 0.4;
+      transition: opacity 0.3s ease;
+    }
+
+    .links a:hover {
+      color: black;
+      background: #0ff;
+      text-shadow: none;
+      box-shadow: 0 0 25px rgba(0,255,255,0.9),
+                  0 0 50px rgba(0,255,255,0.6);
+    }
+
+    .links a:hover::before {
+      opacity: 0.8;
+    }
+
+    /* Hidden wiki button */
+    .wiki-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 0.9rem;
+      color: rgba(0,255,255,0.2);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .wiki-btn:hover {
+      color: rgba(0,255,255,0.7);
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1><span class="glitch" data-text="Transmission Found">Transmission Found</span></h1>
-    <p>You’ve entered the static. Signals converge here.</p>
-
-       <!-- MAIN CTA buttons -->
-    <a href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=9Eo9U6fsQUOmJ2t1GYzsEw" class="neon-button" target="_blank">Listen HERE</a>
-    <a href="https://youtu.be/aC2udz_ww2s?si=Lg8iIFl2JgkZ05g9" class="neon-button" target="_blank">"Gone is the Time" (Music Video)</a>
-
-    <!-- Mid-level engagement -->
-    <a href="https://share.amuse.io/track/amity-hayze-how-could-you-love-me" class="neon-button" target="_blank">✨ Presave New Track</a>
-    <a href="https://forms.gle/eNDdZYaUNVk2nhe19" class="neon-button" target="_blank">📀 Join the Sticker Club</a>
-    <a href="wiki-unlock.html" class="neon-button">Lore...</a>
-
-
-    <!-- Wiki unlock button (faint) -->
-    <div class="secret" onclick="location.href='wiki.html'">
-      [data archive access?]
+    <h1>Amity Hayze</h1>
+    <div class="links">
+      <a href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=Exp7uaFRQ8qXun2ey7MLTQ" target="_blank">Listen HERE</a>
+      <a href="https://youtu.be/aC2udz_ww2s?si=Lg8iIFl2JgkZ05g9" target="_blank">Gone is the Time (Music Video)</a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdWJ20iMmaXIrWKYeDRfgUII9iEUXBrr6gmYctKci1X8bzA3Q/viewform?usp=header" target="_blank">Join the Sticker Club</a>
+       <a href="wiki-unlock.html" class="neon-button">Lore...</a>
     </div>
-    
-  <footer>
-    <p>
-     
-      <a href="https://instagram.com/amityhayze" target="_blank">Transmission</a> |
-      <a href="https://amityhayze.bandcamp.com/" target="_blank">Support the Signal</a>
-    </p>
-  </footer>
+  </div>
+
+ <!-- Hidden Wiki Button -->
+  <button class="wiki-btn" onclick="window.location.href='wiki.html'">.</button>
 </body>
 </html>
-
