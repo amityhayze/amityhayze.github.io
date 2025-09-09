@@ -1,143 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amity Hayze</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Amity Hayze — Transmission</title>
+
+  <!-- ====== Styles (glitchy neon theme) ====== -->
   <style>
-    /* Background glitch/static */
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: black;
-      font-family: 'Courier New', monospace;
-      overflow: hidden;
-      color: #0ff;
+    :root{
+      --neon: #00f0ff;
+      --bg-dark: #000;
+      --panel: rgba(0,0,0,0.7);
+      --muted: #9beef7;
+      --glass: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg-dark);font-family: "Courier New", monospace;color:var(--neon);-webkit-font-smoothing:antialiased}
+    /* static CRT gif background */
+    body::before{
+      content:"";
+      position:fixed;inset:0;
+      background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover;
+      opacity:0.12; z-index:-2; mix-blend-mode:screen;
+      filter:grayscale(30%) contrast(1.05);
     }
 
-    /* Static flicker effect */
-    @keyframes flicker {
-      0% { opacity: 1; }
-      50% { opacity: 0.85; }
-      100% { opacity: 1; }
+    /* subtle radial vignette */
+    body::after{
+      content:"";position:fixed;inset:0;
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%);
+      z-index:-1;
     }
 
-    body::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') repeat;
-      opacity: 0.08;
-      animation: flicker 1.5s infinite;
-      z-index: 0;
+    .wrap{max-width:980px;margin:6vh auto;padding:30px;display:block;}
+    .panel{
+      background:var(--panel);
+      border:1px solid rgba(0,255,255,0.06);
+      padding:28px;border-radius:12px;
+      box-shadow:0 0 30px rgba(0,240,255,0.06);
+      backdrop-filter: blur(2px);
+      animation:softFlicker 3.2s infinite;
+    }
+    @keyframes softFlicker{
+      0%,97%,100%{opacity:1}
+      98%,99%{opacity:0.97}
     }
 
-    /* Container */
-    .container {
-      position: relative;
-      text-align: center;
-      z-index: 2;
+    /* header */
+    header{text-align:center;margin-bottom:18px}
+    .title{
+      font-size:36px;letter-spacing:2px;margin:0 0 6px;
+      color:var(--neon); text-shadow:0 0 10px rgba(0,240,255,0.22);
+      position:relative; display:inline-block;
+    }
+    /* glitch layers for a slight double-color shimmer */
+    .title::before, .title::after{
+      content: attr(data-text); position:absolute; left:0; top:0;
+      opacity:0.25;
+    }
+    .title::before{ transform: translate(-2px,-1px); color: #ff6bcd; mix-blend-mode: screen; }
+    .title::after{ transform: translate(2px,1px); color: #9beef7; mix-blend-mode: screen; }
+
+    .subtitle{font-size:13px; color:var(--muted); margin: 6px 0 0; opacity:0.85}
+
+    /* big CTA button */
+    .hero-cta{display:flex; justify-content:center; margin:22px 0 8px}
+    .btn{
+      --pad:14px 28px;
+      display:inline-block; padding:var(--pad); border-radius:10px;
+      background:linear-gradient(180deg, rgba(0,255,255,0.06), rgba(0,255,255,0.02));
+      color:var(--neon); text-decoration:none; font-weight:700;
+      border:1px solid rgba(0,255,255,0.18);
+      box-shadow:0 0 25px rgba(0,240,255,0.08), inset 0 0 6px rgba(0,255,255,0.02);
+      transition: all .22s ease;
+      text-transform:uppercase; letter-spacing:1px;
+    }
+    .btn:hover{
+      background: var(--neon);
+      color:#001;
+      box-shadow:0 6px 40px rgba(0,240,255,0.35), 0 0 60px rgba(0,240,255,0.25);
+      transform: translateY(-2px);
     }
 
-    /* Glitch header */
-    h1 {
-      font-size: 3rem;
-      text-transform: uppercase;
-      position: relative;
-      animation: glitch 1s infinite;
-    }
+    /* layout sections */
+    section{ margin:28px 0; display:block; }
+    .columns{ display:flex; gap:22px; align-items:flex-start; flex-wrap:wrap; }
+    .col{ flex:1 1 320px; min-width:280px; }
 
-    @keyframes glitch {
-      0% { text-shadow: 2px 0 red, -2px 0 blue; }
-      20% { text-shadow: -2px -2px lime, 2px 2px magenta; }
-      40% { text-shadow: 2px -2px cyan, -2px 2px yellow; }
-      60% { text-shadow: -2px 2px orange, 2px -2px pink; }
-      80% { text-shadow: 2px 2px purple, -2px -2px teal; }
-      100% { text-shadow: 2px 0 red, -2px 0 blue; }
-    }
+    /* about card */
+    .about-figure{float:right; width:220px; margin-left:16px; border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.04)}
+    .about-figure img{display:block;width:100%;height:auto;object-fit:cover;filter:contrast(0.95) saturate(0.95)}
 
-    /* Neon glowing links */
-    .links {
-      margin-top: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+    .about-text p{color:#cbeff4; margin:0 0 12px; line-height:1.5}
 
-    .links a {
-      position: relative;
-      display: inline-block;
-      color: #0ff;
-      font-size: 1.2rem;
-      font-weight: bold;
-      text-decoration: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      background: rgba(0, 0, 0, 0.85);
-      box-shadow: 0 0 15px rgba(0,255,255,0.6),
-                  0 0 30px rgba(0,255,255,0.3),
-                  inset 0 0 8px rgba(0,255,255,0.5);
-      transition: all 0.25s ease-in-out;
+    /* music embed block */
+    .music-wrap{display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap}
+    .embed{
+      background:var(--glass); border-radius:10px; border:1px solid rgba(0,255,255,0.04);
+      box-shadow: inset 0 0 6px rgba(0,255,255,0.02);
+      padding:12px; min-width:260px;
     }
+    /* placeholder iframe styling */
+    .player{width:100%;height:80px;border:0;border-radius:8px;overflow:hidden}
 
-    .links a::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 8px;
-      background: radial-gradient(circle, rgba(0,255,255,0.3) 0%, transparent 70%);
-      opacity: 0.4;
-      transition: opacity 0.3s ease;
+    /* visuals */
+    .visuals-preview{width:100%;border-radius:10px;overflow:hidden;border:1px solid rgba(0,255,255,0.04)}
+    .visuals-preview iframe, .visuals-preview video{width:100%;height:320px;display:block;border:0;background:#000}
+
+    /* merch cards */
+    .cards{display:flex;gap:14px;flex-wrap:wrap}
+    .card{flex:1 1 220px;min-width:200px;padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.35));border:1px solid rgba(0,255,255,0.04)}
+    .card h4{margin:0 0 8px;color:var(--neon)}
+    .card p{margin:0;color:#bfeff8;font-size:14px}
+    .small-link{display:inline-block;margin-top:12px;text-decoration:none;color:var(--neon);opacity:0.95}
+
+    /* socials */
+    .socials{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:10px}
+    .socials a{color:var(--neon);text-decoration:none;border:1px solid rgba(0,255,255,0.06);padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.35)}
+    .socials a:hover{background:var(--neon);color:#001}
+
+    /* tiny hidden secret link just under last merch card */
+    .secret-transmission{
+      display:block;text-align:center;margin:8px auto 0 auto;font-size:12px;
+      color: rgba(0,255,255,0.04); /* almost invisible */
+      background:none;border:none;padding:2px 6px;cursor:pointer;
+      transition: color .25s ease, transform .12s ease;
     }
+    .secret-transmission:hover{ color: rgba(0,255,255,0.7); transform: translateY(-2px); }
 
-    .links a:hover {
-      color: black;
-      background: #0ff;
-      text-shadow: none;
-      box-shadow: 0 0 25px rgba(0,255,255,0.9),
-                  0 0 50px rgba(0,255,255,0.6);
+    /* faint wiki dot bottom-right */
+    .wiki-dot{
+      position:fixed; right:14px; bottom:12px; z-index:9999;
+      color: rgba(0,255,255,0.14); font-size:16px; border:none; background:none; cursor:pointer;
+      transition: color .2s ease;
     }
+    .wiki-dot:hover{ color: rgba(0,255,255,0.8) }
 
-    .links a:hover::before {
-      opacity: 0.8;
-    }
-
-    /* Hidden wiki button */
-    .wiki-btn {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      font-size: 0.9rem;
-      color: rgba(0,255,255,0.2);
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: color 0.3s ease;
-    }
-
-    .wiki-btn:hover {
-      color: rgba(0,255,255,0.7);
+    /* responsive */
+    @media (max-width:720px){
+      .about-figure{width:140px; float:none; display:block; margin:12px auto}
+      .visuals-preview iframe, .visuals-preview video{height:200px}
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Amity Hayze</h1>
-    <div class="links">
-      <a href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=Exp7uaFRQ8qXun2ey7MLTQ" target="_blank">Listen HERE</a>
-      <a href="https://youtu.be/aC2udz_ww2s?si=Lg8iIFl2JgkZ05g9" target="_blank">Gone is the Time (Music Video)</a>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdWJ20iMmaXIrWKYeDRfgUII9iEUXBrr6gmYctKci1X8bzA3Q/viewform?usp=header" target="_blank">Join the Sticker Club</a>
-      <a href="https://ps.tribly.fm/6v9gj4o" target="_blank">PRESAVE "How Could You Love Me?"</a>
-      <a href="wiki-unlock.html" class="neon-button">Lore...</a>
+
+  <div class="wrap">
+    <!-- HERO / HEADER -->
+    <div class="panel" role="banner">
+      <header>
+        <h1 class="title" data-text="Amity Hayze">Amity Hayze</h1>
+        <div class="subtitle">You've entered the static — music for late nights & burnt CD binders.</div>
+      </header>
+
+      <div class="hero-cta">
+        <!-- primary CTA: Stream / Smart Link -->
+        <!-- Replace with your smart link or make this open a modal with both options -->
+        <a class="btn" href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=fmQG0UM5S9WuqsV4DwmD2g" target="_blank" rel="noopener">Listen Now</a>
+      </div>
     </div>
+
+    <!-- ABOUT + MUSIC -->
+    <section class="panel" id="about">
+      <div class="columns">
+        <div class="col about-text">
+          <div style="margin-bottom:8px;color:var(--muted)">About</div>
+          <div style="clear:both">
+            <p><strong>Amity Hayze</strong> writes from the edges — mixing washed-out guitar tones, tambourine snaps, and honest late-night lyrics. A DIY producer who records in a cabin, Amity’s work blends nostalgia and immediacy into short transmissions meant for headphones at 2am.</p>
+            <p>Started out as SXREY and re-emerged as Amity Hayze in 2025 to release new fully produced material.</p>
+          </div>
+        </div>
+
+        <div class="col" aria-hidden="false">
+          <figure class="about-figure">
+            <!-- swap your artist image path -->
+            <img src="https://drive.google.com/file/d/14bLR_kwVH8Ez9on-PZnIE7pi8Xn-2SvI/view?usp=sharing" alt="Amity Hayze">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- MUSIC (embeds) -->
+    <section class="panel" id="music">
+      <h3 style="margin-top:0;color:var(--neon);">Music</h3>
+      <div class="music-wrap">
+        <div class="embed">
+          <!-- Spotify Embed: replace src with your embed link -->
+          <!-- Example Spotify embed: https://open.spotify.com/embed/track/XXXXXXXX -->
+          <iframe class="player" src="<iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/0h4jqeL4vLEtcb9AFkaJ5I?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>" allow="encrypted-media" loading="lazy"></iframe>
+          <div style="margin-top:10px;font-size:13px;color:var(--muted)">If you prefer Apple / Bandcamp — use the buttons on the right.</div>
+        </div>
+
+        <div style="min-width:200px; display:flex;flex-direction:column;gap:10px;">
+          <a class="btn" href="https://music.apple.com/us/album/gone-is-the-time-single/1831479105" target="_blank" rel="noopener">Listen on Apple Music</a>
+          <a class="btn" href="https://amityhayze.bandcamp.com/track/gone-is-the-time-2" target="_blank" rel="noopener">Bandcamp</a>
+          <a class="btn" href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=fmQG0UM5S9WuqsV4DwmD2g" target="_blank" rel="noopener">Artist on Spotify</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- VISUALS -->
+    <section class="panel" id="visuals">
+      <h3 style="margin-top:0;color:var(--neon)">Visuals</h3>
+      <div class="visuals-preview">
+        <!-- Replace with your YouTube embed or video -->
+        <!-- Example: https://www.youtube.com/embed/VIDEO_ID -->
+        <iframe src="<iframe width="560" height="315" src="https://www.youtube.com/embed/_7tx7lyYo2A?si=vJFdox-qm_l1OWo5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>" title="Music Video" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </section>
+
+    <!-- MERCH & STICKERS -->
+    <section class="panel" id="merch">
+      <h3 style="margin-top:0;color:var(--neon)">Merch & Stickers</h3>
+
+      <div class="cards">
+        <div class="card">
+          <h4>Free Sticker Drop</h4>
+          <p>Sign-up to get a sticker mailed to you — small handwritten note included for real ones.</p>
+          <a class="small-link" href="https://forms.gle/rZTtXCbx9MVvpfts8" target="_blank">→ Join the Sticker Club</a>
+        </div>
+
+        <div class="card">
+          <h4>Limited CDs (coming)</h4>
+          <p>Testing a tiny run of CDs for the new single — first batch reserved for presavers.</p>
+          <a class="small-link" href="https://ps.tribly.fm/6v9gj4o" target="_blank">→ Presave / Early Access</a>
+        </div>
+
+        <div class="card">
+          <h4>Digital Pack</h4>
+          <p>Download phone wallpapers and PNG stickers if you don't want to share an address.</p>
+          <a class="small-link" href="stickers.html" target="_blank">→ Download Digital Pack</a>
+        </div>
+      </div>
+
+      <!-- SECRET TRANSMISSION: tiny barely-visible link placed under last merch card -->
+      <button class="secret-transmission" onclick="window.location.href='secret.html'">.</button>
+    </section>
+
+    <!-- SOCIALS / CONTACT -->
+    <section class="panel" id="socials">
+      <h3 style="margin-top:0;color:var(--neon)">Connect</h3>
+
+      <div class="socials" role="navigation" aria-label="social links">
+        <a href="https://www.instagram.com/amityhayze" target="_blank">Instagram</a>
+        <a href="https://www.tiktok.com/amity.hayze" target="_blank">TikTok</a>
+        <a href="https://www.youtube.com/amityhayze" target="_blank">YouTube</a>
+        <a href="amityhayzemusic@gmail.com" target="_blank">Email</a>
+      </div>
+
+      <div style="text-align:center;margin-top:14px;color:var(--muted);font-size:13px">
+        <div>Want the archive? Look closely under the merch section.</div>
+      </div>
+    </section>
+
+    <!-- footer small links -->
+    <footer style="text-align:center;margin:26px 0;color:var(--muted);font-size:13px">
+      <div>© Amity Hayze — transmissions & static</div>
+    </footer>
   </div>
 
-  <!-- Hidden Wiki Button -->
-  <button class="wiki-btn" onclick="window.location.href='wiki.html'">.</button>
+  <!-- tiny wiki dot in corner (still accessible) -->
+  <button class="wiki-dot" title="archive" onclick="window.location.href='wiki-unlock.html'">▦</button>
+
+  <!-- ====== Small JS for UX ====== -->
+  <script>
+    // Smooth scroll to sections if you want to add nav links later:
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        e.preventDefault();
+        const t=document.querySelector(a.getAttribute('href'));
+        if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+      })
+    });
+
+    // Small accessibility: allow keyboard "enter" on secret transmission button
+    document.querySelectorAll('.secret-transmission, .wiki-dot').forEach(btn=>{
+      btn.addEventListener('keydown', e=>{
+        if(e.key === 'Enter') btn.click();
+      });
+    });
+  </script>
 </body>
 </html>
-
