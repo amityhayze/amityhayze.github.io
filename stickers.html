@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Pack | Amity Hayze</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      font-family: 'Courier New', monospace;
+      color: #0ff;
+      overflow-x: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      text-shadow: 0 0 8px #0ff, 0 0 20px #0ff;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      max-width: 650px;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #aaa;
+    }
+
+    .button {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      border: 2px solid #0ff;
+      color: #0ff;
+      background: transparent;
+      text-decoration: none;
+      font-size: 1.1rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #0ff, inset 0 0 10px #0ff;
+      transition: all 0.2s ease;
+    }
+
+    .button:hover {
+      background: #0ff;
+      color: #000;
+      text-shadow: none;
+    }
+
+    .pack-preview {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pack-preview img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 0 12px #0ff;
+      transition: transform 0.3s ease;
+    }
+
+    .pack-preview img:hover {
+      transform: scale(1.1);
+    }
+
+    /* Easter Egg - faint static link */
+    .secret {
+      position: fixed;
+      bottom: 10px;
+      right: 15px;
+      font-size: 0.8rem;
+      opacity: 0.08;
+      color: #0ff;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .secret:hover {
+      opacity: 0.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Digital Sticker Pack</h1>
+    <p>
+      You’ve unlocked the <span style="color:#0ff;">transmission pack</span>.  
+      Inside are wallpapers, stickers, and digital art tied to <b>Gone is the Time</b>.  
+      Download them. Use them. Spread the static.
+    </p>
+
+    <a href="https://drive.google.com/file/d/1rw-8fOxaD1iWmClrhXGHhwf_7PjBzT68/view?usp=sharing" target="_blank" class="button">Download Pack</a>
+
+
+  <!-- Faint Easter Egg -->
+  <a href="secret.html" class="secret">[static]</a>
+</body>
+</html>
