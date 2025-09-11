@@ -119,14 +119,42 @@
     .socials a{color:var(--neon);text-decoration:none;border:1px solid rgba(0,255,255,0.06);padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.35)}
     .socials a:hover{background:var(--neon);color:#001}
 
-    /* tiny hidden secret link just under last merch card */
-    .secret-transmission{
-      display:block;text-align:center;margin:8px auto 0 auto;font-size:12px;
-      color: rgba(0,255,255,0.04); /* almost invisible */
-      background:none;border:none;padding:2px 6px;cursor:pointer;
-      transition: color .25s ease, transform .12s ease;
-    }
-    .secret-transmission:hover{ color: rgba(0,255,255,0.7); transform: translateY(-2px); }
+    /* scan-line glitch animation for secret link */
+@keyframes staticFlicker {
+  0% { opacity: 0.05; }
+  10% { opacity: 0.15; }
+  20% { opacity: 0.08; }
+  30% { opacity: 0.12; }
+  40% { opacity: 0.05; }
+  50% { opacity: 0.2; }
+  60% { opacity: 0.07; }
+  70% { opacity: 0.1; }
+  80% { opacity: 0.06; }
+  90% { opacity: 0.15; }
+  100% { opacity: 0.05; }
+}
+
+.secret-transmission {
+  display: block;
+  margin: 6px auto 0 auto;
+  font-size: 12px;
+  color: rgba(0, 255, 255, 0.06); /* faint cyan */
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  cursor: pointer;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color .25s ease, transform .12s ease;
+  animation: staticFlicker 2s infinite;
+}
+
+.secret-transmission:hover {
+  color: rgba(0, 255, 255, 0.7);
+  transform: translateY(-1px);
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+  animation: none; /* stop flicker on hover */
+}
 
     /* faint wiki dot bottom-right */
     .wiki-dot{
@@ -245,6 +273,7 @@
         <a href="https://www.tiktok.com/amity.hayze" target="_blank">TikTok</a>
         <a href="https://www.youtube.com/amityhayze" target="_blank">YouTube</a>
         <a href="amityhayzemusic@gmail.com" target="_blank">Email</a>
+        <button class="secret-transmission" onclick="window.location.href='secret.html'">— signal found —</button>
       </div>
 
       <div style="text-align:center;margin-top:14px;color:var(--muted);font-size:13px">
