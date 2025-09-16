@@ -1,72 +1,151 @@
-<!doctype html>
-<div class="tagline">Alt / Shoegaze / Midwest emo — transmissions for late nights & burnt CD binders</div>
-<h2>New single: "How Could You Love Me?" — Sept 18, 2025</h2>
-</div>
-</header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amity Hayze – One Sheet</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: #00ffcc;
+      font-family: 'Share Tech Mono', monospace;
+      text-align: center;
+      overflow-x: hidden;
+    }
 
-<div class="grid">
-<div class="panel">
-<h3>Overview</h3>
-<p><strong>Amity Hayze</strong> is a self-produced alternative artist blending washed-out guitar textures, tambourine snaps, and intimate lyricism. Re-emerging from a prior project (SXREY), Amity records music that feels like a private transmission — equal parts nostalgia and urgency. Her music has gained organic traction through short-form video edits, grassroots sticker drops, and a DIY aesthetic.</p>
+    /* Background static */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') repeat;
+      opacity: 0.05;
+      z-index: 0;
+      pointer-events: none;
+    }
 
+    h1, h2 {
+      letter-spacing: 2px;
+      position: relative;
+      z-index: 1;
+    }
 
-<h3 style="margin-top:14px">Key Songs</h3>
-<div class="songs">
-<div class="song"><span class="dot"></span><div><strong>Gone is the Time</strong> — single (2025)</div></div>
-<div class="song"><span class="dot"></span><div><strong>How Could You Love Me?</strong> — single (2025)</div></div>
-</div>
-</div>
+    h1 {
+      margin-top: 40px;
+      font-size: 3em;
+      text-transform: uppercase;
+      animation: glitch 2s infinite;
+    }
 
+    .section {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #00ffcc;
+      border-radius: 8px;
+      margin: 30px auto;
+      padding: 20px;
+      max-width: 800px;
+      box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+      z-index: 1;
+      position: relative;
+      transition: transform 0.2s ease-in-out;
+    }
 
-<div class="panel">
-<h3>Recent Highlights</h3>
-<div class="highlights">
-<!-- Update the numbers inside the <span class="num"> tags -->
-<div class="stat"><div class="num">[437]</div><div class="lbl">Instagram followers</div></div>
-<div class="stat"><div class="num">[550,389]</div><div class="lbl">Instagram impressions (30d)</div></div>
-<div class="stat"><div class="num">[3,947]</div><div class="lbl">Profile visits (30d)</div></div>
-<div class="stat"><div class="num">[64]</div><div class="lbl">External link taps</div></div>
-<div class="stat"><div class="num">[155]</div><div class="lbl">Spotify monthly listeners</div></div>
-<div class="stat"><div class="num">[92]</div><div class="lbl">Spotify saves</div></div>
-<div class="stat"><div class="num">[61]</div><div class="lbl">Playlist adds</div></div>
-<div class="stat"><div class="num">[115]</div><div class="lbl">Apple Music plays</div></div>
-<div class="stat"><div class="num">[25]</div><div class="lbl">Shazams</div></div>
-</div>
+    .section:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px #00ffcc;
+    }
 
+    .button {
+      display: inline-block;
+      margin: 30px auto;
+      padding: 12px 24px;
+      border: 1px solid #00ffcc;
+      color: #00ffcc;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      z-index: 1;
+      position: relative;
+    }
 
-<h3 style="margin-top:12px">Press / Sync Potential</h3>
-<p>Song has been used widely in fan edits and aesthetic niche communities (e.g., scenecore / bright 2000s core), showing strong sync potential for nostalgic visual edits, indie playlists, and mood-driven editorial placements.</p>
-</div>
-</div>
+    .button:hover {
+      background: #00ffcc;
+      color: black;
+      box-shadow: 0 0 15px #00ffcc;
+    }
 
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px #ff00ff, -2px -2px #00ffff; }
+      20% { text-shadow: -2px -2px #ff00ff, 2px 2px #00ffff; }
+      40% { text-shadow: 2px -2px #ff00ff, -2px 2px #00ffff; }
+      60% { text-shadow: -2px 2px #ff00ff, 2px -2px #00ffff; }
+      80% { text-shadow: 2px 2px #ff00ff, -2px -2px #00ffff; }
+      100% { text-shadow: -2px -2px #ff00ff, 2px 2px #00ffff; }
+    }
 
-<div style="margin-top:18px;" class="panel">
-<h3>Bio (Short)</h3>
-<p>Amity started making music as a way to hold language for feelings that felt too big for words. Growing up mixed (Native, white, Mexican), she rewrote the soundtrack she wanted to hear — a blend of shoegaze haze, Midwestern emo honesty, and home-recorded warmth. Her music is for 2am headphones, burnt CD binders, and anyone who wants something that feels like home.</p>
-</div>
+    /* Flicker effect for easter egg */
+    .flicker {
+      opacity: 0;
+      font-size: 0.9em;
+      margin-top: 30px;
+      color: #ff00ff;
+      animation: flicker 6s infinite;
+    }
 
+    @keyframes flicker {
+      0%, 19.999%, 22%, 62.999%, 64%, 100% { opacity: 0; }
+      20%, 21.999%, 63%, 63.999% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Amity Hayze</h1>
 
-<div style="display:flex;gap:18px;margin-top:16px;flex-wrap:wrap;align-items:flex-start">
-<div style="flex:1;min-width:260px" class="panel">
-<h3>Available Assets</h3>
-<p>High-res promo photos, press-ready bio, streaming links, cover artwork, and a short EPK can be provided upon request.</p>
-</div>
+  <div class="section">
+    <h2>About</h2>
+    <p>
+      Amity Hayze is a self-produced alternative artist blending surfer rock, shoegaze, 
+      and Midwest emo. Her music captures lost time, self-worth, and nostalgia — 
+      crafted in intimate, DIY spaces.
+    </p>
+  </div>
 
+  <div class="section">
+    <h2>Highlights</h2>
+    <p>
+      • 430+ Instagram followers, 523k impressions<br>
+      • 3,400+ profile visits, 51 link taps<br>
+      • 136 monthly Spotify listeners, 54 playlist adds<br>
+      • 115 Apple Music plays, 24 Shazams<br>
+      • Featured in edits + growing underground scene presence
+    </p>
+  </div>
 
-<div style="flex:1;min-width:220px" class="panel">
-<h3>Contact</h3>
-<p class="small">Email: <a href="mailto:amityhayzemusic@gmail.com">amityhayzemusic@gmail.com</a><br>
-Website: <a href="https://amityhayze.github.io" target="_blank">amityhayze.github.io</a><br>
-Instagram: <a href="https://instagram.com/amityhayze" target="_blank">@amityhayze</a></p>
-</div>
-</div>
+  <div class="section">
+    <h2>Upcoming Release</h2>
+    <p>
+      <strong>“How Could You Love Me?”</strong> – dropping September 18, 2025.<br>
+      Pre-save links available now. Fans can access exclusive demos & digital packs via the hidden site layers.
+    </p>
+  </div>
 
+  <div class="section">
+    <h2>Contact</h2>
+    <p>
+      📩 Email: <a href="mailto:amityhayzemusic@gmail.com" style="color:#ff00ff;">amityhayzemusic@gmail.com</a><br>
+      🔗 Website: <a href="index.html" style="color:#ff00ff;">amityhayze.com</a>
+    </p>
+  </div>
 
-<footer>
-<div class="small">For booking & press inquiries — contact via email above.</div>
-<div class="small">Stats updated: [LAST_UPDATED_DATE]</div>
-</footer>
-</div>
+  <a href="index.html" class="button">Reconnect</a>
+
+  <!-- Hidden flickering easter egg -->
+  <div class="flicker">…signal continues elsewhere…</div>
 </body>
 </html>
