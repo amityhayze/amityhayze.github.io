@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transmission Hub</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: #00f0ff;
+      font-family: 'Share Tech Mono', monospace;
+      overflow: hidden;
+    }
+
+    /* CRT Scanlines */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 240, 255, 0.05) 0px,
+        rgba(0, 240, 255, 0.05) 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 1000;
+      animation: flicker 0.2s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 0.99; }
+      20%, 24%, 55% { opacity: 0.4; }
+    }
+
+    #intro {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5rem;
+      white-space: pre-wrap;
+    }
+
+    #hub {
+      display: none;
+      padding: 2rem;
+    }
+
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .file {
+      border: 1px solid #00f0ff;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+      background: rgba(0,0,0,0.7);
+      box-shadow: 0 0 10px #00f0ff44;
+    }
+
+    .file:hover {
+      background: rgba(0, 240, 255, 0.1);
+      text-shadow: 0 0 5px #00f0ff;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00f0ff;
+    }
+
+    .locked {
+      color: #444;
+      border: 1px dashed #333;
+    }
+
+    .locked:hover {
+      background: rgba(255,0,0,0.1);
+      text-shadow: 0 0 5px red;
+    }
+
+    #viewer {
+      margin-top: 2rem;
+      padding: 1rem;
+      border: 1px solid #00f0ff;
+      background: rgba(0,0,0,0.8);
+      display: none;
+    }
+
+    iframe, audio, img {
+      width: 100%;
+      margin-top: 1rem;
+      border: none;
+    }
+
+    /* Terminal input */
+    #terminal {
+      margin-top: 2rem;
+      padding: 1rem;
+      border: 1px solid #00f0ff;
+      background: rgba(0,0,0,0.9);
+    }
+
+    #terminal input {
+      width: 100%;
+      background: black;
+      border: none;
+      color: #00f0ff;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro Boot-up -->
+  <div id="intro"></div>
+
+  <!-- Transmission Hub -->
+  <div id="hub">
+    <h1>TRANSMISSION HUB v1.0</h1>
+    <p>Unauthorized access granted. Proceed with caution.</p>
+    <div class="file-grid">
+      <div class="file" onclick="openFile('demo1')">Secret Demo 01</div>
+      <div class="file" onclick="openFile('video1')">Unlisted Transmission</div>
+      <div class="file" onclick="openFile('log1')">Memory Fragment</div>
+      <div class="file" onclick="openFile('gallery')">Image Vault</div>
+      <div class="file" onclick="openFile('lyrics')">Hidden Lyrics</div>
+      <div class="file" onclick="openFile('static')">Static Channel</div>
+      <div class="file locked" onclick="glitchOut(this)">???.wav</div>
+      <div class="file locked" onclick="glitchOut(this)">Corrupted File</div>
+    </div>
+
+    <div id="viewer"></div>
+
+    <!-- Terminal -->
+    <div id="terminal">
+      <p>> Enter code to unlock hidden files:</p>
+      <input type="text" id="command" placeholder="STATIC" onkeydown="runCommand(event)">
+    </div>
+  </div>
+
+  <script>
+    // Typewriter intro
+    const introText = "Initializing...\nDecrypting archive...\nAccessing transmission hub...\nACCESS GRANTED.";
+    let i = 0;
+    function typeWriter() {
+      if (i < introText.length) {
+        document.getElementById("intro").textContent += introText.charAt(i);
+        i++;
+        setTimeout(typeWriter, 50);
+      } else {
+        setTimeout(() => {
+          document.getElementById("intro").style.display = "none";
+          document.getElementById("hub").style.display = "block";
+        }, 1000);
+      }
+    }
+    window.onload = typeWriter;
+
+    // File opener
+    function openFile(id) {
+      const viewer = document.getElementById("viewer");
+      viewer.style.display = "block";
+      if (id === "demo1") {
+        viewer.innerHTML = "<h2>Secret Demo 01</h2><audio controls><source src='demo1.mp3' type='audio/mpeg'>Your browser does not support audio.</audio>";
+      } else if (id === "video1") {
+        viewer.innerHTML = "<h2>Unlisted Transmission</h2><iframe height='315' src='https://www.youtube.com/embed/M3cWBMydO4c?si=gApGjQq-hq9LVZyH' allowfullscreen></iframe>";
+      } else if (id === "log1") {
+        viewer.innerHTML = "<h2>Memory Fragment</h2><p>Recovered log entry:<br>'If you are reading this, you were never meant to find me...'</p>";
+      } else if (id === "gallery") {
+        viewer.innerHTML = "<h2>Image Vault</h2><img src='polaroid1.jpg'><img src='polaroid2.jpg'><p>Recovered visuals...</p>";
+      } else if (id === "lyrics") {
+        viewer.innerHTML = "<h2>Hidden Lyrics</h2><p>[Verse 1]<br>Words encrypted within static...</p>";
+      } else if (id === "static") {
+        viewer.innerHTML = "<h2>Static Channel</h2><iframe height='315' src='https://www.youtube.com/embed/VIDEO_ID_LOOP?autoplay=1&loop=1&playlist=VIDEO_ID_LOOP' allowfullscreen></iframe>";
+      }
+    }
+
+    // Glitch effect for locked files
+    function glitchOut(el) {
+      el.textContent = "!!! ERROR !!!";
+      setTimeout(() => {
+        el.textContent = "Corrupted File";
+      }, 1000);
+    }
+
+    // Terminal unlock
+    function runCommand(e) {
+      if (e.key === "Enter") {
+        const cmd = document.getElementById("command").value.trim().toUpperCase();
+        const viewer = document.getElementById("viewer");
+        if (cmd === "ACCESS DEMO2") {
+          viewer.style.display = "block";
+          viewer.innerHTML = "<h2>Unlocked: Secret Demo 02</h2><audio controls><source src='demo2.mp3' type='audio/mpeg'></audio>";
+        } else {
+          viewer.style.display = "block";
+          viewer.innerHTML = "<p>> ERROR: Invalid command</p>";
+        }
+        document.getElementById("command").value = "";
+      }
+    }
+  </script>
+</body>
+</html>
