@@ -236,7 +236,7 @@ head>
         obj[k] = v;
       }
 
-      fetch("YOUR_SCRIPT_URL", {
+      fetch("https://script.google.com/macros/s/AKfycbw5iYWWe0rBlbtf7TWYzwVUFWM3nPBt0aYbk6LD4zgAG_GE10fnZ_BwK27gcWmHbrE7/exec", {
         method: "POST",
         body: JSON.stringify(obj),
         headers: { "Content-Type": "application/json" }
