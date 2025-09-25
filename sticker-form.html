@@ -44,6 +44,7 @@
       max-width: 500px;
       width: 90%;
       animation: flicker 3s infinite;
+      position: relative;
     }
 
     h1 {
@@ -102,13 +103,41 @@
       color: white;
     }
 
+    /* confirmation overlay */
+    .confirmation {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 10, 20, 0.95);
+      border-radius: 16px;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      padding: 2rem;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .confirmation h2 {
+      color: #00ffc6;
+      font-size: 1.5rem;
+      text-shadow: 0 0 8px #00ffc6, 0 0 20px #ff2efc;
+    }
+
+    .confirmation p {
+      color: #e0e0e0;
+      font-size: 1rem;
+      max-width: 400px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
     @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        opacity: 1;
-      }
-      20%, 24%, 55% {
-        opacity: 0.95;
-      }
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 24%, 55% { opacity: 0.95; }
     }
   </style>
 </head>
@@ -136,6 +165,12 @@
 
       <button type="submit">Submit</button>
     </form>
+
+    <div class="confirmation" id="confirmation">
+      <h2>✅ Request submitted!</h2>
+      <p>Thanks for supporting Amity Hayze 💿✨  
+      Your free sticker will be mailed soon. Keep an eye out for secret merch drops 👀</p>
+    </div>
   </div>
 
   <script>
@@ -148,13 +183,15 @@
         source: document.getElementById("source").value
       };
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbxxSjrc92xAfrryBWQMplOJVXUITEZvM9hBjaG7XGE2zpvbtioM12mXfoue0y7q3t3X/exec", {
+        await fetch("https://script.google.com/macros/s/AKfycbxxSjrc92xAfrryBWQMplOJVXUITEZvM9hBjaG7XGE2zpvbtioM12mXfoue0y7q3t3X/exec", {
           method: "POST",
           mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData)
         });
-        alert("✅ Request submitted! Thank you.");
+        // hide form, show confirmation
+        document.getElementById("stickerForm").style.display = "none";
+        document.getElementById("confirmation").style.display = "flex";
         e.target.reset();
       } catch (err) {
         alert("❌ Something went wrong. Try again later.");
