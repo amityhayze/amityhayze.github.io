@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Free Sticker Request (and secret merch drops) — Amity Hayze</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06060a;
+      --card: #0f1220;
+      --accent: #3aa0ff;
+      --muted: #9aa6b2;
+      --accent2: #ffd86b;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: radial-gradient(1200px 600px at 10% 20%, rgba(58,160,255,0.06), transparent),
+                  linear-gradient(180deg, #02020a 0%, #050514 60%);
+      color: #e9eef6;
+      font-family: Inter, system-ui, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    }
+    .wrap {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    .card {
+      width: 920px;
+      max-width: 96%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 20px 60px rgba(2,6,23,0.7);
+      border-radius: 18px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+    .crt {
+      width: 64px;
+      height: 44px;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #071428, #0b1b2b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 40px rgba(0,120,255,0.06);
+    }
+    .crt::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+    }
+    h1 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 20px;
+      margin: 0;
+      color: var(--accent);
+    }
+    p.lead {
+      margin: 4px 0 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    form {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+    }
+    .left {
+      padding: 6px;
+    }
+    .right {
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0));
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.03);
+      min-height: 360px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #dfe9ff;
+    }
+    .field {
+      margin-bottom: 14px;
+    }
+    input[type=text], input[type=email], textarea, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.02);
+      color: inherit;
+      font-size: 14px;
+    }
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, var(--accent), #66d2ff);
+      color: #07142a;
+      font-weight: 700;
+      border: none;
+      margin-top: 6px;
+      cursor: pointer;
+    }
+    .btn.secondary {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.04);
+      color: var(--muted);
+    }
+    .grain {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(transparent 50%, rgba(255,255,255,0.01) 51%);
+      mix-blend-mode: overlay;
+      opacity: 0.08;
+    }
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.02) 1%);
+      mix-blend-mode: overlay;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+    .tv-preview {
+      background: #020414;
+      height: 200px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: var(--muted);
+      gap: 6px;
+    }
+    .tv-preview .title {
+      font-family: 'Press Start 2P';
+      color: var(--accent);
+    }
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    @media(max-width: 880px) {
+      form {
+        grid-template-columns: 1fr;
+      }
+      .right {
+        order: 2;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="grain"></div>
+      <div class="scanlines"></div>
+      <div class="header">
+        <div class="crt" aria-hidden="true"></div>
+        <div>
+          <h1>Free Sticker Request</h1>
+          <p class="lead">Fill the form below to get a free Amity Hayze sticker mailed to you.</p>
+        </div>
+      </div>
+
+      <form id="stickerForm">
+        <div class="left">
+          <div class="field">
+            <label for="name">What’s your name? *</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+
+          <div class="field">
+            <label for="address">Mailing Address (for shipping only) *</label>
+            <textarea id="address" name="address" required placeholder="Street, city, state, ZIP"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="email">What’s your email? *</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+
+          <div class="field">
+            <label for="source">How’d you find me?</label>
+            <input type="text" id="source" name="source" placeholder="e.g. Instagram, friend, etc.">
+          </div>
+
+          <button type="button" class="btn" id="submitBtn">Submit</button>
+          <button type="button" class="btn secondary" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="right">
+          <div class="tv-preview">
+            <div class="title">VHS Preview</div>
+            <div class="hint">Your responses will be processed.</div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('submitBtn').addEventListener('click', function () {
+      const form = document.getElementById('stickerForm');
+      if (!form.checkValidity()) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      const fd = new FormData(form);
+      const obj = {};
+      for (const [k, v] of fd.entries()) {
+        obj[k] = v;
+      }
+
+      fetch("YOUR_SCRIPT_URL", {
+        method: "POST",
+        body: JSON.stringify(obj),
+        headers: { "Content-Type": "application/json" }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.result === "success") {
+            alert("Thanks — your request has been submitted!");
+            form.reset();
+          } else {
+            alert("Error: " + JSON.stringify(data));
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Something went wrong. Try again later.");
+        });
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', function () {
+      document.getElementById('stickerForm').reset();
+    });
+  </script>
+</body>
+</html>
