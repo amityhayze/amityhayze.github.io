@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amity Hayze // One Sheet</title>
+  <title>Amity Hayze // EPK</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
@@ -17,7 +17,6 @@
       overflow-x: hidden;
     }
 
-    /* Static overlay */
     body::before {
       content: "";
       position: fixed;
@@ -29,7 +28,6 @@
       pointer-events: none;
     }
 
-    /* Headline glitch */
     h1 {
       font-size: 2.8em;
       margin-top: 10vh;
@@ -99,7 +97,6 @@
       text-shadow: 0 0 5px #ff00ff;
     }
 
-    /* Flicker effect */
     .flicker {
       animation: flicker 5s infinite;
       opacity: 0.7;
@@ -109,10 +106,35 @@
       0%, 19.999%, 22%, 62.999%, 64%, 100% { opacity: 0.7; }
       20%, 21.999%, 63%, 63.999% { opacity: 1; }
     }
+
+    /* Embed styling */
+    .embed-container {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    iframe {
+      border: none;
+      width: 100%;
+      max-width: 100%;
+      border-radius: 8px;
+    }
+
+    .spotify-embed {
+      height: 152px;
+    }
+
+    .youtube-embed {
+      height: 315px;
+    }
+
+    .instagram-embed {
+      height: 480px;
+    }
   </style>
 </head>
 <body>
-  <h1>AMITY HAYZE // ONE SHEET</h1>
+  <h1>AMITY HAYZE // EPK</h1>
 
   <!-- Bio -->
   <div class="section">
@@ -122,6 +144,7 @@
       of Midwest emo with the hazy textures of shoegaze and alternative indie rock. From rainy cabins in rural Oregon to DIY
       stages in LA, she builds immersive worlds where music, visuals, and storytelling collide. 
     </p>
+    <p>
       Hayze's work has been featured in The Under Magazine Issue 1 (2024) and Issue 2 (2025)
       as well as Queer Out Here Issue 10 (2025). Her work has also been featured on multiple Spotify Playlists 
       curated by independent music enjoyers.
@@ -160,12 +183,43 @@
       Directed and filmed DIY music videos using VHS cameras and immersive 360 degree content
       (<a href="https://youtube.com/playlist?list=PL52QZTQBOLjMHbF9cePG5mrInY09B_v65&si=G41arv0kO47LmJEQ" target="_blank">watch</a>)
     </li>
-    <li>Filmed/edited footage for other indie artists during live shows/performances</li>
+    <li>Filmed/edited footage for other indie artists during live shows/performances
       (<a href="https://youtube.com/playlist?list=PL52QZTQBOLjOOu-8PvwwXiLONiuJBmq2g&si=T5B4WAuvGnFb8CDL" target="_blank">watch</a>)
     </li>
     <li>4+ years building and releasing music under SXREY</li>
   </ul>
-</div>
+  </div>
+
+  <!-- Music Embeds -->
+  <div class="section">
+    <h2>Listen: Featured Tracks</h2>
+    <div class="embed-container">
+      <iframe class="spotify-embed" src="https://open.spotify.com/embed/artist/5NMNo5sQFABJdY3jHH53wf?utm_source=generator" allow="encrypted-media"></iframe>
+    </div>
+    <div class="embed-container">
+      <iframe class="youtube-embed" src="https://www.youtube.com/embed/videoseries?list=PL52QZTQBOLjMHbF9cePG5mrInY09B_v65" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- Instagram Embed -->
+  <div class="section">
+    <h2>Social Feed</h2>
+    <p>Check out the latest from @amityhayze:</p>
+    <div class="embed-container">
+      <iframe class="instagram-embed" src="https://www.instagram.com/reel/DNluu3Vy5xJ/?utm_source=ig_embed&amp;utm_campaign=loading" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+    </div>
+  </div>
+
+  <!-- Press / Photos -->
+  <div class="section">
+    <h2>Press & Photos</h2>
+    <p>High-resolution photos and press materials available for download:</p>
+    <ul>
+      <li><a href="https://amityhayze.github.io/assets/press-photo1.jpg" target="_blank">Photo 1 (High-Res)</a></li>
+      <li><a href="https://amityhayze.github.io/assets/press-photo2.jpg" target="_blank">Photo 2 (High-Res)</a></li>
+    </ul>
+    <p>For additional media requests, please contact: <a href="mailto:amityhayzemusic@gmail.com">amityhayzemusic@gmail.com</a></p>
+  </div>
 
   <!-- Release -->
   <div class="section">
@@ -178,5 +232,14 @@
       <a href="https://ps.tribly.fm/kxkd4wr" target="_blank">Tribly</a>.
     </p>
   </div>
+
+  <!-- Contact -->
+  <div class="section">
+    <h2>Contact & Booking</h2>
+    <p>Email: <a href="mailto:amityhayzemusic@gmail.com">amityhayzemusic@gmail.com</a></p>
+    <p>Website: <a href="https://amityhayze.github.io" target="_blank">amityhayze.github.io</a></p>
+    <p>Instagram: <a href="https://www.instagram.com/amityhayze/" target="_blank">@amityhayze</a></p>
+  </div>
 </body>
 </html>
+
