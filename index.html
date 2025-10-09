@@ -15,194 +15,124 @@
       --glass: rgba(255,255,255,0.03);
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:var(--bg-dark);font-family: "Courier New", monospace;color:var(--neon);-webkit-font-smoothing:antialiased}
+    html,body{height:100%;margin:0;background:var(--bg-dark);font-family:"Courier New",monospace;color:var(--neon);-webkit-font-smoothing:antialiased}
     body::before{
       content:"";
       position:fixed;inset:0;
-      background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover;
-      opacity:0.12; z-index:-2; mix-blend-mode:screen;
+      background:url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover;
+      opacity:0.12;z-index:-2;mix-blend-mode:screen;
       filter:grayscale(30%) contrast(1.05);
     }
     body::after{
       content:"";position:fixed;inset:0;
-      background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%);
+      background:radial-gradient(ellipse at center,rgba(0,0,0,0) 0%,rgba(0,0,0,0.55) 70%);
       z-index:-1;
     }
-
-    /* ====== NAVIGATION BAR ====== */
-    .main-nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      background: rgba(0,0,0,0.65);
-      border-bottom: 1px solid rgba(0,255,255,0.08);
-      backdrop-filter: blur(4px);
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      padding: 12px 20px;
-      z-index: 1000;
-      animation: fadeInNav 1.5s ease forwards;
-      opacity: 0;
+    .main-nav{
+      position:fixed;top:0;left:0;right:0;
+      background:rgba(0,0,0,0.65);
+      border-bottom:1px solid rgba(0,255,255,0.08);
+      backdrop-filter:blur(4px);
+      display:flex;justify-content:center;gap:32px;
+      padding:12px 20px;z-index:1000;
+      animation:fadeInNav 1.5s ease forwards;opacity:0;
     }
-
-    @keyframes fadeInNav {
-      to { opacity: 1; }
+    @keyframes fadeInNav{to{opacity:1}}
+    .main-nav a{
+      color:var(--neon);text-decoration:none;font-size:14px;
+      letter-spacing:1px;position:relative;text-transform:uppercase;
+      transition:color .3s ease,text-shadow .3s ease;
     }
-
-    .main-nav a {
-      color: var(--neon);
-      text-decoration: none;
-      font-size: 14px;
-      letter-spacing: 1px;
-      position: relative;
-      text-transform: uppercase;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
+    .main-nav a::after{
+      content:"";position:absolute;left:0;bottom:-4px;width:0%;height:2px;
+      background:var(--neon);box-shadow:0 0 8px var(--neon);
+      transition:width .3s ease;opacity:.8;
     }
-
-    .main-nav a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -4px;
-      width: 0%;
-      height: 2px;
-      background: var(--neon);
-      box-shadow: 0 0 8px var(--neon);
-      transition: width 0.3s ease;
-      opacity: 0.8;
-    }
-
-    .main-nav a:hover::after,
-    .main-nav a.active::after {
-      width: 100%;
-    }
-
-    .main-nav a:hover {
-      color: #fff;
-      text-shadow: 0 0 6px var(--neon);
-    }
-
-    @keyframes navGlitch {
-      0%,100% { filter:none; }
-      50% { filter:hue-rotate(30deg) brightness(1.2); }
-    }
-
-    .wrap{max-width:980px;margin:10vh auto 6vh auto;padding:30px;display:block;}
+    .main-nav a:hover::after,.main-nav a.active::after{width:100%}
+    .main-nav a:hover{color:#fff;text-shadow:0 0 6px var(--neon)}
+    .wrap{max-width:980px;margin:10vh auto 6vh auto;padding:30px;display:block}
     .panel{
       background:var(--panel);
       border:1px solid rgba(0,255,255,0.06);
       padding:28px;border-radius:12px;
       box-shadow:0 0 30px rgba(0,240,255,0.06);
-      backdrop-filter: blur(2px);
+      backdrop-filter:blur(2px);
       animation:softFlicker 3.2s infinite;
     }
-    @keyframes softFlicker{
-      0%,97%,100%{opacity:1}
-      98%,99%{opacity:0.97}
-    }
+    @keyframes softFlicker{0%,97%,100%{opacity:1}98%,99%{opacity:.97}}
     header{text-align:center;margin-bottom:18px}
     .title{
       font-size:36px;letter-spacing:2px;margin:0 0 6px;
-      color:var(--neon); text-shadow:0 0 10px rgba(0,240,255,0.22);
-      position:relative; display:inline-block;
+      color:var(--neon);text-shadow:0 0 10px rgba(0,240,255,0.22);
+      position:relative;display:inline-block;
     }
-    .title::before, .title::after{
-      content: attr(data-text); position:absolute; left:0; top:0;
-      opacity:0.25;
+    .title::before,.title::after{
+      content:attr(data-text);position:absolute;left:0;top:0;opacity:.25;
     }
-    .title::before{ transform: translate(-2px,-1px); color: #ff6bcd; mix-blend-mode: screen; }
-    .title::after{ transform: translate(2px,1px); color: #9beef7; mix-blend-mode: screen; }
-    .subtitle{font-size:13px; color:var(--muted); margin: 6px 0 0; opacity:0.85}
-    .hero-cta{display:flex; justify-content:center; margin:22px 0 8px}
+    .title::before{transform:translate(-2px,-1px);color:#ff6bcd;mix-blend-mode:screen}
+    .title::after{transform:translate(2px,1px);color:#9beef7;mix-blend-mode:screen}
+    .subtitle{font-size:13px;color:var(--muted);margin:6px 0 0;opacity:.85}
+    .hero-cta{display:flex;justify-content:center;margin:22px 0 8px}
     .btn{
       --pad:14px 28px;
-      display:inline-block; padding:var(--pad); border-radius:10px;
-      background:linear-gradient(180deg, rgba(0,255,255,0.06), rgba(0,255,255,0.02));
-      color:var(--neon); text-decoration:none; font-weight:700;
+      display:inline-block;padding:var(--pad);border-radius:10px;
+      background:linear-gradient(180deg,rgba(0,255,255,0.06),rgba(0,255,255,0.02));
+      color:var(--neon);text-decoration:none;font-weight:700;
       border:1px solid rgba(0,255,255,0.18);
-      box-shadow:0 0 25px rgba(0,240,255,0.08), inset 0 0 6px rgba(0,255,255,0.02);
-      transition: all .22s ease;
-      text-transform:uppercase; letter-spacing:1px;
+      box-shadow:0 0 25px rgba(0,240,255,0.08),inset 0 0 6px rgba(0,255,255,0.02);
+      transition:all .22s ease;text-transform:uppercase;letter-spacing:1px;
     }
     .btn:hover{
-      background: var(--neon);
-      color:#001;
-      box-shadow:0 6px 40px rgba(0,240,255,0.35), 0 0 60px rgba(0,240,255,0.25);
-      transform: translateY(-2px);
+      background:var(--neon);color:#001;
+      box-shadow:0 6px 40px rgba(0,240,255,0.35),0 0 60px rgba(0,240,255,0.25);
+      transform:translateY(-2px);
     }
-    section{ margin:28px 0; display:block; }
-    .columns{ display:flex; gap:22px; align-items:flex-start; flex-wrap:wrap; }
-    .col{ flex:1 1 320px; min-width:280px; }
-    .about-figure{float:right; width:220px; margin-left:16px; border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.04)}
-    .about-figure img{display:block;width:100%;height:auto;object-fit:cover;filter:contrast(0.95) saturate(0.95)}
-    .about-text p{color:#cbeff4; margin:0 0 12px; line-height:1.5}
-    .music-wrap{display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap}
+    section{margin:28px 0;display:block}
+    .columns{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+    .col{flex:1 1 320px;min-width:280px}
+    .about-figure{float:right;width:220px;margin-left:16px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
+    .about-figure img{display:block;width:100%;height:auto;object-fit:cover;filter:contrast(.95)saturate(.95)}
+    .about-text p{color:#cbeff4;margin:0 0 12px;line-height:1.5}
+    .music-wrap{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;flex-direction:column}
     .embed{
-      background:var(--glass); border-radius:10px; border:1px solid rgba(0,255,255,0.04);
-      box-shadow: inset 0 0 6px rgba(0,255,255,0.02);
-      padding:12px; min-width:260px;
+      background:var(--glass);border-radius:10px;border:1px solid rgba(0,255,255,0.04);
+      box-shadow:inset 0 0 6px rgba(0,255,255,0.02);
+      padding:12px;width:100%;
     }
     .player{width:100%;height:80px;border:0;border-radius:8px;overflow:hidden}
     .visuals-preview{width:100%;border-radius:10px;overflow:hidden;border:1px solid rgba(0,255,255,0.04)}
-    .visuals-preview iframe, .visuals-preview video{width:100%;height:320px;display:block;border:0;background:#000}
+    .visuals-preview iframe,.visuals-preview video{width:100%;height:320px;display:block;border:0;background:#000}
     .cards{display:flex;gap:14px;flex-wrap:wrap}
-    .card{flex:1 1 220px;min-width:200px;padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.35));border:1px solid rgba(0,255,255,0.04)}
+    .card{flex:1 1 220px;min-width:200px;padding:14px;border-radius:10px;background:linear-gradient(180deg,rgba(0,0,0,0.45),rgba(0,0,0,0.35));border:1px solid rgba(0,255,255,0.04)}
     .card h4{margin:0 0 8px;color:var(--neon)}
     .card p{margin:0;color:#bfeff8;font-size:14px}
-    .small-link{display:inline-block;margin-top:12px;text-decoration:none;color:var(--neon);opacity:0.95}
+    .small-link{display:inline-block;margin-top:12px;text-decoration:none;color:var(--neon);opacity:.95}
     .socials{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:10px}
     .socials a{color:var(--neon);text-decoration:none;border:1px solid rgba(0,255,255,0.06);padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.35)}
     .socials a:hover{background:var(--neon);color:#001}
-    @keyframes staticFlicker {
-      0% { opacity: 0.05; }
-      10% { opacity: 0.15; }
-      20% { opacity: 0.08; }
-      30% { opacity: 0.12; }
-      40% { opacity: 0.05; }
-      50% { opacity: 0.2; }
-      60% { opacity: 0.07; }
-      70% { opacity: 0.1; }
-      80% { opacity: 0.06; }
-      90% { opacity: 0.15; }
-      100% { opacity: 0.05; }
+    @keyframes staticFlicker{0%{opacity:.05}10%{opacity:.15}20%{opacity:.08}30%{opacity:.12}40%{opacity:.05}50%{opacity:.2}60%{opacity:.07}70%{opacity:.1}80%{opacity:.06}90%{opacity:.15}100%{opacity:.05}}
+    .secret-transmission{
+      display:block;margin:6px auto 0 auto;font-size:12px;
+      color:rgba(0,255,255,0.06);background:none;border:none;
+      padding:2px 6px;cursor:pointer;letter-spacing:2px;text-transform:uppercase;
+      transition:color .25s ease,transform .12s ease;animation:staticFlicker 2s infinite;
     }
-    .secret-transmission {
-      display: block;
-      margin: 6px auto 0 auto;
-      font-size: 12px;
-      color: rgba(0, 255, 255, 0.06);
-      background: none;
-      border: none;
-      padding: 2px 6px;
-      cursor: pointer;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      transition: color .25s ease, transform .12s ease;
-      animation: staticFlicker 2s infinite;
-    }
-    .secret-transmission:hover {
-      color: rgba(0, 255, 255, 0.7);
-      transform: translateY(-1px);
-      text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
-      animation: none;
-    }
+    .secret-transmission:hover{color:rgba(0,255,255,0.7);transform:translateY(-1px);text-shadow:0 0 6px rgba(0,255,255,0.4);animation:none}
     .wiki-dot{
-      position:fixed; right:14px; bottom:12px; z-index:9999;
-      color: rgba(0,255,255,0.14); font-size:16px; border:none; background:none; cursor:pointer;
-      transition: color .2s ease;
+      position:fixed;right:14px;bottom:12px;z-index:9999;
+      color:rgba(0,255,255,0.14);font-size:16px;border:none;background:none;cursor:pointer;
+      transition:color .2s ease;
     }
-    .wiki-dot:hover{ color: rgba(0,255,255,0.8) }
-    @media (max-width:720px){
-      .about-figure{width:140px; float:none; display:block; margin:12px auto}
-      .visuals-preview iframe, .visuals-preview video{height:200px}
-      .main-nav{gap:16px;font-size:12px;padding:10px;}
+    .wiki-dot:hover{color:rgba(0,255,255,0.8)}
+    @media(max-width:720px){
+      .about-figure{width:140px;float:none;display:block;margin:12px auto}
+      .visuals-preview iframe,.visuals-preview video{height:200px}
+      .main-nav{gap:16px;font-size:12px;padding:10px}
     }
   </style>
 </head>
 
 <body>
-
-  <!-- ===== MAIN NAVIGATION ===== -->
   <nav class="main-nav">
     <a href="#about">About</a>
     <a href="#music">Music</a>
@@ -212,19 +142,17 @@
   </nav>
 
   <div class="wrap">
-    <!-- HERO / HEADER -->
     <div class="panel" role="banner">
       <header>
         <h1 class="title" data-text="Amity Hayze">Amity Hayze</h1>
         <div class="subtitle">You've entered the static — music for late nights & burnt CD binders.</div>
       </header>
-
       <div class="hero-cta">
         <a class="btn" href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=1Tts4ifrQceQLN_-TrWDTw" target="_blank" rel="noopener">Listen Now</a>
       </div>
     </div>
 
-    <!-- ABOUT + MUSIC -->
+    <!-- ABOUT -->
     <section class="panel" id="about">
       <div class="columns">
         <div class="col about-text">
@@ -242,16 +170,24 @@
     <!-- MUSIC -->
     <section class="panel" id="music">
       <h3 style="margin-top:0;color:var(--neon);">Music</h3>
+
       <div class="music-wrap">
+
+        <!-- Spotify Top Songs -->
         <div class="embed">
-          <iframe class="player" src="https://open.spotify.com/embed/artist/5NMNo5sQFABJdY3jHH53wf?utm_source=generator" allow="encrypted-media" loading="lazy"></iframe>
-          <div style="margin-top:10px;font-size:13px;color:var(--muted)"</div>
+          <iframe class="player" src="https://open.spotify.com/embed/track/0h4jqeL4vLEtcb9AFkaJ5I?utm_source=generator" allow="encrypted-media" loading="lazy"></iframe>
         </div>
-        <div style="min-width:200px; display:flex;flex-direction:column;gap:10px;">
-          <a class="btn" href="https://music.apple.com/us/album/gone-is-the-time-single/1831479105" target="_blank" rel="noopener">Listen on Apple Music</a>
-          <a class="btn" href="https://amityhayze.bandcamp.com/track/gone-is-the-time-2" target="_blank" rel="noopener">Support on Bandcamp</a>
-          <a class="btn" href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=etRflJiyRSKElNvsOXru-w" target="_blank" rel="noopener">Artist on Spotify</a>
+        <div class="embed">
+          <iframe class="player" src="https://open.spotify.com/embed/track/42Gr6RVsohk8x6mpn2BmkC?utm_source=generator" allow="encrypted-media" loading="lazy"></iframe>
         </div>
+
+        <div style="margin-top:10px;font-size:13px;color:var(--muted)">Prefer Apple / Bandcamp — use the buttons below.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;">
+          <a class="btn" href="https://music.apple.com/us/album/gone-is-the-time-single/1831479105" target="_blank" rel="noopener">Apple Music</a>
+          <a class="btn" href="https://amityhayze.bandcamp.com/track/gone-is-the-time-2" target="_blank" rel="noopener">Bandcamp</a>
+          <a class="btn" href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf" target="_blank" rel="noopener">Full Artist Page</a>
+        </div>
+
       </div>
     </section>
 
@@ -307,37 +243,7 @@
 
   <button class="wiki-dot" title="archive" onclick="window.location.href='wiki-unlock.html'">▦</button>
 
-  <!-- JS -->
   <script>
     document.querySelectorAll('a[href^="#"]').forEach(a=>{
-      a.addEventListener('click', e=>{
-        e.preventDefault();
-        const t=document.querySelector(a.getAttribute('href'));
-        if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
-      })
-    });
-
-    document.querySelectorAll('.secret-transmission, .wiki-dot').forEach(btn=>{
-      btn.addEventListener('keydown', e=>{
-        if(e.key === 'Enter') btn.click();
-      });
-    });
-
-    // highlight active nav link on scroll
-    const sections = document.querySelectorAll("section");
-    const navLinks = document.querySelectorAll(".main-nav a");
-    window.addEventListener("scroll", () => {
-      let current = "";
-      sections.forEach(sec => {
-        const secTop = sec.offsetTop - 100;
-        if (pageYOffset >= secTop) current = sec.getAttribute("id");
-      });
-      navLinks.forEach(a => {
-        a.classList.remove("active");
-        if (a.getAttribute("href") === "#" + current) a.classList.add("active");
-      });
-    });
-  </script>
-</body>
-</html>
+     
 
