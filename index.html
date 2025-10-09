@@ -10,7 +10,7 @@
   <meta name="keywords" content="Amity Hayze, indie, music, alt, demos, presave, bandcamp, spotify">
   <meta property="og:title" content="Amity Hayze — Transmission">
   <meta property="og:description" content="Music from the static. Nostalgic alt-rock & late-night transmissions by Amity Hayze.">
-  <meta property="og:image" content="AC2FD0C6-23DB-4519-BA51-DB1A78505E5A.jpeg">
+  <meta property="og:image" content="https://amityhayze.github.io/images/amity-preview.jpg">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://amityhayze.github.io/">
 
@@ -21,6 +21,7 @@
 
   <!-- FAVICON (replace with your icon file if you have one) -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
+
 
   <!-- ====== Styles (glitchy neon theme) ====== -->
   <style>
@@ -77,11 +78,11 @@
       animation:softFlicker 3.2s infinite;
     }
     @keyframes softFlicker{0%,97%,100%{opacity:1}98%,99%{opacity:.97}}
-    header{text-align:center;margin-bottom:18px;display:flex;flex-direction:column;align-items:center;gap:6px}
+    header{text-align:center;margin-bottom:18px}
     .title{
       font-size:36px;letter-spacing:2px;margin:0 0 6px;
       color:var(--neon);text-shadow:0 0 10px rgba(0,240,255,0.22);
-      position:relative; display:inline-block;
+      position:relative;display:inline-block;
     }
     .title::before,.title::after{
       content:attr(data-text);position:absolute;left:0;top:0;opacity:.25;
@@ -116,7 +117,6 @@
       box-shadow:inset 0 0 6px rgba(0,255,255,0.02);
       padding:12px;width:100%;
     }
-    /* artist embed sizing */
     .player{width:100%;height:380px;border:0;border-radius:8px;overflow:hidden}
     .visuals-preview{width:100%;border-radius:10px;overflow:hidden;border:1px solid rgba(0,255,255,0.04)}
     .visuals-preview iframe,.visuals-preview video{width:100%;height:320px;display:block;border:0;background:#000}
@@ -142,104 +142,6 @@
       transition:color .2s ease;
     }
     .wiki-dot:hover{color:rgba(0,255,255,0.8)}
-
-    /* ===== added: signal strength (small, subtle) ===== */
-    .signal {
-      display:inline-flex;
-      gap:4px;
-      align-items:end;
-      margin-left:8px;
-      margin-top:6px;
-      transform:translateY(-2px);
-    }
-    .signal .bar {
-      width:4px;
-      background:linear-gradient(180deg, rgba(0,240,255,0.9), rgba(0,240,255,0.35));
-      border-radius:2px;
-      opacity:0.9;
-      animation:signalPulse 1.6s infinite ease-in-out;
-      transform-origin:bottom;
-    }
-    .signal .bar:nth-child(1){height:6px;animation-delay:0s}
-    .signal .bar:nth-child(2){height:10px;animation-delay:0.12s}
-    .signal .bar:nth-child(3){height:16px;animation-delay:0.22s}
-    .signal .bar:nth-child(4){height:22px;animation-delay:0.32s}
-    @keyframes signalPulse {
-      0%{transform:scaleY(0.65);opacity:.6}
-      50%{transform:scaleY(1);opacity:1}
-      100%{transform:scaleY(0.7);opacity:.6}
-    }
-
-    /* ===== added: join-the-static form styles (visual mock for embed-ready swap) ===== */
-    .join-panel { text-align:center; }
-    .join-panel .join-card{
-      margin:0 auto; max-width:720px; padding:20px; border-radius:10px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(0,255,255,0.04);
-      box-shadow:0 6px 30px rgba(0,240,255,0.04);
-    }
-    .join-panel h3{margin:0 0 10px;color:var(--neon)}
-    .join-panel p.tagline{margin:0 0 16px;color:var(--muted)}
-    .fake-form {
-      display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;
-    }
-    .fake-form input, .fake-form textarea {
-      background:rgba(255,255,255,0.02); border:1px solid rgba(0,255,255,0.06);
-      color:var(--neon); padding:10px 12px; border-radius:8px; outline:none; min-width:220px;
-    }
-    .fake-form input::placeholder{color:rgba(155,238,247,0.6)}
-    .fake-form .join-btn {
-      padding:10px 14px;border-radius:8px;border:1px solid rgba(0,255,255,0.12);
-      background:linear-gradient(180deg,rgba(0,255,255,0.08),rgba(0,255,255,0.02));
-      color:var(--neon);font-weight:700;text-transform:uppercase;cursor:pointer;
-    }
-    .fake-form .small-note{display:block;width:100%;color:var(--muted);font-size:13px;margin-top:10px}
-    .join-thanks{color:var(--muted);margin-top:12px;font-size:14px;display:none}
-
-    /* ===== overlay (neon glass thank-you) ===== */
-    .thanks-overlay {
-      position:fixed;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:2000;
-      pointer-events:none;
-      opacity:0;
-      transition:opacity .35s ease;
-    }
-    .thanks-overlay.visible {
-      opacity:1;
-      pointer-events:auto;
-    }
-    .thanks-card {
-      width:min(720px,92%);
-      background:rgba(0,0,0,0.75);
-      border:1px solid rgba(0,255,255,0.12);
-      box-shadow:0 30px 80px rgba(0,240,255,0.06);
-      padding:28px;
-      border-radius:12px;
-      text-align:center;
-      color:var(--neon);
-      transform:translateY(0);
-      animation:glowFade .6s ease;
-    }
-    @keyframes glowFade {
-      from { transform:translateY(8px); opacity:0 }
-      to { transform:translateY(0); opacity:1 }
-    }
-    .thanks-card h2{margin:0 0 8px;font-size:20px}
-    .thanks-card p{margin:0 0 10px;color:var(--muted)}
-    .thanks-close {
-      margin-top:14px;
-      display:inline-block;
-      padding:8px 12px;
-      border-radius:8px;
-      background:linear-gradient(180deg,rgba(0,255,255,0.06),rgba(0,255,255,0.02));
-      color:#001;font-weight:700;border:1px solid rgba(0,255,255,0.12);
-      cursor:pointer;
-    }
-
     @media(max-width:720px){
       .about-figure{width:140px;float:none;display:block;margin:12px auto}
       .visuals-preview iframe,.visuals-preview video{height:200px}
@@ -260,16 +162,7 @@
   <div class="wrap">
     <div class="panel" role="banner">
       <header>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <h1 class="title" data-text="Amity Hayze">Amity Hayze</h1>
-          <!-- signal-strength added (subtle) -->
-          <div class="signal" aria-hidden="true" title="Signal strength">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-          </div>
-        </div>
+        <h1 class="title" data-text="Amity Hayze">Amity Hayze</h1>
         <div class="subtitle">You've entered the static — music for late nights & burnt CD binders.</div>
       </header>
       <div class="hero-cta">
@@ -310,14 +203,6 @@
       </div>
     </section>
 
-    <!-- VISUALS -->
-    <section class="panel" id="visuals">
-      <h3 style="margin-top:0;color:var(--neon)">Visuals</h3>
-      <div class="visuals-preview">
-        <iframe src="https://www.youtube.com/embed/aC2udz_ww2s?si=6qNnVjPBmeqNm7mc" title="Music Video" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-      </div>
-    </section>
-
     <!-- MERCH -->
     <section class="panel" id="merch">
       <h3 style="margin-top:0;color:var(--neon)">Merch & Stickers</h3>
@@ -331,11 +216,6 @@
           <h4>Exclusive Demos and Content</h4>
           <p>This is where you'll hear the deep cuts and possibly insane lore drops.</p>
           <a class="small-link" href="https://ps.tribly.fm/kxkd4wr" target="_blank">→ Join the Static</a>
-          <!-- Small mention + button that scrolls to the Join panel -->
-          <div style="margin-top:8px;">
-            <span style="color:var(--muted);font-size:13px">Want exclusive drops straight to your inbox?</span>
-            <a class="small-link" href="#join-static" style="display:inline-block;margin-left:8px;">→ Join the Static 💌</a>
-          </div>
         </div>
         <div class="card">
           <h4>Digital Pack</h4>
@@ -343,18 +223,10 @@
           <a class="small-link" href="stickers.html" target="_blank">→ Download Digital Pack</a>
         </div>
       </div>
-
-      <!-- Tribly inline signup (preserves earlier behavior) -->
-      <div style="text-align:center;margin-top:14px;">
-        <div style="color:var(--muted);font-size:13px;margin-bottom:8px">Join the Static — get early demos, secret drops, and presaves</div>
-
-        <form id="signupForm" class="signup" aria-label="Sign up to join the static">
-          <input id="signupEmail" type="email" name="email" placeholder="your email (optional)" aria-label="Email address">
-          <button type="submit" class="signup-btn">Join (Tribly)</button>
-        </form>
-        <div id="signupFeedback" class="signup-feedback" role="status" aria-live="polite" style="display:none"></div>
+      <!-- SMALL INNER CIRCLE CTA -->
+      <div style="margin-top:12px;font-size:13px;color:var(--muted)">
+        → <a class="small-link" href="#inner-circle">Join the Inner Circle — exclusive drops & handwritten secrets</a>
       </div>
-
       <button class="secret-transmission" onclick="window.location.href='secret.html'">.</button>
     </section>
 
@@ -372,29 +244,29 @@
       </div>
     </section>
 
+    <!-- INNER CIRCLE PANEL -->
+    <section class="panel" id="inner-circle">
+      <h3 style="margin-top:0;color:var(--neon)">Join the Inner Circle</h3>
+      <p>Exclusive drops + handwritten secrets — stay in the static.</p>
+      <div class="visuals-preview" style="height:auto;min-height:600px;overflow:hidden;">
+        <iframe 
+          src="https://docs.google.com/forms/d/e/1FAIpQLSdCAvnJLohk-8OhdEaqzBMmOTA7bvBgsTYJPALek5PGbbuYHw/viewform?embedded=true" 
+          width="100%" 
+          height="1349" 
+          frameborder="0" 
+          marginheight="0" 
+          marginwidth="0"
+          style="border-radius:10px;border:1px solid rgba(0,255,255,0.06);"
+        >
+          Loading…
+        </iframe>
+      </div>
+    </section>
+
     <!-- CONTACT -->
     <section class="panel" id="contact">
       <h3 style="margin-top:0;color:var(--neon)">Contact</h3>
       <p>For press, collaborations, or submissions, contact <a href="mailto:amityhayzemusic@gmail.com" style="color:#0ff;">amityhayzemusic@gmail.com</a></p>
-    </section>
-
-    <!-- ===== NEW: Join The Static (Google Form embed + neon thank-you overlay) ===== -->
-    <section class="panel join-panel" id="join-static" aria-labelledby="join-title">
-      <div class="join-card" role="region" aria-labelledby="join-title">
-        <h3 id="join-title">Join The Static 💌</h3>
-        <p class="tagline">Join the inner circle — exclusive drops + handwritten secrets</p>
-
-        <!-- Embedded Google Form (your provided link converted to embedded form) -->
-        <div style="margin-top:12px;">
-          <iframe id="googleFormIframe"
-            src="https://docs.google.com/forms/d/e/1FAIpQLSdCAvnJLohk-8OhdEaqzBMmOTA7bvBgsTYJPALek5PGbbuYHw/viewform?embedded=true"
-            width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0" loading="lazy">Loading…</iframe>
-        </div>
-
-        <div style="margin-top:10px;color:var(--muted);font-size:13px">
-          <em>Note:</em> After someone submits the form, a confirmation will appear inside the Google Form. This site also shows a neon confirmation overlay for a smoother fan experience.
-        </div>
-      </div>
     </section>
 
     <footer style="text-align:center;margin:26px 0;color:var(--muted);font-size:13px">
@@ -403,127 +275,5 @@
   </div>
 
   <button class="wiki-dot" title="archive" onclick="window.location.href='wiki-unlock.html'">▦</button>
-
-  <!-- ===== neon thank-you overlay (keeps everything in-universe) ===== -->
-  <div id="thanksOverlay" class="thanks-overlay" aria-hidden="true">
-    <div class="thanks-card" role="dialog" aria-modal="true" aria-labelledby="thanksTitle" aria-describedby="thanksDesc">
-      <h2 id="thanksTitle">Thank you for joining the static ⚡ — Amity Hayze</h2>
-      <p id="thanksDesc" style="color:var(--muted)">Keep an eye on your inbox for transmissions — exclusive drops, demos, and handwritten secrets.</p>
-      <button id="thanksClose" class="thanks-close" aria-label="Close confirmation">Close</button>
-    </div>
-  </div>
-
-  <!-- ===== Analytics placeholder (paste Google Analytics / Plausible here) =====
-    Example (Google Analytics):
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
-    </script>
-    Or Plausible snippet etc.
-  ======================================================================== -->
-
-  <!-- ====== Small JS for UX (signup form behavior + smooth scroll + nav active + join form overlay) ====== -->
-  <script>
-    // Smooth scroll to sections for hash links:
-    document.querySelectorAll('a[href^="#"]').forEach(a=>{
-      a.addEventListener('click', e=>{
-        e.preventDefault();
-        const t=document.querySelector(a.getAttribute('href'));
-        if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
-      })
-    });
-
-    // Small accessibility: keyboard "enter" on secret transmission / wiki-dot
-    document.querySelectorAll('.secret-transmission, .wiki-dot').forEach(btn=>{
-      btn.addEventListener('keydown', e=>{
-        if(e.key === 'Enter') btn.click();
-      });
-    });
-
-    // highlight active nav link on scroll (keeps existing behavior)
-    const sections = document.querySelectorAll("section");
-    const navLinks = document.querySelectorAll(".main-nav a");
-    window.addEventListener("scroll", () => {
-      let current = "";
-      sections.forEach(sec => {
-        const secTop = sec.offsetTop - 120;
-        if (pageYOffset >= secTop) current = sec.getAttribute("id");
-      });
-      navLinks.forEach(a => {
-        a.classList.remove("active");
-        if (a.getAttribute("href") === "#" + current) a.classList.add("active");
-      });
-    });
-
-    // ===== Signup form behavior (Tribly) =====
-    (function(){
-      const form = document.getElementById('signupForm');
-      const emailInput = document.getElementById('signupEmail');
-      const feedback = document.getElementById('signupFeedback');
-      // Tribly URL (you used this earlier)
-      const TRIBLY_URL = 'https://ps.tribly.fm/kxkd4wr';
-
-      if (form) {
-        form.addEventListener('submit', (e)=>{
-          e.preventDefault();
-          const email = (emailInput && emailInput.value) ? emailInput.value.trim() : '';
-          if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            feedback.style.display = 'block';
-            feedback.textContent = 'Please enter a valid email or leave blank.';
-            return;
-          }
-          const target = email ? TRIBLY_URL + '?email=' + encodeURIComponent(email) : TRIBLY_URL;
-          window.open(target, '_blank', 'noopener');
-          feedback.style.display = 'block';
-          feedback.textContent = 'Thanks — opening Tribly. If nothing opens, click the Join button again.';
-          setTimeout(()=>{ if(emailInput) emailInput.value = ''; }, 800);
-        });
-      }
-    })();
-
-    // ===== Join The Static: detect Google Form submission via iframe load events =====
-    (function(){
-      const iframe = document.getElementById('googleFormIframe');
-      const overlay = document.getElementById('thanksOverlay');
-      const closeBtn = document.getElementById('thanksClose');
-      let loadCount = 0;
-
-      if (!iframe) return;
-
-      // Count iframe loads. First load is initial form. Subsequent load often indicates submission (Google form navigates).
-      iframe.addEventListener('load', function(){
-        loadCount++;
-        // console.log('iframe load', loadCount);
-        // If the iframe loads more than once (i.e., submitted and returned confirmation), show overlay.
-        // NOTE: cross-origin prevents reading iframe content; counting load events is a simple detection method that works reliably for Google Forms.
-        if (loadCount > 1) {
-          // show neon overlay
-          overlay.classList.add('visible');
-          overlay.setAttribute('aria-hidden', 'false');
-        }
-      });
-
-      // close overlay
-      if (closeBtn) {
-        closeBtn.addEventListener('click', function(){
-          overlay.classList.remove('visible');
-          overlay.setAttribute('aria-hidden', 'true');
-        });
-      }
-
-      // also close if user clicks outside the card
-      overlay.addEventListener('click', function(e){
-        if (e.target === overlay) {
-          overlay.classList.remove('visible');
-          overlay.setAttribute('aria-hidden', 'true');
-        }
-      });
-    })();
-  </script>
 </body>
 </html>
-
-
