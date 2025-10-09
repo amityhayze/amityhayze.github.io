@@ -99,7 +99,7 @@
       box-shadow:inset 0 0 6px rgba(0,255,255,0.02);
       padding:12px;width:100%;
     }
-    .player{width:100%;height:80px;border:0;border-radius:8px;overflow:hidden}
+    .player{width:100%;height:380px;border:0;border-radius:8px;overflow:hidden}
     .visuals-preview{width:100%;border-radius:10px;overflow:hidden;border:1px solid rgba(0,255,255,0.04)}
     .visuals-preview iframe,.visuals-preview video{width:100%;height:320px;display:block;border:0;background:#000}
     .cards{display:flex;gap:14px;flex-wrap:wrap}
@@ -168,22 +168,22 @@
     </section>
 
     <!-- MUSIC -->
-      <!-- Spotify Top Songs -->
-        <div class="embed">
-          <iframe class="player" src="https://open.spotify.com/embed/track/0h4jqeL4vLEtcb9AFkaJ5I?utm_source=generator" allow="encrypted-media" loading="lazy"></iframe>
-        </div>
-        <div class="embed">
-          <iframe class="player" src="https://open.spotify.com/embed/track/42Gr6RVsohk8x6mpn2BmkC?utm_source=generator" allow="encrypted-media" loading="lazy"></iframe>
-        </div>
+    <section class="panel" id="music">
+      <h3 style="margin-top:0;color:var(--neon)">Music</h3>
+      <!-- Spotify Top Tracks (Automatic Embed) -->
+      <div class="embed">
+        <iframe class="player" src="https://open.spotify.com/embed/artist/5NMNo5sQFABJdY3jHH53wf?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
 
-        <div style="margin-top:10px;font-size:13px;color:var(--muted)">Prefer other platforms? — use the buttons below!</div>
-        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;">
-          <a class="btn" href="https://music.apple.com/us/album/gone-is-the-time-single/1831479105" target="_blank" rel="noopener">Apple Music</a>
-          <a class="btn" href="https://amityhayze.bandcamp.com/track/gone-is-the-time-2" target="_blank" rel="noopener">Bandcamp</a>
-           <a class="btn" href="https://www.youtube.com/channel/UC_pmUMOy38-nuohKv7W9IsQ?sub_confirmation=1" target="_blank" rel="noopener">YouTube</a>
-           <a class="btn" href="https://www.deezer.com/en/artist/337447931" target="_blank" rel="noopener">Deezer</a>
-          <a class="btn" href="https://www.amazon.com/s?k=amity+hayze&rh=n%3A163856011&dc&ds=v1%3AIco5qefBazPkz1gKcYAM8cMFWGdGRqGA%2B1tlc65Di8w&crid=EV5PC6CA2G84&qid=1759971038&rnid=2941120011&sprefix=%2Caps%2C109&ref=sr_nr_n_7" target="_blank" rel="noopener">Amazon Music</a>
-        </div>
+      <div style="margin-top:10px;font-size:13px;color:var(--muted)">Prefer other platforms? — use the buttons below!</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;">
+        <a class="btn" href="https://music.apple.com/us/album/gone-is-the-time-single/1831479105" target="_blank" rel="noopener">Apple Music</a>
+        <a class="btn" href="https://amityhayze.bandcamp.com/track/gone-is-the-time-2" target="_blank" rel="noopener">Bandcamp</a>
+        <a class="btn" href="https://www.youtube.com/channel/UC_pmUMOy38-nuohKv7W9IsQ?sub_confirmation=1" target="_blank" rel="noopener">YouTube</a>
+        <a class="btn" href="https://www.deezer.com/en/artist/337447931" target="_blank" rel="noopener">Deezer</a>
+        <a class="btn" href="https://www.amazon.com/s?k=amity+hayze&rh=n%3A163856011&dc&ds=v1%3AIco5qefBazPkz1gKcYAM8cMFWGdGRqGA%2B1tlc65Di8w&crid=EV5PC6CA2G84&qid=1759971038&rnid=2941120011&sprefix=%2Caps%2C109&ref=sr_nr_n_7" target="_blank" rel="noopener">Amazon Music</a>
+      </div>
+    </section>
 
     <!-- VISUALS -->
     <section class="panel" id="visuals">
@@ -241,10 +241,7 @@
     </footer>
   </div>
 
-  <button class="wiki-dot" title="archive" onclick="window.location.href='wiki-unlock.html'">▦</button
-
-
-  <script>
-    document.querySelectorAll('a[href^="#"]').forEach(a=>{
-     
+  <button class="wiki-dot" title="archive" onclick="window.location.href='wiki-unlock.html'">▦</button>
+</body>
+</html>
 
