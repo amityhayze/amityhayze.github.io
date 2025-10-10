@@ -80,7 +80,7 @@
     .title{
       font-size:36px;letter-spacing:2px;margin:0 0 6px;
       color:var(--neon);text-shadow:0 0 10px rgba(0,240,255,0.22);
-      position:relative; display:inline-block;
+      position:relative;display:inline-block;
     }
     .title::before,.title::after{
       content:attr(data-text);position:absolute;left:0;top:0;opacity:.25;
@@ -110,11 +110,7 @@
     .about-figure img{display:block;width:100%;height:auto;object-fit:cover;filter:contrast(.95)saturate(.95)}
     .about-text p{color:#cbeff4;margin:0 0 12px;line-height:1.5}
     .music-wrap{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;flex-direction:column}
-    .embed{
-      background:var(--glass);border-radius:10px;border:1px solid rgba(0,255,255,0.04);
-      box-shadow:inset 0 0 6px rgba(0,255,255,0.02);
-      padding:12px;width:100%;
-    }
+    .embed{ background:var(--glass);border-radius:10px;border:1px solid rgba(0,255,255,0.04);box-shadow:inset 0 0 6px rgba(0,255,255,0.02);padding:12px;width:100%; }
     .player{width:100%;height:380px;border:0;border-radius:8px;overflow:hidden}
     .visuals-preview{width:100%;border-radius:10px;overflow:hidden;border:1px solid rgba(0,255,255,0.04)}
     .visuals-preview iframe,.visuals-preview video{width:100%;height:320px;display:block;border:0;background:#000}
@@ -123,7 +119,7 @@
     .card h4{margin:0 0 8px;color:var(--neon)}
     .card p{margin:0;color:#bfeff8;font-size:14px}
     .small-link{display:inline-block;margin-top:12px;text-decoration:none;color:var(--neon);opacity:.95}
-    .socials{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:10px;flex-wrap:wrap}
+    .socials{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:10px}
     .socials a{color:var(--neon);text-decoration:none;border:1px solid rgba(0,255,255,0.06);padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.35)}
     .socials a:hover{background:var(--neon);color:#001}
     @keyframes staticFlicker{0%{opacity:.05}10%{opacity:.15}20%{opacity:.08}30%{opacity:.12}40%{opacity:.05}50%{opacity:.2}60%{opacity:.07}70%{opacity:.1}80%{opacity:.06}90%{opacity:.15}100%{opacity:.05}}
@@ -141,33 +137,7 @@
     }
     .wiki-dot:hover{color:rgba(0,255,255,0.8)}
 
-    .signal {
-      display:inline-flex;
-      gap:4px;
-      align-items:end;
-      margin-left:8px;
-      margin-top:6px;
-      transform:translateY(-2px);
-    }
-    .signal .bar {
-      width:4px;
-      background:linear-gradient(180deg, rgba(0,240,255,0.9), rgba(0,240,255,0.35));
-      border-radius:2px;
-      opacity:0.9;
-      animation:signalPulse 1.6s infinite ease-in-out;
-      transform-origin:bottom;
-    }
-    .signal .bar:nth-child(1){height:6px;animation-delay:0s}
-    .signal .bar:nth-child(2){height:10px;animation-delay:0.12s}
-    .signal .bar:nth-child(3){height:16px;animation-delay:0.22s}
-    .signal .bar:nth-child(4){height:22px;animation-delay:0.32s}
-    @keyframes signalPulse {
-      0%{transform:scaleY(0.65);opacity:.6}
-      50%{transform:scaleY(1);opacity:1}
-      100%{transform:scaleY(0.7);opacity:.6}
-    }
-
-    /* overlay (neon thank-you) */
+    /* thank-you overlay */
     .thanks-overlay {
       position:fixed;
       inset:0;
@@ -211,61 +181,14 @@
       cursor:pointer;
     }
 
-    .neon-form {
-      display:block;
-      width:100%;
-      max-width:820px;
-      margin:12px auto 0 auto;
-      color:var(--neon);
-    }
-    .neon-form .row {
-      display:flex;
-      gap:12px;
-      margin-bottom:12px;
-      flex-wrap:wrap;
-    }
-    .neon-form label {
-      display:block;
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
-    .neon-form input[type="text"],
-    .neon-form input[type="email"],
-    .neon-form textarea,
-    .neon-form select {
-      width:100%;
-      padding:10px 12px;
-      background: rgba(255,255,255,0.02);
-      border:1px solid rgba(0,255,255,0.06);
-      color:var(--neon);
-      border-radius:8px;
-      outline:none;
-      font-family:inherit;
-      box-shadow: inset 0 0 8px rgba(0,240,255,0.02);
-    }
-    .neon_form textarea { min-height:110px; resize:vertical; }
-    .neon-form input:focus,
-    .neon-form textarea:focus,
-    .neon-form select:focus {
-      box-shadow: 0 0 14px rgba(0,240,255,0.18);
-      border-color: rgba(0,240,255,0.5);
-    }
-    .neon-form .checkbox-grid{display:flex;flex-wrap:wrap;gap:8px}
-    .neon-form .checkbox-grid label{background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;border:1px solid rgba(0,255,255,0.04);cursor:pointer}
-    .neon-form .checkbox-grid input{margin-right:8px}
-    .neon-form .submit-row{display:flex;gap:12px;align-items:center;justify-content:flex-start;margin-top:10px}
-    .neon-form .muted-small{font-size:13px;color:var(--muted);opacity:0.95}
-    .neon-form .error{color:#ff6bcd;font-size:13px;margin-top:6px;display:none}
-    .neon-form .success{color:#9beef7;font-size:13px;margin-top:6px;display:none}
-
     @media(max-width:720px){
       .about-figure{width:140px;float:none;display:block;margin:12px auto}
       .visuals-preview iframe,.visuals-preview video{height:200px}
       .main-nav{gap:16px;font-size:12px;padding:10px}
-      .neon-form .row{flex-direction:column}
     }
   </style>
+
+  <!-- end of head -->
 </head>
 
 <body>
@@ -371,72 +294,210 @@
       <p>For press, collaborations, or submissions, contact <a href="mailto:amityhayzemusic@gmail.com" style="color:#0ff;">amityhayzemusic@gmail.com</a></p>
     </section>
 
-    <!-- === JOIN THE INNER CIRCLE PANEL === -->
-    <section class="panel" id="circle">
-      <h3 style="margin-top:0;color:var(--neon)">Join the Inner Circle</h3>
-      <p style="color:var(--muted)">Exclusive drops, handwritten zines, and secret transmissions.</p>
-      <form id="innerCircleForm" method="POST">
-        <input type="text" name="name" placeholder="Name *" required />
-        <input type="email" name="email" placeholder="Email Address *" required />
-        <input type="text" name="location" placeholder="Location / Address" />
-        <select name="found" required>
-          <option value="">How did you find me?</option>
-          <option>Instagram</option>
-          <option>TikTok</option>
-          <option>A Friend</option>
-          <option>Blog or Playlist</option>
-          <option>Other</option>
-        </select>
-        <select name="preference" required>
-          <option value="">What would you like?</option>
-          <option>Early demo previews</option>
-          <option>Handwritten zine mailers</option>
-          <option>Merch and sticker drops</option>
-          <option>Collab or remix opportunities</option>
-        </select>
-        <textarea name="message" rows="3" placeholder="Optional Message / Notes"></textarea>
-        <button type="submit" class="btn">Join the Circle</button>
-      </form>
-    </section>
+    <!-- NEW: Join the Circle Panel at very end -->
+    <section class="panel join-panel" id="join-circle">
+      <h3 style="margin-top:0;color:var(--neon)">Join The Circle 💌</h3>
+      <p style="color:var(--muted);margin-bottom:18px">Exclusive drops, demos & handwritten secrets — welcome to the static inner circle.</p>
 
-    <!-- CONTACT -->
-    <section class="panel" id="contact">
-      <h3 style="margin-top:0;color:var(--neon)">Contact</h3>
-      <p>For press, collaborations, or submissions, contact <a href="mailto:amityhayzemusic@gmail.com" style="color:#0ff;">amityhayzemusic@gmail.com</a></p>
+      <form id="circleForm" class="neon-form" autocomplete="on" novalidate>
+        <div class="row">
+          <div style="flex:1 1 320px;">
+            <label for="circle-name">1. Name *</label>
+            <input id="circle-name" name="name" type="text" required placeholder="Your full name">
+          </div>
+          <div style="flex:1 1 260px;">
+            <label for="circle-email">2. Email address *</label>
+            <input id("circle-email") name="email" type="email" required placeholder="you@example.com">
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:1 1 100%;">
+            <label for="circle-location">3. Location / Address</label>
+            <input id="circle-location" name="location" type="text" placeholder="City, State / mailing address">
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:1 1 100%;">
+            <label for="circle-found">4. How did you find me? *</label>
+            <select id="circle-found" name="found" required>
+              <option value="" disabled selected>Choose an option</option>
+              <option>Instagram</option>
+              <option>TikTok</option>
+              <option>A Friend</option>
+              <option>Blog or Playlist</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:1 1 100%;">
+            <label>5. Early demo / merch drops options *</label>
+            <div class="checkbox-grid" role="group">
+              <label><input type="checkbox" name="preference" value="Early demo previews"> Early demo previews</label>
+              <label><input type="checkbox" name="preference" value="Handwritten zine mailers"> Handwritten zine mailers</label>
+              <label><input type="checkbox" name="preference" value="Merch and sticker drops"> Merch & sticker drops</label>
+              <label><input type="checkbox" name="preference" value="Collab or remix opportunities"> Collab or remix opportunities</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:1 1 100%;">
+            <label for="circle-message">6. Optional Message / Notes</label>
+            <textarea id="circle-message" name="message" placeholder="Leave a note..."></textarea>
+          </div>
+        </div>
+        <div class="submit-row">
+          <button id="circle-submit" type="submit" class="btn">Join The Circle</button>
+          <div class="muted-small" style="margin-left:8px">Used only for drops & secrets — no spam.</div>
+        </div>
+        <div id="circle-error" class="error" role="alert" aria-live="assertive"></div>
+        <div id("circle-success") class="success" role="status" aria-live="polite"></div>
+      </form>
     </section>
 
     <footer style="text-align:center;margin:26px 0;color:var(--muted);font-size:13px">
       <div>© Amity Hayze — transmissions & static</div>
     </footer>
+
   </div>
 
-  <!-- THANK-YOU OVERLAY -->
-  <div id="thanksOverlay">
-    <h2>Transmission Received 💫</h2>
-    <p>Welcome to the Circle. You’ll hear from me soon.</p>
-    <button class="btn" onclick="document.getElementById('thanksOverlay').style.display='none'">Close</button>
+  <!-- neon thank-you overlay -->
+  <div id="thanksOverlay" class="thanks-overlay" aria-hidden="true">
+    <div class="thanks-card" role="dialog" aria-modal="true" aria-labelledby="thanksTitle" aria-describedby="thanksDesc">
+      <h2 id="thanksTitle">Transmission Received ⚡</h2>
+      <p id="thanksDesc" style="color:var(--muted)">Welcome to the Circle — I’ll be in touch with drops, demos, and secrets.</p>
+      <button id="thanksClose" class="thanks-close" aria-label="Close">Close</button>
+    </div>
   </div>
 
   <script>
-    const form = document.getElementById("innerCircleForm");
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const data = new FormData(form);
-      const endpoint = "https://script.google.com/macros/s/AKfycbzZkjzbzC8Fj2ccXe-cFP4qyBcl-HHjq2Pq2wwLB443gG-n7KCAvaNX-Qvi8zHaJKqKcQ/exec";
-      try {
-        const response = await fetch(endpoint, { method: "POST", body: data });
-        const text = await response.text();
-        if (text.includes("Success")) {
-          form.reset();
-          document.getElementById("thanksOverlay").style.display = "flex";
-        } else {
-          alert("Submission failed. Please try again or refresh.");
-        }
-      } catch (err) {
-        alert("Error sending. Try again later.");
-        console.error(err);
-      }
+    // Smooth scroll nav
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        e.preventDefault();
+        const t = document.querySelector(a.getAttribute('href'));
+        if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+      });
     });
+
+    // Navigation highlight
+    const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll(".main-nav a");
+    window.addEventListener("scroll", () => {
+      let current = "";
+      sections.forEach(sec => {
+        const secTop = sec.offsetTop - 120;
+        if (pageYOffset >= secTop) current = sec.getAttribute("id");
+      });
+      navLinks.forEach(a => {
+        a.classList.remove("active");
+        if(a.getAttribute("href") === "#" + current) a.classList.add("active");
+      });
+    });
+
+    // Form submission for Join the Circle
+    (function(){
+      const form = document.getElementById('circleForm');
+      const submitBtn = document.getElementById('circle-submit');
+      const errorEl = document.getElementById('circle-error');
+      const successEl = document.getElementById('circle-success');
+      const overlay = document.getElementById('thanksOverlay');
+      const closeBtn = document.getElementById('thanksClose');
+      const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxNAmWqSAGvYAsLGNOFbAGv1HfeHHWgDptD_vd2tGLWEYMWVt8G8VmvX8b19QWHb_OeQ/exec';
+
+      function getPreferences(){
+        return Array.from(form.querySelectorAll('input[name="preference"]:checked')).map(i=>i.value);
+      }
+
+      function validate(){
+        errorEl.style.display = 'none';
+        if(!form.name.value.trim()){
+          errorEl.textContent = 'Name required'; errorEl.style.display='block'; return false;
+        }
+        const email = form.email.value.trim();
+        if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+          errorEl.textContent = 'Valid email required'; errorEl.style.display='block'; return false;
+        }
+        if(!form.found.value){
+          errorEl.textContent = 'How did you find me?'; errorEl.style.display='block'; return false;
+        }
+        if(getPreferences().length === 0){
+          errorEl.textContent = 'Choose at least one drop option'; errorEl.style.display='block'; return false;
+        }
+        return true;
+      }
+
+      function showOverlay(){
+        overlay.classList.add('visible');
+        overlay.setAttribute('aria-hidden','false');
+      }
+      function hideOverlay(){
+        overlay.classList.remove('visible');
+        overlay.setAttribute('aria-hidden','true');
+      }
+
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        errorEl.style.display = 'none';
+        if(!validate()) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+
+        const payload = {
+          name: form.name.value.trim(),
+          email: form.email.value.trim(),
+          location: form.location.value.trim(),
+          found: form.found.value,
+          preference: getPreferences().join('; '),
+          message: form.message.value.trim()
+        };
+
+        try {
+          const res = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const text = await res.text();
+          if(text.includes('Success')){
+            form.reset();
+            showOverlay();
+          } else {
+            throw new Error('Unexpected response: ' + text);
+          }
+        } catch(err){
+          errorEl.textContent = 'Submission failed — please try again'; 
+          errorEl.style.display = 'block';
+          console.error(err);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Join The Circle';
+        }
+      });
+
+      closeBtn.addEventListener('click', hideOverlay);
+      overlay.addEventListener('click', e => {
+        if(e.target === overlay) hideOverlay();
+      });
+    })();
+
+    // Intersection Observer for panels (fade-in effect)
+    (function(){
+      if (!('IntersectionObserver' in window)) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.add('visible'));
+        return;
+      }
+      const observer = new IntersectionObserver((entries)=>{
+        entries.forEach(entry => {
+          if(entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      document.querySelectorAll('.panel').forEach(p => observer.observe(p));
+    })();
   </script>
 </body>
 </html>
