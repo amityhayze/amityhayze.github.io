@@ -288,30 +288,57 @@
     .btn:hover{background:var(--neon);color:#001;box-shadow:0 6px 40px rgba(0,240,255,0.35),0 0 60px rgba(0,240,255,0.25);transform:translateY(-2px);}   
         
         /* ===== hazy pink pulse button ===== */
-    .btn-pink {
-      background: linear-gradient(180deg, rgba(255,107,205,0.25), rgba(255,107,205,0.1));
-      border: 1px solid rgba(255,107,205,0.4);
-      color: #e813f0;
-      box-shadow: 0 0 20px rgba(255,107,205,0.25), inset 0 0 8px rgba(255,107,205,0.1);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 700;
-      padding:14px 28px;
-      border-radius:10px;
-      animation: pulsePink 4s infinite ease-in-out;
-      transition: all .22s ease;
-    }
-    .btn-pink:hover {
-      background: var(--hazy-pink);
-      color:#e813f0;
-      box-shadow: 0 6px 40px rgba(255,107,205,0.4), 0 0 60px rgba(255,107,205,0.25);
-      transform: translateY(-2px);
-    }
-    @keyframes pulsePink {
-      0% { box-shadow:0 0 18px rgba(255,107,205,0.15); }
-      50% { box-shadow:0 0 46px rgba(255,107,205,0.35); }
-      100% { box-shadow:0 0 22px rgba(255,107,205,0.2); }
-    }
+:root {
+  --hazy-pink: rgba(255,107,205,0.25);
+  --hazy-pink-light: rgba(255,107,205,0.35);
+}
+
+.btn-pink {
+  background: linear-gradient(180deg, rgba(255,107,205,0.25), rgba(255,107,205,0.1));
+  border: 1px solid rgba(255,107,205,0.4);
+  color: #e813f0;
+  box-shadow: 0 0 20px var(--hazy-pink), inset 0 0 8px rgba(255,107,205,0.1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  animation: pulsePink 4s infinite ease-in-out;
+  transition: transform 0.22s ease, box-shadow 0.4s ease, background 0.4s ease;
+}
+
+.btn-pink:hover {
+  background: var(--hazy-pink);
+  color: #e813f0;
+  transform: translateY(-2px);
+  animation: pulsePinkHover 4s infinite ease-in-out, flickerHover 0.3s infinite;
+}
+
+/* Base pulse */
+@keyframes pulsePink {
+  0% { box-shadow: 0 0 18px var(--hazy-pink); }
+  50% { box-shadow: 0 0 46px var(--hazy-pink-light); }
+  100% { box-shadow: 0 0 22px var(--hazy-pink); }
+}
+
+/* Hover pulse (brighter, smoother) */
+@keyframes pulsePinkHover {
+  0% { box-shadow: 0 0 26px var(--hazy-pink-light), 0 0 8px var(--hazy-pink); }
+  50% { box-shadow: 0 0 52px var(--hazy-pink-light), 0 0 12px var(--hazy-pink); }
+  100% { box-shadow: 0 0 26px var(--hazy-pink-light), 0 0 8px var(--hazy-pink); }
+}
+
+/* Neon flicker effect on hover */
+@keyframes flickerHover {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    box-shadow: 0 0 26px var(--hazy-pink-light), 0 0 8px var(--hazy-pink);
+  }
+  20% { box-shadow: 0 0 36px var(--hazy-pink-light), 0 0 12px var(--hazy-pink); }
+  22% { box-shadow: 0 0 30px var(--hazy-pink-light), 0 0 10px var(--hazy-pink); }
+  24% { box-shadow: 0 0 38px var(--hazy-pink-light), 0 0 14px var(--hazy-pink); }
+  55% { box-shadow: 0 0 40px var(--hazy-pink-light), 0 0 16px var(--hazy-pink); }
+}
   </style>
 </head>
 
