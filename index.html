@@ -281,7 +281,13 @@
       /* hide the gif entirely on extremely constrained devices for performance */
       @supports (display: grid) { /* feature query to scope */
         Body::before{display:none}
-  /* ===== hazy pink pulse button ===== */
+
+        }
+    .btn.pulse { animation: pulseGlow 4s infinite ease-in-out; }
+    @keyframes pulseGlow {0%{box-shadow:0 0 18px rgba(0,240,255,0.06);}50%{box-shadow:0 0 46px rgba(0,240,255,0.16);}100%{box-shadow:0 0 22px rgba(0,240,255,0.08);}}
+    .btn:hover{background:var(--neon);color:#001;box-shadow:0 6px 40px rgba(0,240,255,0.35),0 0 60px rgba(0,240,255,0.25);transform:translateY(-2px);}   
+        
+        /* ===== hazy pink pulse button ===== */
     .btn-pink {
       background: linear-gradient(180deg, rgba(255,107,205,0.25), rgba(255,107,205,0.1));
       border: 1px solid rgba(255,107,205,0.4);
