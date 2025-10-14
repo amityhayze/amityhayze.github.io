@@ -3,285 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amity Hayze — CRT Visualizer Room</title>
-<link rel="icon" href="favicon.ico" type="image/x-icon">
+<title>Amity Hayze — Interactive CRT Visualizer</title>
 <style>
   :root {
-    --neon: #00f0ff;
-    --neon-pink: #ff6bcd;
     --bg-dark: #000;
+    --neon: #00f0ff;
     --panel: rgba(0,0,0,0.7);
-    --glass: rgba(255,255,255,0.03);
-    --wrap-max: 1200px;
+    --hazy-pink: rgba(255,107,205,0.25);
   }
-
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: "Courier New", monospace;
-    background: var(--bg-dark);
-    color: var(--neon);
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover no-repeat;
-    opacity: 0.12;
-    z-index: -2;
-    mix-blend-mode: screen;
-    filter: grayscale(30%) contrast(1.05);
-  }
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 70%);
-    z-index: -1;
-  }
-
-  .wrap {
-    max-width: var(--wrap-max);
-    margin: 6vh auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-
-  header { text-align: center; margin-bottom: 20px; }
-  .title {
-    font-size: 36px;
-    letter-spacing: 2px;
-    color: var(--neon);
-    text-shadow: 0 0 10px var(--neon);
-  }
-
+  * { box-sizing: border-box; margin:0; padding:0;}
+  body { background:#000; font-family:"Courier New", monospace; color:var(--neon); overflow:hidden;}
+  canvas { display:block; position:absolute; top:0; left:0; width:100%; height:100%; }
   .tv-panel {
-    position: relative;
-    width: 800px;
-    max-width: 90vw;
-    height: 500px;
-    background: #111;
-    border: 4px solid var(--neon);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 0 60px rgba(0,240,255,0.4);
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    background:var(--panel); border:2px solid var(--neon);
+    border-radius:14px; padding:20px; width:480px; max-width:90%;
+    display:flex; flex-direction:column; align-items:center; gap:16px;
+    box-shadow:0 0 40px rgba(0,240,255,0.15);
   }
-
-  .tv-screen {
-    position: absolute;
-    inset: 10px;
-    background: #000;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .scanlines {
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      to bottom,
-      rgba(255,255,255,0.02) 0px,
-      rgba(255,255,255,0.02) 1px,
-      transparent 1px,
-      transparent 2px
-    );
-    pointer-events: none;
-    z-index: 20;
-  }
-
-  .knobs {
-    margin-top: 12px;
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .knob-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    color: var(--neon);
-    font-size: 13px;
-  }
-
-  input[type=range] {
-    -webkit-appearance: none;
-    width: 100px;
-    height: 6px;
-    background: rgba(0,255,255,0.1);
-    border-radius: 3px;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 16px;
-    width: 16px;
-    background: var(--neon-pink);
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  .mini-game-menu {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    display: flex;
-    gap: 8px;
-  }
-
-  .game-btn {
-    padding: 6px 10px;
-    border-radius: 6px;
-    background: rgba(0,255,255,0.15);
-    color: var(--neon);
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
-  }
-  .game-btn:hover { background: rgba(255,107,205,0.25); }
-
-  canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-
-  audio {
-    display: none;
-  }
-
-  .footer { margin-top: 20px; font-size: 12px; color: rgba(155,238,247,0.6); text-align:center; }
+  .knobs { display:flex; justify-content:space-around; width:100%; }
+  .knob-container { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  input[type=range] { -webkit-appearance:none; width:80px; background:transparent; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; height:16px; width:16px; background:var(--neon); border-radius:50%; cursor:pointer; }
+  input[type=range]::-webkit-slider-runnable-track { height:4px; background:rgba(0,255,255,0.2); border-radius:2px; }
+  .label { font-size:12px; text-transform:uppercase; color:var(--neon); }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1 class="title">CRT Visualizer Room</h1>
-      <div style="font-size:14px; color: rgba(155,238,247,0.7)">Interact with neon signals, knobs & mini-games</div>
-    </header>
+<canvas id="crtCanvas"></canvas>
 
-    <div class="tv-panel">
-      <div class="tv-screen" id="tvScreen">
-        <canvas id="crtCanvas"></canvas>
-        <div class="scanlines"></div>
-      </div>
-
-      <div class="mini-game-menu">
-        <div class="game-btn" onclick="startGame('dotChase')">Dot Chase</div>
-        <div class="game-btn" onclick="startGame('colorMatch')">Color Match</div>
-        <div class="game-btn" onclick="startGame('glitchDodge')">Glitch Dodge</div>
-      </div>
+<div class="tv-panel">
+  <h2 style="color:var(--neon); text-shadow:0 0 10px var(--neon);">CRT Visualizer Room</h2>
+  <audio id="music" src="Cascade Canyon.mp3" controls autoplay loop></audio>
+  <div class="knobs">
+    <div class="knob-container">
+      <label class="label" for="colorKnob">Color Shift</label>
+      <input type="range" id="colorKnob" min="0" max="360" value="0">
     </div>
-
-    <div class="knobs">
-      <div class="knob-container">
-        <label>Color Shift</label>
-        <input type="range" id="colorShift" min="0" max="360" value="0">
-      </div>
-      <div class="knob-container">
-        <label>Glitch Intensity</label>
-        <input type="range" id="glitchIntensity" min="0" max="10" value="2">
-      </div>
-      <div class="knob-container">
-        <label>Pulse Speed</label>
-        <input type="range" id="pulseSpeed" min="0.5" max="5" step="0.1" value="1">
-      </div>
+    <div class="knob-container">
+      <label class="label" for="pulseKnob">Pulse Speed</label>
+      <input type="range" id="pulseKnob" min="0" max="5" step="0.1" value="1">
     </div>
-
-    <audio id="track" src="Cascade Canyon.mp3" loop autoplay></audio>
+    <div class="knob-container">
+      <label class="label" for="glitchKnob">Glitch Intensity</label>
+      <input type="range" id="glitchKnob" min="0" max="15" step="1" value="2">
+    </div>
   </div>
-
-  <div class="footer">© Amity Hayze — Interactive CRT Room</div>
+</div>
 
 <script>
 const canvas = document.getElementById('crtCanvas');
 const ctx = canvas.getContext('2d');
-canvas.width = canvas.offsetWidth;
-canvas.height = canvas.offsetHeight;
+let cw, ch;
+function resize(){ cw=canvas.width=window.innerWidth; ch=canvas.height=window.innerHeight; }
+window.addEventListener('resize', resize);
+resize();
 
-const audio = document.getElementById('track');
-let analyser, dataArray;
+// knobs
+const colorKnob=document.getElementById('colorKnob');
+const pulseKnob=document.getElementById('pulseKnob');
+const glitchKnob=document.getElementById('glitchKnob');
+let colorShift=0, pulseSpeed=1, glitchIntensity=2;
+colorKnob.addEventListener('input', e=>colorShift=e.target.value);
+pulseKnob.addEventListener('input', e=>pulseSpeed=e.target.value);
+glitchKnob.addEventListener('input', e=>glitchIntensity=e.target.value);
 
-const colorShiftSlider = document.getElementById('colorShift');
-const glitchSlider = document.getElementById('glitchIntensity');
-const pulseSlider = document.getElementById('pulseSpeed');
-
-let hue = 0;
-let glitch = 2;
-let pulseSpeed = 1;
-
-colorShiftSlider.addEventListener('input', e => hue = parseInt(e.target.value));
-glitchSlider.addEventListener('input', e => glitch = parseInt(e.target.value));
-pulseSlider.addEventListener('input', e => pulseSpeed = parseFloat(e.target.value));
-
-// Audio setup
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const trackSrc = audioCtx.createMediaElementSource(audio);
-analyser = audioCtx.createAnalyser();
-trackSrc.connect(analyser);
+// audio
+const audio=document.getElementById('music');
+const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+const src=audioCtx.createMediaElementSource(audio);
+const analyser=audioCtx.createAnalyser();
+src.connect(analyser);
 analyser.connect(audioCtx.destination);
-analyser.fftSize = 256;
-const bufferLength = analyser.frequencyBinCount;
-dataArray = new Uint8Array(bufferLength);
+analyser.fftSize=256;
+const bufferLength=analyser.frequencyBinCount;
+const dataArray=new Uint8Array(bufferLength);
 
-// Mini-games
-let currentGame = null;
-function startGame(gameName) {
-  currentGame = gameName;
-}
-
-// Dot Chase placeholder
-function dotChase() {
-  ctx.fillStyle = `hsl(${hue},100%,50%)`;
-  let x = Math.random() * canvas.width;
-  let y = Math.random() * canvas.height;
-  ctx.beginPath();
-  ctx.arc(x, y, 8, 0, 2*Math.PI);
-  ctx.fill();
-}
-
-// Main animation loop
-function animate() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
+// CRT effect
+function drawCRT(){
+  ctx.clearRect(0,0,cw,ch);
   analyser.getByteFrequencyData(dataArray);
   const avg = dataArray.reduce((a,b)=>a+b,0)/dataArray.length;
+  // neon pulse
+  ctx.fillStyle=`hsl(${colorShift},100%,50%)`;
+  const radius = 50 + avg*pulseSpeed*0.4;
+  ctx.beginPath();
+  ctx.arc(cw/2,ch/2,radius,0,Math.PI*2);
+  ctx.fill();
 
-  // Neon pulse background
-  const pulse = Math.sin(Date.now()*0.002*pulseSpeed)*0.5+0.5;
-  ctx.fillStyle = `hsla(${hue}, 100%, ${30+pulse*20}%, 0.1)`;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  // Random glitch effects
-  for(let i=0;i<glitch;i++){
-    ctx.fillStyle = `hsla(${hue}, 100%, ${50+Math.random()*30}%,0.1)`;
-    const x = Math.random()*canvas.width;
-    const y = Math.random()*canvas.height;
-    const w = Math.random()*20;
-    const h = Math.random()*4;
-    ctx.fillRect(x,y,w,h);
+  // glitch overlay
+  if(Math.random()<glitchIntensity*0.02){
+    const x=Math.random()*cw, y=Math.random()*ch;
+    ctx.fillStyle='rgba(255,255,255,0.05)';
+    ctx.fillRect(x,y,Math.random()*50,Math.random()*10);
   }
 
-  // Game draw
-  if(currentGame==='dotChase') dotChase();
+  // CRT scan lines
+  ctx.fillStyle='rgba(0,255,255,0.02)';
+  for(let i=0;i<ch;i+=2){
+    ctx.fillRect(0,i,cw,1);
+  }
 
-  requestAnimationFrame(animate);
+  requestAnimationFrame(drawCRT);
 }
+drawCRT();
 
-animate();
+// EASTER EGGS
+let easterEggTimers={combo1:0};
+function checkEasterEggs(){
+  if(colorShift>300 && pulseSpeed>4){
+    easterEggTimers.combo1++;
+    if(easterEggTimers.combo1>120){ activateHazyPinkMode(); easterEggTimers.combo1=0; }
+  } else easterEggTimers.combo1=0;
 
-// Handle window resize
-window.addEventListener('resize', ()=> {
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
-});
+  if(!window.glitchSequence) window.glitchSequence=[];
+  window.glitchSequence.push(glitchIntensity);
+  if(window.glitchSequence.length>60) window.glitchSequence.shift();
+  if(window.glitchSequence[0]==0 && window.glitchSequence[29]>=10 && window.glitchSequence[59]==0){
+    activateGlitchMode();
+    window.glitchSequence=[];
+  }
+
+  requestAnimationFrame(checkEasterEggs);
+}
+checkEasterEggs();
+
+function activateHazyPinkMode(){ canvas.style.filter='hue-rotate(320deg) saturate(1.5)'; setTimeout(()=>canvas.style.filter='',3000);}
+function activateGlitchMode(){ glitchIntensity=15; setTimeout(()=>glitchIntensity=2,3000);}
 </script>
 </body>
 </html>
