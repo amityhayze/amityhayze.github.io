@@ -430,7 +430,32 @@
     .wiki-dot:hover {
       color: rgba(0,255,255,0.8);
     }
-
+   /* ===== added: signal strength (small, subtle) ===== */
+    .signal {
+      display:inline-flex;
+      gap:4px;
+      align-items:end;
+      margin-left:8px;
+      margin-top:6px;
+      transform:translateY(-2px);
+    }
+    .signal .bar {
+      width:4px;
+      background:linear-gradient(180deg, rgba(0,240,255,0.9), rgba(0,240,255,0.35));
+      border-radius:2px;
+      opacity:0.9;
+      animation:signalPulse 1.6s infinite ease-in-out;
+      transform-origin:bottom;
+    }
+    .signal .bar:nth-child(1){height:6px;animation-delay:0s}
+    .signal .bar:nth-child(2){height:10px;animation-delay:0.12s}
+    .signal .bar:nth-child(3){height:16px;animation-delay:0.22s}
+    .signal .bar:nth-child(4){height:22px;animation-delay:0.32s}
+    @keyframes signalPulse {
+      0%{transform:scaleY(0.65);opacity:.6}
+      50%{transform:scaleY(1);opacity:1}
+      100%{transform:scaleY(0.7);opacity:.6}
+    }
     .thanks-overlay {
       position: fixed;
       inset: 0;
