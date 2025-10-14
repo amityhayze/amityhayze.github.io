@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amity Hayze — CRT Visualizer Room</title>
+
+<style>
+:root {
+  --neon-pink: #ff6bcd;
+  --neon-cyan: #00f0ff;
+  --bg-dark: #000;
+  --panel: rgba(0,0,0,0.7);
+  --muted: #9beef7;
+  --glass: rgba(255,255,255,0.03);
+  --wrap-max: 980px;
+}
+* { box-sizing: border-box; }
+body, html {
+  margin:0;
+  padding:0;
+  height:100%;
+  font-family: "Courier New", monospace;
+  background: var(--bg-dark);
+  color: var(--neon-cyan);
+  overflow-x:hidden;
+}
+
+/* CRT Flicker + Glitch Overlay */
+body::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover no-repeat;
+  opacity:0.12;
+  z-index:-2;
+  mix-blend-mode: screen;
+  filter: grayscale(30%) contrast(1.05);
+}
+body::after {
+  content:"";
+  position:fixed;
+  inset:0;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%);
+  z-index:-1;
+}
+
+/* Header + Title */
+header {
+  text-align:center;
+  margin:30px 0 10px;
+}
+.title {
+  font-size:38px;
+  letter-spacing:2px;
+  color: var(--neon-pink);
+  text-shadow: 0 0 12px var(--neon-pink), 0 0 20px var(--neon-cyan);
+  position: relative;
+  display:inline-block;
+}
+.subtitle {
+  font-size:14px;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+/* Panel for mini-games & sliders */
+.panel {
+  background: var(--panel);
+  border: 1px solid rgba(0,255,255,0.06);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px auto;
+  max-width: var(--wrap-max);
+  box-shadow: 0 0 25px rgba(0,240,255,0.08);
+}
+
+/* Controls / knobs */
+.knobs {
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  margin-top:14px;
+}
+.knob {
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background: var(--glass);
+  border: 2px solid var(--neon-cyan);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  cursor:pointer;
+  user-select:none;
+  box-shadow: 0 0 12px rgba(0,255,255,0.2);
+  transition: transform 0.2s;
+}
+.knob:hover { transform: rotate(5deg); }
+
+/* Signal visual */
+.signal {
+  display:inline-flex;
+  gap:4px;
+  margin-left:4px;
+  transform:translateY(-2px);
+}
+.bar {
+  width:4px;
+  background: linear-gradient(180deg, var(--neon-cyan), rgba(0,240,255,0.35));
+  border-radius:2px;
+  opacity:0.9;
+  animation:signalPulse 1.6s infinite ease-in-out;
+  transform-origin:bottom;
+}
+.bar:nth-child(1){height:6px;}
+.bar:nth-child(2){height:10px;}
+.bar:nth-child(3){height:16px;}
+.bar:nth-child(4){height:22px;}
+@keyframes signalPulse {0%{transform:scaleY(0.65);opacity:.6}50%{transform:scaleY(1);opacity:1}100%{transform:scaleY(0.7);opacity:.6}}
+
+/* Mini-game hidden panel */
+#easterEgg {
+  display:none;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--neon-pink);
+  padding: 16px;
+  border-radius:12px;
+  text-align:center;
+  color: var(--neon-pink);
+}
+
+/* Canvas visual */
+#visualizerCanvas {
+  display:block;
+  margin: 24px auto;
+  background: transparent;
+  border-radius: 12px;
+  max-width: 100%;
+  height:300px;
+}
+
+/* Pulse animation */
+.pulse {
+  animation: pulseGlow 4s infinite ease-in-out;
+}
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 18px rgba(255,107,205,0.06); }
+  50% { box-shadow:0 0 46px rgba(255,107,205,0.16); }
+  100% { box-shadow:0 0 22px rgba(255,107,205,0.08); }
+}
+
+/* Footer */
+footer {
+  text-align:center;
+  margin:28px 0;
+  font-size:13px;
+  color:var(--muted);
+}
+</style>
+</head>
+<body>
+<header>
+  <h1 class="title">CRT Visualizer Room</h1>
+  <div class="subtitle">Interact with the neon pulses and hidden transmissions</div>
+</header>
+
+<div class="panel">
+  <canvas id="visualizerCanvas"></canvas>
+  <div class="knobs">
+    <div class="knob" id="colorKnob">Color</div>
+    <div class="knob" id="glitchKnob">Glitch</div>
+    <div class="knob" id="speedKnob">Speed</div>
+    <div class="knob" id="secretKnob">?</div>
+  </div>
+</div>
+
+<div id="easterEgg" class="panel">
+  <h3>✨ Hidden Transmission Unlocked! ✨</h3>
+  <p>You found the secret mini-game content! Stay tuned for unreleased demos.</p>
+</div>
+
+<footer>
+  © Amity Hayze — interactive transmission room
+</footer>
+
+<script>
+// Canvas Visualizer
+const canvas = document.getElementById('visualizerCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth * 0.9;
+canvas.height = 300;
+
+let bars = 64;
+let dataArray = new Uint8Array(bars);
+
+// Audio setup
+const audio = new Audio('Cascade Canyon.wav'); // Replace with your track
+audio.crossOrigin = "anonymous";
+audio.loop = true;
+audio.autoplay = true;
+audio.controls = true;
+document.body.appendChild(audio);
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = audioCtx.createAnalyser();
+const source = audioCtx.createMediaElementSource(audio);
+source.connect(analyser);
+analyser.connect(audioCtx.destination);
+analyser.fftSize = 128;
+const bufferLength = analyser.frequencyBinCount;
+const freqData = new Uint8Array(bufferLength);
+
+function draw() {
+  requestAnimationFrame(draw);
+  analyser.getByteFrequencyData(freqData);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const barWidth = canvas.width / bars;
+  for(let i=0;i<bars;i++){
+    let barHeight = freqData[i] * 1.2;
+    ctx.fillStyle = `rgba(${barHeight+50}, 107, 205, 0.8)`;
+    ctx.fillRect(i*barWidth,canvas.height-barHeight,barWidth-2,barHeight);
+  }
+}
+draw();
+
+// Knob Interactivity
+document.getElementById('colorKnob').addEventListener('click', ()=>{
+  let r = Math.floor(Math.random()*255);
+  let g = Math.floor(Math.random()*255);
+  let b = Math.floor(Math.random()*255);
+  document.documentElement.style.setProperty('--neon-pink', `rgb(${r},${g},${b})`);
+});
+
+document.getElementById('glitchKnob').addEventListener('click', ()=>{
+  canvas.style.filter = canvas.style.filter ? '' : 'contrast(1.2) hue-rotate(20deg) saturate(1.4)';
+});
+
+document.getElementById('speedKnob').addEventListener('click', ()=>{
+  analyser.fftSize = analyser.fftSize === 128 ? 64 : 128;
+});
+
+document.getElementById('secretKnob').addEventListener('click', ()=>{
+  const egg = document.getElementById('easterEgg');
+  egg.style.display = egg.style.display === 'block' ? 'none' : 'block';
+});
+
+// Signal hover effect (mouse X)
+const signalBars = document.querySelectorAll('.bar');
+window.addEventListener('mousemove', e => {
+  const strength = Math.ceil((e.clientX / window.innerWidth) * signalBars.length);
+  signalBars.forEach((bar, i) => { bar.style.opacity = (i < strength ? '1' : '0.3'); });
+});
+</script>
+</body>
+</html>
