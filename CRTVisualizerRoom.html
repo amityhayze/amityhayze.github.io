@@ -16,7 +16,7 @@
     border-radius: 12px;
     margin-top: 40px;
     overflow: hidden;
-    box-shadow: 0 0 32px rgba(255,107,205,0.4);
+    box-shadow: 0 0 64px rgba(255,107,205,0.6);
   }
   canvas {
     width: 100%; height: 100%; display: block;
@@ -63,11 +63,11 @@
   </div>
   <div class="knob-container">
     <label for="glitchIntensity">Glitch Intensity</label>
-    <input type="range" id="glitchIntensity" min="0" max="50" value="10">
+    <input type="range" id="glitchIntensity" min="0" max="100" value="20">
   </div>
   <div class="knob-container">
     <label for="pulseSpeed">Pulse Speed</label>
-    <input type="range" id="pulseSpeed" min="1" max="10" value="4">
+    <input type="range" id="pulseSpeed" min="1" max="20" value="8">
   </div>
 </div>
 
@@ -84,37 +84,40 @@ const audio = document.getElementById('track');
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const source = audioCtx.createMediaElementSource(audio);
 const analyser = audioCtx.createAnalyser();
-analyser.fftSize = 256;
+analyser.fftSize = 512;
 const bufferLength = analyser.frequencyBinCount;
 const dataArray = new Uint8Array(bufferLength);
 source.connect(analyser);
 analyser.connect(audioCtx.destination);
 
-let colorShift = 0, glitchIntensity = 10, pulseSpeed = 4;
+let colorShift = 0, glitchIntensity = 20, pulseSpeed = 8;
 document.getElementById('colorShift').addEventListener('input', e=>colorShift=parseInt(e.target.value));
 document.getElementById('glitchIntensity').addEventListener('input', e=>glitchIntensity=parseInt(e.target.value));
 document.getElementById('pulseSpeed').addEventListener('input', e=>pulseSpeed=parseInt(e.target.value));
 
-// Visualizer
+// Draw visualizer
 function draw() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = 'rgba(0,0,0,0.15)'; // screen persistence
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
   analyser.getByteFrequencyData(dataArray);
   const barWidth = canvas.width / bufferLength;
+
   for(let i=0;i<bufferLength;i++){
-    const barHeight = dataArray[i]*1.5;
-    const hue = (i*4 + colorShift) % 360;
-    ctx.fillStyle = `hsl(${hue},100%,50%)`;
+    const barHeight = dataArray[i]*1.8;
+    const hue = (i*5 + colorShift) % 360;
+    ctx.fillStyle = `hsl(${hue},100%,60%)`;
     ctx.fillRect(i*barWidth, canvas.height-barHeight, barWidth, barHeight);
   }
 
-  // Simple glitch effect
+  // Glitch overlay
   for(let i=0;i<glitchIntensity;i++){
-    ctx.fillStyle = `rgba(255,0,255,0.03)`;
-    ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*10, Math.random()*5);
+    ctx.fillStyle = `rgba(255,0,255,0.1)`;
+    ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*15, Math.random()*8);
   }
 
-  // Pulse overlay
-  const alpha = 0.08 + 0.04*Math.sin(Date.now()/100*pulseSpeed);
+  // Pulse / CRT flicker overlay
+  const alpha = 0.08 + 0.05*Math.sin(Date.now()/100*pulseSpeed);
   ctx.fillStyle = `rgba(255,255,255,${alpha})`;
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
@@ -126,7 +129,6 @@ draw();
 const menu = document.getElementById('menu');
 const menuItems = document.getElementById('menu-items');
 menu.addEventListener('click', ()=> menuItems.style.display = menuItems.style.display==='flex'?'none':'flex');
-
 </script>
 
 </body>
