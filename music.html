@@ -1,291 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Amity Hayze — Music</title>
   <style>
-    /* GLOBAL STYLES */
-    body {
-      margin: 0;
-      padding: 0;
-      background: radial-gradient(circle at center, #0a0a0f, #050509, #000);
-      font-family: "Courier New", monospace;
-      color: #ffb7ff;
-      overflow-x: hidden;
-      text-align: center;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      position: relative;
+    :root{
+      --neon: #00f0ff;
+      --muted: #9beef7;
+      --bg-dark: #000;
+      --hazy-pink: rgba(255,107,205,0.25);
+      --hazy-pink-light: rgba(255,107,205,0.35);
+
+      /* palette (updated by presets) */
+      --viz-pink: 255,107,205;
+      --viz-cyan: 0,240,255;
+      --viz-strength: 1;
     }
 
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
+    /* ===== page baseline (keeps your look) ===== */
+    html,body{height:100%;margin:0;background:radial-gradient(circle at center,#0a0a0f,#050509,#000);font-family:"Courier New",monospace;color:var(--neon);-webkit-font-smoothing:antialiased}
+    body{overflow-x:hidden;text-align:center;display:flex;flex-direction:column;align-items:center;position:relative;padding-bottom:40px}
+
+    h1{margin-top:1.5rem;text-shadow:0 0 8px #ff00ff,0 0 20px #00fff6;font-size:1.8rem;z-index:3;color:var(--neon)}
+
+    /* pulse background (reactive via JS setting --pulse) */
+    .pulse-bg{
+      position:fixed;inset:0;z-index:0;
+      background: radial-gradient(circle at center, rgba(255,0,255,0.02), rgba(0,255,255,0.04));
+      pointer-events:none;
+      transition:opacity .18s linear;
+      mix-blend-mode:screen;
+      opacity:0.9;
     }
 
-    h1 {
-      margin-top: 1.5rem;
-      text-shadow: 0 0 8px #ff00ff, 0 0 20px #00fff6;
-      font-size: 1.8rem;
-      z-index: 2;
+    /* preset menu */
+    .preset-menu{
+      position:fixed;top:1rem;right:1rem;z-index:6;display:flex;flex-direction:column;gap:.5rem;
+      background:rgba(10,10,20,0.75);border:2px solid #ff2efc;border-radius:12px;padding:1rem;box-shadow:0 0 12px #ff2efc;
     }
+    .preset-menu button{
+      background:transparent;border:1px solid #ffb7ff;border-radius:6px;color:#ffb7ff;padding:.4rem .8rem;cursor:pointer;font-family:inherit;transition:all .18s;
+    }
+    .preset-menu button:disabled{opacity:.45;cursor:not-allowed}
+    .preset-menu button:hover:not(:disabled){background:#ffb7ff;color:#0a0a0a;box-shadow:0 0 10px #ffb7ff}
 
-    /* PULSING BACKGROUND */
-    @keyframes pulse {
-      0% { background-color: rgba(255, 0, 255, 0.05); }
-      50% { background-color: rgba(0, 255, 255, 0.15); }
-      100% { background-color: rgba(255, 0, 255, 0.05); }
+    /* play / stop */
+    .controls-top{z-index:5; margin-top:12px; display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap}
+    .btn{
+      --pad:12px 20px;
+      display:inline-block;padding:var(--pad);border-radius:10px;background:linear-gradient(180deg,rgba(0,255,255,0.06),rgba(0,255,255,0.02));
+      color:var(--neon);text-decoration:none;font-weight:700;border:1px solid rgba(0,255,255,0.18);box-shadow:0 0 18px rgba(0,240,255,0.06);cursor:pointer;transition:all .18s;text-transform:uppercase;letter-spacing:1px;
     }
+    .btn-pink{
+      background:linear-gradient(180deg,var(--hazy-pink),rgba(255,107,205,0.1));
+      border:1px solid rgba(255,107,205,0.4); color:#e813f0; box-shadow:0 0 20px var(--hazy-pink);
+    }
+    .btn:disabled{opacity:.5;cursor:not-allowed}
 
-    .pulse-bg {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      animation: pulse 6s infinite;
-    }
+    /* TV / visual area */
+    .wrap{max-width:980px;width:100%;padding:22px;z-index:2}
+    .panel{background:rgba(0,0,0,0.7);border-radius:12px;padding:20px;border:1px solid rgba(0,255,255,0.06);box-shadow:0 20px 60px rgba(0,240,255,0.03);position:relative;overflow:visible}
+    .tv-wrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
+    .tv{width:min(760px,94%);aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);background:#000;margin:10px auto;position:relative;z-index:3}
+    /* canvas used for viz */
+    #vizCanvas{display:block;width:100%;height:100%}
 
-    /* PRESET MENU */
-    .preset-menu {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      z-index: 5;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      background: rgba(10, 10, 20, 0.7);
-      border: 2px solid #ff2efc;
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: 0 0 10px #ff2efc;
-    }
+    /* control column */
+    .controls{min-width:240px;max-width:260px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
+    .knob label{display:block;margin-bottom:6px;color:var(--muted);font-size:13px}
+    .slider{width:100%}
+    input[type="range"]{appearance:none;height:8px;background:rgba(255,255,255,0.04);border-radius:8px}
+    input[type="range"]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(0,0,0,0.6)}
+    .play-controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 
-    .preset-menu button {
-      background: transparent;
-      border: 1px solid #ffb7ff;
-      border-radius: 6px;
-      color: #ffb7ff;
-      padding: 0.4rem 0.8rem;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s;
-    }
+    /* embeds area (keeps your look) */
+    .embeds{margin-top:18px;padding:18px;z-index:2;width:90%;max-width:980px}
+    .embed-card{background:rgba(255,255,255,0.02);border-radius:10px;padding:12px;border:1px solid rgba(0,255,255,0.04);margin-bottom:12px}
+    .player-embed{width:100%;height:360px;border:0;border-radius:8px;display:block;overflow:hidden}
+    @media (max-width:680px){.player-embed{height:260px}.controls{width:100%;min-width:auto;max-width:none}}
 
-    .preset-menu button:hover {
-      background: #ffb7ff;
-      color: #0a0a0f;
-      box-shadow: 0 0 10px #ffb7ff;
-    }
+    footer{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
 
-    /* PLAY BUTTON */
-    #playButton {
-      margin-top: 4rem;
-      padding: 1rem 2rem;
-      border: 2px solid #ff2efc;
-      border-radius: 12px;
-      background: radial-gradient(circle, #ff2efc 0%, #00ffc6 70%);
-      color: #0a0a0f;
-      font-weight: bold;
-      font-size: 1.1rem;
-      cursor: pointer;
-      z-index: 3;
-      box-shadow: 0 0 20px #ff2efc;
-      transition: 0.3s;
-    }
-
-    #playButton:hover {
-      background: radial-gradient(circle, #00ffc6 0%, #ff2efc 70%);
-      color: white;
-      box-shadow: 0 0 25px #00ffc6, 0 0 45px #ff2efc;
-    }
-
-    /* EMBEDS SECTION */
-    .embeds {
-      margin-top: 520px;
-      padding: 2rem;
-      z-index: 2;
-      width: 90%;
-      max-width: 800px;
-    }
-
-    iframe {
-      border-radius: 12px;
-      width: 100%;
-      height: 352px;
-      margin-bottom: 2rem;
-      z-index: 2;
-    }
+    /* scanlines overlay drawn by canvas as well; keep reduced motion support */
+    @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
   </style>
 </head>
 <body>
-  <div class="pulse-bg"></div>
+  <div class="pulse-bg" id="pulseBg" aria-hidden="true"></div>
+
   <h1>Amity Hayze — Cascade Canyon</h1>
 
-  <!-- PRESET MENU -->
-  <div class="preset-menu">
-    <button onclick="setPreset('crt')">CRT</button>
-    <button onclick="setPreset('vhs')">VHS</button>
-    <button onclick="setPreset('neon')">Neon</button>
+  <!-- preset menu visible by default -->
+  <div class="preset-menu" aria-hidden="false">
+    <button id="presetCRT" onclick="setPreset('crt')">CRT</button>
+    <button id="presetVHS" onclick="setPreset('vhs')">VHS</button>
+    <button id="presetNeon" onclick="setPreset('neon')">Neon</button>
   </div>
 
-  <!-- VISUALIZER CANVAS -->
-  <canvas id="oscilloscope"></canvas>
-
-  <!-- PLAY BUTTON -->
-  <button id="playButton">▶ Play</button>
-
-  /* embeds section */
-  .embeds { margin-top:22px; display:flex;flex-direction:column;gap:14px }
-  .embed-card {
-    background:rgba(255,255,255,0.02); border-radius:10px;padding:12px;border:1px solid rgba(0,255,255,0.04)
-  }
-  .player-embed { width:100%; height:360px; border:0; border-radius:8px; overflow:hidden; display:block }
-  @media (max-width:680px){ .player-embed{height:280px} .slider{width:120px} }
-
-  footer{margin-top:22px;color:var(--muted);font-size:13px;text-align:center}
-
-  /* reduced motion */
-  @media (prefers-reduced-motion: reduce){
-    *{transition:none!important;animation:none!important}
-  }
-</style>
-</head>
-<body>
-  <nav class="main-nav" role="navigation" aria-label="Main">
-    <a href="index.html">Home</a>
-    <a href="press.html">Press + Features</a>
-    <a href="index.html#music">Music</a>
-    <a href="visuals.html">Visuals</a>
-    <a href="index.html#merch">Merch</a>
-    <a href="index.html#socials">Connect</a>
-  </nav>
+  <div class="controls-top" role="region" aria-label="Playback controls">
+    <button id="playBtn" class="btn btn-pink">▶ Play</button>
+    <button id="stopBtn" class="btn" disabled>■ Stop</button>
+    <a class="btn" href="index.html" style="text-decoration:none">Back</a>
+  </div>
 
   <div class="wrap">
-    <div class="panel">
-      <header>
-        <div class="title" data-text="Amity Hayze">Amity Hayze — Music</div>
-        <div class="subtitle">Vintage oscilloscope sphere + platform embeds — centered and reactive.</div>
+    <div class="panel" role="main">
+      <header style="text-align:center;margin-bottom:12px">
+        <div style="display:flex;justify-content:center;gap:10px;align-items:center">
+          <div class="title" data-text="Amity Hayze" style="font-size:18px;color:var(--neon)">Vintage Oscilloscope Sphere</div>
+        </div>
+        <div class="subtitle" style="color:var(--muted);font-size:13px;margin-top:6px">Centered, reactive, and preset-driven — click Play to start.</div>
       </header>
 
-      <div class="tv-wrap">
-        <div class="tv" aria-hidden="false" role="region" aria-label="Music visualizer TV">
-          <canvas id="vizCanvas"></canvas>
+      <div class="tv-wrap" style="justify-content:center">
+        <div class="tv" role="region" aria-label="Visualizer TV">
+          <canvas id="vizCanvas" aria-hidden="false"></canvas>
         </div>
 
-        <div class="controls" aria-hidden="false" role="region" aria-label="Visualizer controls">
+        <div class="controls" role="region" aria-label="Visualizer controls">
           <div class="knob">
             <label for="sensitivity" style="color:var(--muted)">Sensitivity</label>
-            <input id="sensitivity" class="slider" type="range" min="0.4" max="3" step="0.05" value="1.2" />
+            <input id="sensitivity" class="slider" type="range" min="0.4" max="3" step="0.05" value="1.2">
           </div>
 
           <div class="knob">
             <label for="strings" style="color:var(--muted)">Strings</label>
-            <input id="strings" class="slider" type="range" min="6" max="80" step="1" value="34" />
+            <input id="strings" class="slider" type="range" min="6" max="80" step="1" value="34">
           </div>
 
           <div class="knob">
             <label for="glow" style="color:var(--muted)">Glow</label>
-            <input id="glow" class="slider" type="range" min="0" max="2" step="0.05" value="0.9" />
+            <input id="glow" class="slider" type="range" min="0" max="2" step="0.05" value="0.9">
           </div>
 
           <div class="play-controls">
-            <button id="playBtn" class="btn btn-pink">Play</button>
-            <button id="stopBtn" class="btn">Stop</button>
-            <a class="btn" href="index.html">Back</a>
+            <button id="presetApply" class="btn" disabled>Presets Active After Play</button>
           </div>
         </div>
-
-        <!-- Hidden audio element (local file path). Put Cascade Canyon.mp3 next to this html or change src -->
-        <audio id="sourceAudio" src="Cascade Canyon.mp3" crossorigin="anonymous"></audio>
       </div>
 
-      <!-- embeds (preserve all platform embeds below) -->
+      <!-- Hidden audio element (local file) -->
+      <audio id="sourceAudio" src="Cascade Canyon.mp3" crossorigin="anonymous"></audio>
+
+      <!-- EMBEDS (untouched content kept) -->
       <div class="embeds">
         <div class="embed-card">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
             <div style="font-weight:700;color:var(--neon)">Spotify — Full Artist</div>
             <div style="font-size:12px;color:var(--muted)">Listen across platforms</div>
           </div>
-          <!-- you can replace/append any embeds here -->
           <iframe class="player-embed" src="https://open.spotify.com/embed/artist/5NMNo5sQFABJdY3jHH53wf?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media" loading="lazy" title="Spotify — Amity Hayze"></iframe>
         </div>
 
         <div class="embed-card">
           <div style="font-weight:700;color:var(--neon);margin-bottom:8px">YouTube — Videos</div>
-          <!-- Example YouTube embed -->
           <iframe class="player-embed" src="https://www.youtube.com/embed/g4fDgnUd2RQ?si=TEZu2KV-p3Os_VX4" allow="autoplay; encrypted-media; picture-in-picture" loading="lazy" title="YouTube video — Amity Hayze"></iframe>
         </div>
 
         <div class="embed-card">
           <div style="font-weight:700;color:var(--neon);margin-bottom:8px">Bandcamp / Apple / Other</div>
-          <!-- Add your other platform embeds below -->
-          <!-- Bandcamp placeholder -->
-         <iframe style="border: 0; width: 100%; height: 120px;" src="https://bandcamp.com/EmbeddedPlayer/track=2057022344/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless><a href="https://amityhayze.bandcamp.com/track/gone-is-the-time-2">Gone is the Time by Amity Hayze</a></iframe>
+          <iframe style="border: 0; width: 100%; height: 120px;" src="https://bandcamp.com/EmbeddedPlayer/track=2057022344/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless><a href="https://amityhayze.bandcamp.com/track/gone-is-the-time-2">Gone is the Time by Amity Hayze</a></iframe>
         </div>
 
-        <!-- Additional embeds: user-provided playlist iframe examples (keeps your previous ones) -->
         <div class="embed-card">
           <div style="font-weight:700;color:var(--neon);margin-bottom:8px">Featured Playlists</div>
-
-          <!-- Paste your playlist embeds here: -->
           <iframe class="player-embed" src="https://open.spotify.com/embed/playlist/08i9sjghPv0YOJgvwrGypr?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media" loading="lazy" title="Playlist 1"></iframe>
-
           <iframe class="player-embed" src="https://open.spotify.com/embed/playlist/0Lp9po0968hO1xUakltvku?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media" loading="lazy" title="Playlist 2"></iframe>
         </div>
       </div>
 
-      <footer>
-        <div style="color:var(--muted)">© Amity Hayze — transmissions & static</div>
-      </footer>
+      <footer><div style="color:var(--muted)">© Amity Hayze — transmissions & static</div></footer>
     </div>
   </div>
 
 <script>
-/* Visualizer: vintage oscilloscope sphere (canvas 2D approximation of strings forming a ball)
-   - reactive to audio amplitude / frequency via Web Audio API
-   - sensitivity, string count, glow controlled via sliders
+/* Visualizer: cleaned/working version based on your earlier draft.
+   - Use Play to initialize AudioContext and start animation.
+   - Presets change CSS variables to alter color & feel.
 */
 
 (function(){
+  // DOM
   const audio = document.getElementById('sourceAudio');
   const playBtn = document.getElementById('playBtn');
   const stopBtn = document.getElementById('stopBtn');
-  const canvas = document.getElementById('vizCanvas');
-  const ctx = canvas.getContext('2d', { alpha: true });
+  const viz = document.getElementById('vizCanvas');
+  const ctx = viz.getContext('2d', { alpha: true });
+
   const sensitivityEl = document.getElementById('sensitivity');
   const stringsEl = document.getElementById('strings');
   const glowEl = document.getElementById('glow');
 
-  let audioCtx, analyser, sourceNode, dataArray, bufferLength;
-  let width=0, height=0, rafId;
-  let settings = { sensitivity: parseFloat(sensitivityEl.value), strings: parseInt(stringsEl.value,10), glow: parseFloat(glowEl.value) };
+  const pulseBg = document.getElementById('pulseBg');
+  const presetApplyBtn = document.getElementById('presetApply');
+  const presetButtons = {
+    crt: document.getElementById('presetCRT'),
+    vhs: document.getElementById('presetVHS'),
+    neon: document.getElementById('presetNeon')
+  };
 
-  // Resize canvas to container size
-  function resize() {
-    const rect = canvas.getBoundingClientRect();
-    width = Math.max(300, Math.floor(rect.width));
+  // audio / analyser
+  let audioCtx = null, analyser = null, sourceNode = null;
+  let dataArray = null, bufferLength = 0;
+
+  // visual state
+  let raf = null;
+  let width = 0, height = 0, dpr = Math.max(1, window.devicePixelRatio || 1);
+  const settings = {
+    sensitivity: parseFloat(sensitivityEl.value),
+    strings: parseInt(stringsEl.value, 10),
+    glow: parseFloat(glowEl.value)
+  };
+
+  // init canvas size to tv area
+  function resizeCanvas(){
+    const rect = viz.getBoundingClientRect();
+    width = Math.max(320, Math.floor(rect.width));
     height = Math.max(180, Math.floor(rect.height));
-    canvas.width = width * devicePixelRatio;
-    canvas.height = height * devicePixelRatio;
-    canvas.style.width = width + 'px';
-    canvas.style.height = height + 'px';
-    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    viz.width = width * dpr;
+    viz.height = height * dpr;
+    viz.style.width = width + 'px';
+    viz.style.height = height + 'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
   }
-  window.addEventListener('resize', resize);
-  resize();
+  window.addEventListener('resize', resizeCanvas);
+  // ensure resize after layout
+  setTimeout(resizeCanvas, 80);
 
-  // Create AudioContext and analyser on first play (user gesture)
-  function initAudio() {
+  // create audio context on user gesture
+  function initAudio(){
     if (audioCtx) return;
     try {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -298,172 +242,194 @@
       sourceNode.connect(analyser);
       analyser.connect(audioCtx.destination);
     } catch (err) {
-      console.warn('WebAudio unavailable', err);
+      console.warn('WebAudio error:', err);
     }
   }
 
-  // utility: get overall amplitude (0..1)
-  function getAmplitude() {
-    if(!analyser) return 0;
+  // amplitude (RMS) helper
+  function getAmplitude(){
+    if (!analyser) return 0;
     analyser.getByteTimeDomainData(dataArray);
     let sum = 0;
     for (let i=0;i<bufferLength;i++){
       const v = (dataArray[i] - 128) / 128;
       sum += v*v;
     }
-    const rms = Math.sqrt(sum/bufferLength);
-    return Math.min(1, rms*1.6);
+    const rms = Math.sqrt(sum / bufferLength);
+    return Math.min(1, rms * 1.8);
   }
 
-  // draw the "string sphere" - ring of circular strings mapped into perspective
+  // draw sphere of strings
   function draw(time){
     ctx.clearRect(0,0,width,height);
 
-    // subtle vignette + CRT noise overlay (soft)
-    ctx.save();
-    // background soft noise glow
-    const pulseRoot = Math.max(0.04, Math.min(0.35, settings.sensitivity * 0.06));
-    document.body.style.setProperty('--pulse', pulseRoot * (0.6 + getAmplitude() * 0.8));
-    // dark screen fill
-    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    // base fill
+    ctx.fillStyle = 'rgba(0,0,0,0.38)';
     ctx.fillRect(0,0,width,height);
 
-    // calculate center & radius
-    const cx = width / 2;
-    const cy = height / 2;
-    const baseR = Math.min(width, height) * 0.32; // sphere radius
-    // amplitude (influences displacement)
+    const cx = width/2, cy = height/2;
+    const baseR = Math.min(width, height) * 0.32;
     const amp = getAmplitude() * settings.sensitivity;
 
-    const rings = Math.max(3, Math.round(settings.strings / 6)); // latitude rings
-    const stringsPerRing = Math.round(settings.strings / rings);
+    // glow radial from CSS vars (mix of pink/cyan)
+    const pv = getComputedStyle(document.documentElement).getPropertyValue('--viz-pink').trim().split(',').map(x=>parseInt(x));
+    const cv = getComputedStyle(document.documentElement).getPropertyValue('--viz-cyan').trim().split(',').map(x=>parseInt(x));
+    // fallback if not set
+    const pink = (pv.length===3) ? pv : [255,107,205];
+    const cyan = (cv.length===3) ? cv : [0,240,255];
 
-    // draw glow halo
-    const glow = settings.glow * (0.6 + amp * 0.8);
-    const grad = ctx.createRadialGradient(cx,cy, baseR*0.2, cx,cy, baseR*1.8);
-    grad.addColorStop(0, `rgba(255,107,205,${0.06 * glow})`);
-    grad.addColorStop(0.6, `rgba(0,240,255,${0.02 * glow})`);
-    grad.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(cx,cy, baseR*1.6, 0, Math.PI*2);
-    ctx.fill();
+    // draw halo
+    const glow = settings.glow * (0.6 + amp * 0.9);
+    const g = ctx.createRadialGradient(cx,cy, baseR*0.2, cx,cy, baseR*1.8);
+    g.addColorStop(0, `rgba(${pink[0]},${pink[1]},${pink[2]},${0.06 * glow})`);
+    g.addColorStop(0.6, `rgba(${cyan[0]},${cyan[1]},${cyan[2]},${0.025 * glow})`);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(cx,cy, baseR*1.6,0,Math.PI*2); ctx.fill();
 
-    // Draw rings of strings to create sphere illusion
-    for (let r = 0; r < rings; r++){
-      const lat = (r / (rings-1)) * Math.PI - Math.PI/2; // -pi/2 to pi/2
+    // string rings
+    const rings = Math.max(3, Math.round(settings.strings / 6));
+    const perRing = Math.round(settings.strings / rings);
+
+    for (let r=0; r<rings; r++){
+      const lat = (r / (rings-1)) * Math.PI - Math.PI/2;
       const ringRadius = Math.cos(lat) * baseR;
-      const z = Math.sin(lat); // depth (-1..1)
+      const z = Math.sin(lat);
+      const perspective = (z + 1)/2 * 0.9 + 0.1;
+      const alphaBase = 0.12 + perspective * 0.6;
 
-      // perspective scale: nearer rings brighter
-      const perspective = (z + 1) / 2 * 0.9 + 0.1;
-      const lineAlphaBase = 0.12 + perspective * 0.6;
-
-      for (let s = 0; s < stringsPerRing; s++){
-        const t = s / stringsPerRing;
+      for (let s=0; s<perRing; s++){
+        const t = s / perRing;
         const theta = t * Math.PI * 2;
 
-        // waveform displacement uses analyser frequency data: map theta to freq bin
-        let freqValue = 0;
-        if (analyser) {
-          const idx = Math.floor((t * bufferLength * 0.6)) % bufferLength;
-          freqValue = (dataArray ? Math.abs(dataArray[idx] - 128) / 128 : 0) * amp;
+        // map theta to freq bin
+        let freqVal = 0;
+        if (analyser && dataArray){
+          const idx = Math.floor((t * bufferLength * 0.7)) % bufferLength;
+          freqVal = Math.abs(dataArray[idx] - 128) / 128 * amp;
         }
 
-        // small time-based wobble for glitch-y movement
         const wobble = Math.sin(time*0.002 + r*0.6 + s*0.12) * 0.8;
+        const px = cx + Math.cos(theta) * (ringRadius + freqVal * baseR * 0.28 + wobble*4);
+        const py = cy + Math.sin(theta) * (ringRadius*0.5 + freqVal * baseR * 0.18 + wobble*2) * (0.9 - Math.abs(z)*0.3);
 
-        // compute point on projected ring
-        const px = cx + Math.cos(theta) * (ringRadius + freqValue * baseR * 0.28 + wobble*4);
-        const py = cy + Math.sin(theta) * (ringRadius*0.5 + freqValue * baseR * 0.18 + wobble*2) * (0.9 - Math.abs(z)*0.3);
-
-        // color blend: mix cyan and pink slightly by theta and depth
         const mix = 0.5 + 0.5 * Math.sin(theta + time*0.0008 + r*0.25);
-        const rC = Math.round(0 + (255 - 0) * mix);
-        const gC = Math.round(240 + (107 - 240) * mix);
-        const bC = Math.round(255 + (205 - 255) * mix);
-        ctx.fillStyle = `rgba(${rC},${gC},${bC},${lineAlphaBase * (0.6 + freqValue*1.4)})`;
+        const rC = Math.round(cyan[0] * (1-mix) + pink[0] * mix);
+        const gC = Math.round(cyan[1] * (1-mix) + pink[1] * mix);
+        const bC = Math.round(cyan[2] * (1-mix) + pink[2] * mix);
+        ctx.fillStyle = `rgba(${rC},${gC},${bC},${alphaBase * (0.6 + freqVal*1.4)})`;
 
-        // draw tiny glowing point (string pixel)
-        const size = 0.9 + perspective*2 + freqValue*4;
-        ctx.beginPath();
-        ctx.arc(px, py, size, 0, Math.PI*2);
-        ctx.fill();
-        // slight inner highlight
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(255,255,255,${0.02 + freqValue*0.08})`;
-        ctx.arc(px, py, size*0.35, 0, Math.PI*2);
-        ctx.fill();
+        const size = 0.9 + perspective*2 + freqVal*4;
+        ctx.beginPath(); ctx.arc(px,py,size,0,Math.PI*2); ctx.fill();
+
+        // small highlight
+        ctx.beginPath(); ctx.fillStyle = `rgba(255,255,255,${0.02 + freqVal*0.08})`; ctx.arc(px,py,size*0.35,0,Math.PI*2); ctx.fill();
       }
     }
 
-    // subtle scanline overlay
+    // subtle scanlines
     ctx.fillStyle = 'rgba(255,255,255,0.008)';
     for (let y=0;y<height;y+=3){
       ctx.fillRect(0,y,width,1);
     }
 
-    ctx.restore();
-    rafId = requestAnimationFrame(draw);
+    // reactive pulse background intensity
+    const pulseStrength = 0.06 + amp * 0.24;
+    pulseBg.style.opacity = 0.35 + pulseStrength;
+    raf = requestAnimationFrame(draw);
   }
 
-  // handle UI updates
-  sensitivityEl.addEventListener('input', ()=> { settings.sensitivity = parseFloat(sensitivityEl.value); });
-  stringsEl.addEventListener('input', ()=> { settings.strings = parseInt(stringsEl.value,10); });
-  glowEl.addEventListener('input', ()=> { settings.glow = parseFloat(glowEl.value); });
+  // UI wiring
+  sensitivityEl.addEventListener('input', ()=> settings.sensitivity = parseFloat(sensitivityEl.value));
+  stringsEl.addEventListener('input', ()=> settings.strings = parseInt(stringsEl.value,10));
+  glowEl.addEventListener('input', ()=> settings.glow = parseFloat(glowEl.value));
 
-  // play / stop behavior
+  // presets - just change CSS vars
+  function setPreset(p){
+    // only allow presets after play
+    if (!audioCtx) return;
+    if (p === 'crt'){
+      document.documentElement.style.setProperty('--viz-pink','220,255,200');
+      document.documentElement.style.setProperty('--viz-cyan','80,220,120');
+      document.documentElement.style.setProperty('--hazy-pink','rgba(120,255,180,0.10)');
+      document.documentElement.style.setProperty('--hazy-pink-light','rgba(120,255,180,0.18)');
+      document.documentElement.style.setProperty('--viz-strength','0.8');
+    } else if (p === 'vhs'){
+      document.documentElement.style.setProperty('--viz-pink','255,120,160');
+      document.documentElement.style.setProperty('--viz-cyan','150,160,255');
+      document.documentElement.style.setProperty('--hazy-pink','rgba(255,120,160,0.16)');
+      document.documentElement.style.setProperty('--hazy-pink-light','rgba(255,120,160,0.28)');
+      document.documentElement.style.setProperty('--viz-strength','1.05');
+    } else { // neon
+      document.documentElement.style.setProperty('--viz-pink','255,107,205');
+      document.documentElement.style.setProperty('--viz-cyan','0,240,255');
+      document.documentElement.style.setProperty('--hazy-pink','rgba(255,107,205,0.25)');
+      document.documentElement.style.setProperty('--hazy-pink-light','rgba(255,107,205,0.35)');
+      document.documentElement.style.setProperty('--viz-strength','1.2');
+    }
+  }
+
+  // enable/disable preset buttons depending on audio state
+  function setControlsEnabled(enabled){
+    Object.values(presetButtons).forEach(b => b.disabled = !enabled);
+    presetApplyBtn.disabled = !enabled;
+    stopBtn.disabled = !enabled;
+  }
+
+  // Play button
   playBtn.addEventListener('click', async ()=>{
     initAudio();
+    // resume AudioContext if suspended
     if (audioCtx && audioCtx.state === 'suspended') {
       await audioCtx.resume();
     }
     try {
+      // some browsers block play() until user gesture; this click is a gesture
       await audio.play();
     } catch (err) {
-      console.warn('autoplay blocked, user gesture required', err);
-      // still init visuals (silent) and wait for user play
+      console.warn('play() failed', err);
     }
-    // start analyser animation
-    if (analyser) analyser.getByteTimeDomainData(dataArray);
-    cancelAnimationFrame(rafId);
-    rafId = requestAnimationFrame(draw);
+    // start visual loop
+    cancelAnimationFrame(raf);
+    resizeCanvas();
+    raf = requestAnimationFrame(draw);
+    // enable controls now that audio is running
+    setControlsEnabled(true);
     playBtn.textContent = 'Playing';
-    playBtn.classList.add('playing');
+    playBtn.disabled = true;
+    stopBtn.disabled = false;
   });
 
   stopBtn.addEventListener('click', ()=>{
     audio.pause();
     audio.currentTime = 0;
-    cancelAnimationFrame(rafId);
-    playBtn.textContent = 'Play';
-    playBtn.classList.remove('playing');
-    // clear canvas
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+    cancelAnimationFrame(raf);
+    ctx.clearRect(0,0,viz.width,viz.height);
+    setControlsEnabled(false);
+    playBtn.textContent = '▶ Play';
+    playBtn.disabled = false;
+    stopBtn.disabled = true;
   });
 
-  // pause visual when audio ends
-  audio.addEventListener('ended', () => {
-    cancelAnimationFrame(rafId);
-    playBtn.textContent = 'Play';
-    playBtn.classList.remove('playing');
+  // default controls are disabled until Play (presets require audioCtx)
+  setControlsEnabled(false);
+
+  // start with neon preset but buttons disabled until play
+  setPreset('neon');
+
+  // accessibility: stop rendering on page hide
+  document.addEventListener('visibilitychange', ()=>{
+    if (document.hidden) cancelAnimationFrame(raf);
+    else if (audioCtx && !raf && !playBtn.disabled) raf = requestAnimationFrame(draw);
   });
 
-  // ensure canvas is correct size & start a subtle idle animation even when audio not playing
-  let idleTime=0;
-  function idleLoop(ts){
-    idleTime = ts;
-    // draw a soft idle pulse (lower amplitude) so screen isn't completely dark
-    if (!rafId) rafId = requestAnimationFrame(draw);
-    requestAnimationFrame(()=>{});
-  }
-  requestAnimationFrame(idleLoop);
+  // resize once more after load to ensure correct size
+  window.addEventListener('load', ()=> setTimeout(resizeCanvas, 60));
+  // allow click on preset to set if audio already started
+  window.setPreset = setPreset;
 
-  // initialize small responsive resize on load
-  setTimeout(resize, 120);
-
-  // Safety: if WebAudio can't create (file CORS or missing), show message in console and allow embeds
 })();
 </script>
 </body>
 </html>
+
