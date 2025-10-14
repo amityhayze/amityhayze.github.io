@@ -3,113 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amity Hayze — CRT Visualizer Room</title>
+<title>CRT Visualizer Room</title>
 <style>
-  :root {
-    --neon: #ff6bcd;
-    --neon-alt: #00f0ff;
-    --bg-dark: #000;
-    --panel: rgba(0,0,0,0.7);
-    --muted: #9beef7;
-    --glass: rgba(255,255,255,0.03);
-  }
-  html, body {
-    margin:0; padding:0;
-    height:100%; background:var(--bg-dark);
-    font-family:"Courier New", monospace; color:var(--neon);
-    overflow-x:hidden;
-  }
   body {
-    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
-    padding-top:40px;
+    margin:0; background:#000; display:flex; flex-direction:column; align-items:center; font-family: monospace; color:#ff6bcd;
   }
-
-  /* TV container */
   #tv-container {
-    position:relative;
-    width:80vw; max-width:800px;
-    height:450px; background:#000;
-    border: 6px solid var(--neon);
-    border-radius:12px;
+    position: relative;
+    width: 800px;
+    height: 450px;
+    border: 6px solid #ff6bcd;
+    border-radius: 12px;
+    margin-top: 40px;
+    overflow: hidden;
     box-shadow: 0 0 32px rgba(255,107,205,0.4);
-    overflow:hidden;
   }
-
-  canvas { position:absolute; top:0; left:0; width:100%; height:100%; display:block; }
-
-  /* Knobs container */
+  canvas {
+    width: 100%; height: 100%; display: block;
+  }
   #controls {
-    margin-top:16px;
-    display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+    margin-top: 16px;
+    display: flex; gap: 16px; justify-content: center;
   }
   .knob-container {
-    display:flex; flex-direction:column; align-items:center;
-    font-size:14px;
+    display:flex; flex-direction:column; align-items:center; font-size:14px;
   }
   input[type="range"] {
-    -webkit-appearance: none; width:120px;
-    background: rgba(255,255,255,0.05); border-radius:8px;
-    height:8px; margin-top:4px;
+    width:120px;
+    margin-top:4px;
   }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none; width:16px; height:16px;
-    background: var(--neon); border-radius:50%;
-    cursor:pointer;
-  }
-
-  /* Mini games menu */
   #menu {
-    position:absolute; top:10px; right:10px;
-    background:var(--panel); padding:8px 12px; border-radius:8px;
-    cursor:pointer; z-index:10;
+    position: absolute; top:10px; right:10px;
+    background: rgba(0,0,0,0.7); padding:8px 12px; border-radius:8px; cursor:pointer;
+    z-index: 10;
   }
-  #menu-items {
-    display:none; flex-direction:column; margin-top:4px;
-  }
-  #menu-items button {
-    margin-top:4px; background:var(--glass); border:none; color:var(--neon); padding:4px 8px; border-radius:6px; cursor:pointer;
-  }
-
-  /* Mini game canvas */
-  #gameCanvas {
-    display:none; position:absolute; top:0; left:0; width:100%; height:100%; z-index:5;
-  }
-
-  /* Info overlay */
-  #infoOverlay {
-    display:none; position:absolute; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.7); color:var(--neon); font-size:16px;
-    display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center;
-    z-index:6; border-radius:12px;
-  }
-
+  #menu-items { display:none; flex-direction:column; margin-top:4px; }
+  #menu-items button { margin-top:4px; padding:4px 8px; border-radius:6px; background:rgba(255,255,255,0.1); border:none; color:#ff6bcd; cursor:pointer; }
 </style>
 </head>
 <body>
 
-<h1 style="text-align:center; color:var(--neon);">CRT Visualizer Room</h1>
+<h1>CRT Visualizer Room</h1>
 
 <div id="tv-container">
   <canvas id="screen"></canvas>
-  <canvas id="overlay"></canvas>
-  <canvas id="gameCanvas"></canvas>
-  <div id="infoOverlay">
-    <div id="overlayText"></div>
-    <button onclick="closeOverlay()" style="margin-top:16px;padding:8px 12px;border:none;border-radius:6px;background:var(--neon);color:#000;cursor:pointer;">Close</button>
-  </div>
-
-  <!-- Hidden Menu -->
   <div id="menu">
     Menu ▾
     <div id="menu-items">
-      <button onclick="startMiniGame(1)">Mini Game 1</button>
-      <button onclick="startMiniGame(2)">Mini Game 2</button>
-      <button onclick="openEffectsPlayground()">Effects Playground</button>
+      <button>Mini Game 1</button>
+      <button>Mini Game 2</button>
     </div>
   </div>
 </div>
 
-<!-- Controls -->
 <div id="controls">
   <div class="knob-container">
     <label for="colorShift">Color Shift</label>
@@ -125,142 +71,63 @@
   </div>
 </div>
 
-<audio id="track" src="Cascade Canyon.mp3" controls autoplay loop style="margin-top:16px; width:80vw; max-width:400px;"></audio>
+<audio id="track" src="Cascade Canyon.mp3" controls autoplay loop style="margin-top:16px; width:80%;"></audio>
 
 <script>
-  // Menu toggle
-  const menu = document.getElementById('menu');
-  const menuItems = document.getElementById('menu-items');
-  menu.addEventListener('click', ()=> menuItems.style.display = menuItems.style.display === 'flex' ? 'none' : 'flex');
+const canvas = document.getElementById('screen');
+const ctx = canvas.getContext('2d');
+canvas.width = canvas.offsetWidth;
+canvas.height = canvas.offsetHeight;
 
-  const screen = document.getElementById('screen');
-  const overlay = document.getElementById('overlay');
-  const gameCanvas = document.getElementById('gameCanvas');
-  const ctx = screen.getContext('2d');
-  const octx = overlay.getContext('2d');
-  const gctx = gameCanvas.getContext('2d');
+// Audio setup
+const audio = document.getElementById('track');
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const source = audioCtx.createMediaElementSource(audio);
+const analyser = audioCtx.createAnalyser();
+analyser.fftSize = 256;
+const bufferLength = analyser.frequencyBinCount;
+const dataArray = new Uint8Array(bufferLength);
+source.connect(analyser);
+analyser.connect(audioCtx.destination);
 
-  let colorShift = 0, glitchIntensity = 10, pulseSpeed = 4;
+let colorShift = 0, glitchIntensity = 10, pulseSpeed = 4;
+document.getElementById('colorShift').addEventListener('input', e=>colorShift=parseInt(e.target.value));
+document.getElementById('glitchIntensity').addEventListener('input', e=>glitchIntensity=parseInt(e.target.value));
+document.getElementById('pulseSpeed').addEventListener('input', e=>pulseSpeed=parseInt(e.target.value));
 
-  document.getElementById('colorShift').addEventListener('input', e=>colorShift=parseInt(e.target.value));
-  document.getElementById('glitchIntensity').addEventListener('input', e=>glitchIntensity=parseInt(e.target.value));
-  document.getElementById('pulseSpeed').addEventListener('input', e=>pulseSpeed=parseInt(e.target.value));
-
-  // Audio setup
-  const audio = document.getElementById('track');
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const source = audioCtx.createMediaElementSource(audio);
-  const analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 256;
-  const bufferLength = analyser.frequencyBinCount;
-  const dataArray = new Uint8Array(bufferLength);
-  source.connect(analyser);
-  analyser.connect(audioCtx.destination);
-
-  // Canvas resize
-  function resizeCanvas() {
-    [screen, overlay, gameCanvas].forEach(c=>{
-      c.width = c.offsetWidth;
-      c.height = c.offsetHeight;
-    });
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-
-  // Main Visualizer
-  function drawVisualizer() {
-    ctx.clearRect(0,0,screen.width,screen.height);
-    analyser.getByteFrequencyData(dataArray);
-    const barWidth = screen.width / bufferLength;
-    for(let i=0;i<bufferLength;i++){
-      const barHeight = dataArray[i]*1.5;
-      const hue = (i*4 + colorShift) % 360;
-      ctx.fillStyle = `hsl(${hue},100%,50%)`;
-      ctx.fillRect(i*barWidth, screen.height-barHeight, barWidth, barHeight);
-    }
-
-    // Overlay effects
-    octx.clearRect(0,0,overlay.width,overlay.height);
-    const lines = 120;
-    for(let i=0;i<lines;i++){
-      octx.fillStyle = `rgba(255,255,255,${Math.random()*0.02})`;
-      octx.fillRect(0,i*(overlay.height/lines),overlay.width,1);
-    }
-    for(let i=0;i<glitchIntensity;i++){
-      octx.fillStyle = `rgba(255,0,255,0.03)`;
-      const x = Math.random()*overlay.width;
-      const y = Math.random()*overlay.height;
-      const w = Math.random()*10;
-      const h = Math.random()*5;
-      octx.fillRect(x,y,w,h);
-    }
-    const alpha = 0.08 + 0.04*Math.sin(Date.now()/100*pulseSpeed);
-    octx.fillStyle = `rgba(255,255,255,${alpha})`;
-    octx.fillRect(0,0,overlay.width,overlay.height);
-
-    requestAnimationFrame(drawVisualizer);
-  }
-  drawVisualizer();
-
-  // Mini Games & Playground
-  const infoOverlay = document.getElementById('infoOverlay');
-  const overlayText = document.getElementById('overlayText');
-
-  function closeOverlay(){
-    infoOverlay.style.display = 'none';
-    gameCanvas.style.display = 'none';
+// Visualizer
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  analyser.getByteFrequencyData(dataArray);
+  const barWidth = canvas.width / bufferLength;
+  for(let i=0;i<bufferLength;i++){
+    const barHeight = dataArray[i]*1.5;
+    const hue = (i*4 + colorShift) % 360;
+    ctx.fillStyle = `hsl(${hue},100%,50%)`;
+    ctx.fillRect(i*barWidth, canvas.height-barHeight, barWidth, barHeight);
   }
 
-  function openEffectsPlayground(){
-    infoOverlay.style.display = 'flex';
-    overlayText.innerHTML = "Effects Playground:<br>Adjust knobs to see color shift, glitch intensity, and pulse speed.";
+  // Simple glitch effect
+  for(let i=0;i<glitchIntensity;i++){
+    ctx.fillStyle = `rgba(255,0,255,0.03)`;
+    ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*10, Math.random()*5);
   }
 
-  function startMiniGame(id){
-    gameCanvas.style.display = 'block';
-    gctx.clearRect(0,0,gameCanvas.width,gameCanvas.height);
+  // Pulse overlay
+  const alpha = 0.08 + 0.04*Math.sin(Date.now()/100*pulseSpeed);
+  ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    if(id===1){
-      // Catch the signal
-      let circle = {x:Math.random()*gameCanvas.width, y:Math.random()*gameCanvas.height, r:20};
-      function gameLoop(){
-        gctx.clearRect(0,0,gameCanvas.width,gameCanvas.height);
-        gctx.fillStyle = 'cyan';
-        gctx.beginPath();
-        gctx.arc(circle.x,circle.y,circle.r,0,Math.PI*2);
-        gctx.fill();
-        requestAnimationFrame(gameLoop);
-      }
-      gameLoop();
-      gameCanvas.onclick = e=>{
-        const dx = e.offsetX-circle.x;
-        const dy = e.offsetY-circle.y;
-        if(Math.sqrt(dx*dx+dy*dy)<circle.r){
-          alert('Caught the signal!');
-          closeOverlay();
-        }
-      }
-    }
-    if(id===2){
-      // Simple bouncing square
-      let square = {x:50,y:50,vx:3,vy:3,size:30};
-      function gameLoop2(){
-        gctx.clearRect(0,0,gameCanvas.width,gameCanvas.height);
-        gctx.fillStyle='magenta';
-        gctx.fillRect(square.x,square.y,square.size,square.size);
-        square.x += square.vx; square.y += square.vy;
-        if(square.x<0||square.x+square.size>gameCanvas.width) square.vx*=-1;
-        if(square.y<0||square.y+square.size>gameCanvas.height) square.vy*=-1;
-        requestAnimationFrame(gameLoop2);
-      }
-      gameLoop2();
-      gameCanvas.onclick = e=>{
-        overlayText.innerHTML="Bouncing square fun!";
-        infoOverlay.style.display='flex';
-      }
-    }
-  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+// Menu toggle
+const menu = document.getElementById('menu');
+const menuItems = document.getElementById('menu-items');
+menu.addEventListener('click', ()=> menuItems.style.display = menuItems.style.display==='flex'?'none':'flex');
+
 </script>
+
 </body>
 </html>
-
