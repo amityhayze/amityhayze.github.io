@@ -1,241 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CRT Visualizer Room</title>
+<title>Amity Hayze — CRT Visualizer Room</title>
 <link rel="icon" href="favicon.ico" type="image/x-icon">
 <style>
   :root {
     --neon: #00f0ff;
-    --hazy-pink: rgba(255,107,205,0.25);
+    --hazy-pink: rgba(255,107,205,0.35);
     --bg-dark: #000;
-    --panel: rgba(0,0,0,0.75);
+    --panel: rgba(0,0,0,0.7);
   }
-  *{box-sizing:border-box;}
-  body {
-    margin:0;
-    font-family:"Courier New", monospace;
-    background:#000;
-    color:var(--neon);
-    overflow:hidden;
-  }
-  body::before {
-    content:"";
-    position:fixed; inset:0;
-    background:url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover no-repeat;
-    opacity:0.12;
-    z-index:-2;
-    mix-blend-mode:screen;
-    filter:grayscale(30%) contrast(1.05);
-  }
-  body::after {
-    content:"";
-    position:fixed; inset:0;
-    background:radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%);
-    z-index:-1;
-  }
-
-  /* TV Panel */
-  #tv-panel {
-    position:absolute;
-    top:50%; left:50%;
-    transform:translate(-50%,-50%);
-    width:800px; max-width:90vw;
-    background:var(--panel);
-    border:2px solid var(--neon);
-    border-radius:12px;
-    box-shadow:0 0 20px var(--neon);
-    padding:20px;
-    display:flex; flex-direction:column; align-items:center;
-  }
-
-  h1 {margin:0; font-size:28px; text-shadow:0 0 8px var(--neon);}
-  .tv-menu {
-    margin-top:10px;
-    display:flex; gap:12px;
-  }
-  .tv-menu button {
-    padding:10px 16px;
-    background:rgba(0,255,255,0.05);
-    border:1px solid var(--neon);
-    color:var(--neon);
-    border-radius:6px;
-    cursor:pointer;
-    text-transform:uppercase;
-  }
-  .tv-menu button:hover { box-shadow:0 0 12px var(--neon); }
-
-  /* Panels inside TV */
-  .tv-content { margin-top:16px; width:100%; min-height:400px; position:relative; background:rgba(0,0,0,0.15); border-radius:10px; overflow:hidden; }
-  .hidden { display:none; }
-
-  /* Knobs */
-  .knobs { display:flex; gap:12px; justify-content:center; margin:10px 0; }
-  .knob-container { display:flex; flex-direction:column; align-items:center; }
-  .knob-label { font-size:12px; margin-bottom:4px; }
-  input[type=range]{-webkit-appearance:none;width:100px; background:transparent;}
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; height:18px; width:18px; border-radius:50%; background:var(--neon); cursor:pointer; box-shadow:0 0 6px var(--neon);}
-  input[type=range]::-webkit-slider-runnable-track { height:4px; background:rgba(0,255,255,0.15); border-radius:2px;}
-
-  /* Canvas fills TV panel */
-  canvas { width:100%; height:100%; display:block; }
-
+  html, body { margin:0; padding:0; height:100%; font-family:monospace; background:var(--bg-dark); color:var(--neon); overflow:hidden;}
+  body { display:flex; justify-content:center; align-items:center; flex-direction:column; }
+  canvas { display:block; margin:0 auto; background:#000; border:2px solid var(--neon); border-radius:8px; }
+  #tv-container { position:relative; width:800px; max-width:90vw; height:450px; margin-bottom:20px; }
+  #overlay { position:absolute; inset:0; pointer-events:none; }
+  .controls { display:flex; justify-content:center; gap:12px; margin-top:12px; flex-wrap:wrap; }
+  .controls label { color:var(--neon); font-size:14px; }
+  .controls input[type=range] { width:120px; }
+  .menu { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; justify-content:center; align-items:center; background:rgba(0,0,0,0.85); color:var(--neon); font-size:18px; flex-direction:column; gap:16px; }
+  .menu.hidden { display:none; }
+  .btn { padding:8px 14px; border-radius:6px; border:1px solid var(--neon); background:rgba(0,0,0,0.2); color:var(--neon); cursor:pointer; text-transform:uppercase; font-weight:700; }
 </style>
 </head>
 <body>
 
-<div id="tv-panel">
-  <h1>CRT Visualizer Room</h1>
-  <div class="tv-menu">
-    <button data-panel="visualizer">Audio Visualizer</button>
-    <button data-panel="effects">Effects Playground</button>
-    <button data-panel="games">Mini Games</button>
-  </div>
+<h1 style="color:var(--hazy-pink); text-align:center;">CRT Visualizer Room</h1>
 
-  <div class="tv-content">
-    <!-- Visualizer Panel -->
-    <div id="visualizer-panel" class="panel">
-      <audio id="track" src="Cascade Canyon.mp3" autoplay loop style="display:none;"></audio>
-      <canvas id="vizCanvas"></canvas>
-    </div>
+<div id="tv-container">
+  <canvas id="screen"></canvas>
+  <canvas id="overlay"></canvas>
 
-    <!-- Effects Playground -->
-    <div id="effects-panel" class="panel hidden">
-      <div class="knobs">
-        <div class="knob-container">
-          <div class="knob-label">Color Shift</div>
-          <input type="range" min="0" max="360" value="0" id="colorKnob">
-        </div>
-        <div class="knob-container">
-          <div class="knob-label">Glitch Intensity</div>
-          <input type="range" min="0" max="20" value="0" id="glitchKnob">
-        </div>
-        <div class="knob-container">
-          <div class="knob-label">Pulse Speed</div>
-          <input type="range" min="0" max="5" step="0.1" value="1" id="pulseKnob">
-        </div>
-      </div>
-      <canvas id="effectsCanvas"></canvas>
-    </div>
-
-    <!-- Mini Games Panel -->
-    <div id="games-panel" class="panel hidden">
-      <canvas id="gameCanvas"></canvas>
-    </div>
+  <div class="menu" id="tv-menu">
+    <div>Welcome to the TV Visualizer Room</div>
+    <button class="btn" id="open-visualizer">Open Visualizer</button>
+    <button class="btn" id="open-games">Mini Games</button>
+    <button class="btn" id="open-effects">Effects Playground</button>
   </div>
 </div>
 
+<div class="controls">
+  <label>Color Shift <input type="range" min="0" max="360" value="0" id="colorShift"></label>
+  <label>Glitch Intensity <input type="range" min="0" max="20" value="5" id="glitchIntensity"></label>
+  <label>Pulse Speed <input type="range" min="0.1" max="5" step="0.1" value="1" id="pulseSpeed"></label>
+</div>
+
+<audio id="track" src="Cascade Canyon.mp3" loop></audio>
+
 <script>
-  // Panel switching
-  document.querySelectorAll('.tv-menu button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.panel').forEach(p=>p.classList.add('hidden'));
-      const panel = btn.dataset.panel+'-panel';
-      document.getElementById(panel).classList.remove('hidden');
-    });
-  });
+const screen = document.getElementById('screen');
+const overlay = document.getElementById('overlay');
+const menu = document.getElementById('tv-menu');
+const track = document.getElementById('track');
+const ctx = screen.getContext('2d');
+const octx = overlay.getContext('2d');
 
-  /* AUDIO VISUALIZER */
-  const track = document.getElementById('track');
-  const vizCanvas = document.getElementById('vizCanvas');
-  const vCtx = vizCanvas.getContext('2d');
+let colorShift = 0;
+let glitchIntensity = 5;
+let pulseSpeed = 1;
 
-  function resizeCanvas(canvas){
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+const knobs = {
+  colorShift: document.getElementById('colorShift'),
+  glitchIntensity: document.getElementById('glitchIntensity'),
+  pulseSpeed: document.getElementById('pulseSpeed')
+};
+
+// Resize canvas
+function resizeCanvas() {
+  screen.width = screen.clientWidth;
+  screen.height = screen.clientHeight;
+  overlay.width = overlay.clientWidth;
+  overlay.height = overlay.clientHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Audio visualizer setup
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = audioCtx.createAnalyser();
+analyser.fftSize = 256;
+const source = audioCtx.createMediaElementSource(track);
+source.connect(analyser);
+analyser.connect(audioCtx.destination);
+const bufferLength = analyser.frequencyBinCount;
+const dataArray = new Uint8Array(bufferLength);
+
+// Controls events
+knobs.colorShift.addEventListener('input', e => colorShift = parseInt(e.target.value));
+knobs.glitchIntensity.addEventListener('input', e => glitchIntensity = parseInt(e.target.value));
+knobs.pulseSpeed.addEventListener('input', e => pulseSpeed = parseFloat(e.target.value));
+
+// Menu buttons
+document.getElementById('open-visualizer').addEventListener('click', ()=>menu.classList.add('hidden'));
+document.getElementById('open-games').addEventListener('click', ()=>alert('Mini-games coming soon!'));
+document.getElementById('open-effects').addEventListener('click', ()=>alert('Effects playground coming soon!'));
+
+// Draw loop
+function draw() {
+  ctx.clearRect(0,0,screen.width,screen.height);
+  analyser.getByteFrequencyData(dataArray);
+
+  const barWidth = screen.width / bufferLength;
+  for(let i = 0; i < bufferLength; i++){
+    const barHeight = dataArray[i];
+    const hue = (i*4 + colorShift) % 360;
+    ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.fillRect(i*barWidth, screen.height - barHeight, barWidth, barHeight);
   }
-  resizeCanvas(vizCanvas);
-  window.addEventListener('resize',()=>resizeCanvas(vizCanvas));
 
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const source = audioCtx.createMediaElementSource(track);
-  const analyser = audioCtx.createAnalyser();
-  source.connect(analyser);
-  analyser.connect(audioCtx.destination);
-  analyser.fftSize = 256;
-  const bufferLength = analyser.frequencyBinCount;
-  const dataArray = new Uint8Array(bufferLength);
-
-  function drawViz(){
-    requestAnimationFrame(drawViz);
-    analyser.getByteFrequencyData(dataArray);
-    vCtx.fillStyle = 'rgba(0,0,0,0.1)';
-    vCtx.fillRect(0,0,vizCanvas.width,vizCanvas.height);
-    const barWidth = vizCanvas.width / bufferLength * 2.5;
-    let x=0;
-    for(let i=0;i<bufferLength;i++){
-      const barHeight = dataArray[i]*2;
-      vCtx.fillStyle = `hsl(${i*3},100%,50%)`;
-      vCtx.fillRect(x,vizCanvas.height-barHeight,barWidth,barHeight);
-      x += barWidth + 1;
-    }
+  // CRT overlay flicker
+  octx.clearRect(0,0,overlay.width,overlay.height);
+  const lines = 100;
+  for(let i=0;i<lines;i++){
+    octx.fillStyle = `rgba(255,255,255,${Math.random()*0.03})`;
+    octx.fillRect(0, i*(overlay.height/lines), overlay.width, 1);
   }
-  drawViz();
-
-  /* EFFECTS PLAYGROUND */
-  const effectsCanvas = document.getElementById('effectsCanvas');
-  const eCtx = effectsCanvas.getContext('2d');
-  resizeCanvas(effectsCanvas);
-  window.addEventListener('resize',()=>resizeCanvas(effectsCanvas));
-
-  const colorKnob = document.getElementById('colorKnob');
-  const glitchKnob = document.getElementById('glitchKnob');
-  const pulseKnob = document.getElementById('pulseKnob');
-
-  function drawEffects(){
-    requestAnimationFrame(drawEffects);
-    eCtx.clearRect(0,0,effectsCanvas.width,effectsCanvas.height);
-    for(let i=0;i<6;i++){
-      const radius = 30+Math.sin(Date.now()/500*pulseKnob.value+i)*60;
-      eCtx.beginPath();
-      eCtx.arc(effectsCanvas.width/2 + Math.sin(i)*60,effectsCanvas.height/2 + Math.cos(i)*60,radius,0,Math.PI*2);
-      eCtx.strokeStyle = `hsl(${colorKnob.value},100%,50%)`;
-      eCtx.lineWidth = 2 + glitchKnob.value/2;
-      eCtx.stroke();
-    }
+  // subtle glitch pulses
+  octx.fillStyle = `rgba(255,0,255,0.05)`;
+  for(let i=0;i<glitchIntensity;i++){
+    const x = Math.random()*overlay.width;
+    const y = Math.random()*overlay.height;
+    const w = Math.random()*10;
+    const h = Math.random()*5;
+    octx.fillRect(x,y,w,h);
   }
-  drawEffects();
 
-  /* MINI GAME - Neon Pong */
-  const gameCanvas = document.getElementById('gameCanvas');
-  const gCtx = gameCanvas.getContext('2d');
-  resizeCanvas(gameCanvas);
-  window.addEventListener('resize',()=>resizeCanvas(gameCanvas));
+  requestAnimationFrame(draw);
+}
 
-  const paddleHeight = 80;
-  const paddleWidth = 12;
-  let playerY = (gameCanvas.height-paddleHeight)/2;
-  let ballX = gameCanvas.width/2, ballY = gameCanvas.height/2;
-  let ballSpeedX = 3, ballSpeedY=2;
+// Start audio on first interaction
+document.body.addEventListener('click', ()=>{
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  track.play();
+});
 
-  function drawGame(){
-    requestAnimationFrame(drawGame);
-    gCtx.clearRect(0,0,gameCanvas.width,gameCanvas.height);
-    // paddles
-    gCtx.fillStyle='lime';
-    gCtx.fillRect(20,playerY,paddleWidth,paddleHeight);
-    gCtx.fillRect(gameCanvas.width-32,playerY,paddleWidth,paddleHeight);
-    // ball
-    gCtx.beginPath();
-    gCtx.arc(ballX,ballY,8,0,Math.PI*2);
-    gCtx.fillStyle='cyan';
-    gCtx.fill();
-    // move
-    ballX += ballSpeedX; ballY += ballSpeedY;
-    if(ballY<=0||ballY>=gameCanvas.height) ballSpeedY*=-1;
-    if(ballX<=32 && ballY>playerY && ballY<playerY+paddleHeight) ballSpeedX*=-1;
-    if(ballX>=gameCanvas.width-32 && ballY>playerY && ballY<playerY+paddleHeight) ballSpeedX*=-1;
-    if(ballX<0||ballX>gameCanvas.width){ ballX=gameCanvas.width/2; ballY=gameCanvas.height/2; }
-  }
-  drawGame();
-  window.addEventListener('mousemove', e=>{
-    const rect = gameCanvas.getBoundingClientRect();
-    playerY = e.clientY-rect.top-paddleHeight/2;
-    if(playerY<0) playerY=0;
-    if(playerY>gameCanvas.height-paddleHeight) playerY=gameCanvas.height-paddleHeight;
-  });
+draw();
 </script>
-
 </body>
 </html>
+
