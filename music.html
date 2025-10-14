@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Amity Hayze — Music</title>
+<meta name="description" content="Amity Hayze — music page. Vintage oscilloscope sphere + embeds across platforms." />
+<link rel="icon" href="favicon.ico" />
+
+<style>
+  :root{
+    --neon: #00f0ff;
+    --bg-dark:#000;
+    --muted:#9beef7;
+    --hazy-pink: rgba(255,107,205,0.25);
+    --hazy-pink-strong: rgba(255,107,205,0.35);
+    --wrap-max:980px;
+    --pulse: 0.06; /* updated by JS */
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg-dark);font-family:"Courier New",monospace;color:var(--neon);-webkit-font-smoothing:antialiased}
+  body{padding-top:62px;overflow-y:auto; --bg-glow: rgba(0,240,255,var(--pulse));}
+  /* CRT subtle background gif */
+  body::before{
+    content:"";position:fixed;inset:0;background:url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover no-repeat;
+    opacity:0.12;z-index:-2;mix-blend-mode:screen;filter:grayscale(30%) contrast(1.05);
+  }
+  body::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 70%);z-index:-1}
+
+  .main-nav{
+    position:fixed;top:0;left:0;right:0;
+    background:rgba(0,0,0,0.65);border-bottom:1px solid rgba(0,255,255,0.08);backdrop-filter:blur(4px);
+    display:flex;justify-content:center;gap:28px;padding:12px 20px;z-index:1000;
+  }
+  .main-nav a{color:var(--neon);text-decoration:none;font-size:14px;letter-spacing:1px;text-transform:uppercase}
+  .main-nav a:hover{color:#fff;text-shadow:0 0 6px var(--neon)}
+
+  .wrap{max-width:var(--wrap-max);margin:8vh auto 6vh auto;padding:30px}
+  .panel{background:rgba(0,0,0,0.7);border-radius:12px;padding:22px;border:1px solid rgba(0,255,255,0.06);box-shadow:0 0 30px var(--bg-glow);}
+
+  header{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:18px;text-align:center}
+  .title{font-size:32px;color:var(--neon);text-shadow:0 0 10px rgba(0,240,255,0.22)}
+  .subtitle{font-size:13px;color:var(--muted)}
+
+  /* central TV / screen area */
+  .tv-wrap{display:flex;flex-direction:column;align-items:center;gap:18px;margin:18px 0}
+  .tv {
+    width:min(920px,94%);
+    max-width:920px;
+    aspect-ratio: 16/9;
+    background: linear-gradient(180deg, rgba(0,0,0,0.65), rgba(0,0,0,0.55));
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 18px 80px rgba(0,0,0,0.6), 0 0 calc(40px * var(--pulse)) rgba(255,107,205,0.08);
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* CRT screen glare */
+  .tv::before{
+    content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    pointer-events:none;mix-blend-mode:screen;
+  }
+
+  /* canvas sits inside the TV */
+  #vizCanvas{width:100%;height:100%;display:block}
+
+  /* controls under the TV */
+  .controls {
+    display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;
+  }
+  .knob {
+    display:flex;flex-direction:column;align-items:center;color:var(--muted);font-size:13px;
+    gap:6px;
+  }
+  .slider {
+    -webkit-appearance:none; appearance:none; width:160px; height:8px; border-radius:8px;
+    background:linear-gradient(90deg, var(--hazy-pink), var(--neon)); outline:none;
+    box-shadow: 0 0 8px rgba(0,0,0,0.6) inset;
+  }
+  .slider::-webkit-slider-thumb { -webkit-appearance:none; width:14px;height:14px;border-radius:50%; background:#fff; box-shadow:0 0 10px rgba(255,255,255,0.12) }
+
+  .play-controls { display:flex;gap:10px;align-items:center; }
+  .btn {
+    padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:var(--neon);font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;
+    box-shadow:0 0 calc(30px * var(--pulse)) rgba(255,107,205,0.06);
+  }
+  .btn-pink{ background: linear-gradient(180deg, var(--hazy-pink), rgba(255,107,205,0.06)); color:#e813f0; border:1px solid rgba(255,107,205,0.35) }
+
+  /* embeds section */
+  .embeds { margin-top:22px; display:flex;flex-direction:column;gap:14px }
+  .embed-card {
+    background:rgba(255,255,255,0.02); border-radius:10px;padding:12px;border:1px solid rgba(0,255,255,0.04)
+  }
+  .player-embed { width:100%; height:360px; border:0; border-radius:8px; overflow:hidden; display:block }
+  @media (max-width:680px){ .player-embed{height:280px} .slider{width:120px} }
+
+  footer{margin-top:22px;color:var(--muted);font-size:13px;text-align:center}
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none!important;animation:none!important}
+  }
+</style>
+</head>
+<body>
+  <nav class="main-nav" role="navigation" aria-label="Main">
+    <a href="index.html">Home</a>
+    <a href="press.html">Press + Features</a>
+    <a href="index.html#music">Music</a>
+    <a href="visuals.html">Visuals</a>
+    <a href="index.html#merch">Merch</a>
+    <a href="index.html#socials">Connect</a>
+  </nav>
+
+  <div class="wrap">
+    <div class="panel">
+      <header>
+        <div class="title" data-text="Amity Hayze">Amity Hayze — Music</div>
+        <div class="subtitle">Vintage oscilloscope sphere + platform embeds — centered and reactive.</div>
+      </header>
+
+      <div class="tv-wrap">
+        <div class="tv" aria-hidden="false" role="region" aria-label="Music visualizer TV">
+          <canvas id="vizCanvas"></canvas>
+        </div>
+
+        <div class="controls" aria-hidden="false" role="region" aria-label="Visualizer controls">
+          <div class="knob">
+            <label for="sensitivity" style="color:var(--muted)">Sensitivity</label>
+            <input id="sensitivity" class="slider" type="range" min="0.4" max="3" step="0.05" value="1.2" />
+          </div>
+
+          <div class="knob">
+            <label for="strings" style="color:var(--muted)">Strings</label>
+            <input id="strings" class="slider" type="range" min="6" max="80" step="1" value="34" />
+          </div>
+
+          <div class="knob">
+            <label for="glow" style="color:var(--muted)">Glow</label>
+            <input id="glow" class="slider" type="range" min="0" max="2" step="0.05" value="0.9" />
+          </div>
+
+          <div class="play-controls">
+            <button id="playBtn" class="btn btn-pink">Play</button>
+            <button id="stopBtn" class="btn">Stop</button>
+            <a class="btn" href="index.html">Back</a>
+          </div>
+        </div>
+
+        <!-- Hidden audio element (local file path). Put Cascade Canyon.mp3 next to this html or change src -->
+        <audio id="sourceAudio" src="Cascade Canyon.mp3" crossorigin="anonymous"></audio>
+      </div>
+
+      <!-- embeds (preserve all platform embeds below) -->
+      <div class="embeds">
+        <div class="embed-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-weight:700;color:var(--neon)">Spotify — Full Artist</div>
+            <div style="font-size:12px;color:var(--muted)">Listen across platforms</div>
+          </div>
+          <!-- you can replace/append any embeds here -->
+          <iframe class="player-embed" src="https://open.spotify.com/embed/artist/5NMNo5sQFABJdY3jHH53wf?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media" loading="lazy" title="Spotify — Amity Hayze"></iframe>
+        </div>
+
+        <div class="embed-card">
+          <div style="font-weight:700;color:var(--neon);margin-bottom:8px">YouTube — Videos</div>
+          <!-- Example YouTube embed -->
+          <iframe class="player-embed" src="https://www.youtube.com/embed/aC2udz_ww2s?si=tG46P9nL-8iwEXCc" allow="autoplay; encrypted-media; picture-in-picture" loading="lazy" title="YouTube video — Amity Hayze"></iframe>
+        </div>
+
+        <div class="embed-card">
+          <div style="font-weight:700;color:var(--neon);margin-bottom:8px">Bandcamp / Apple / Other</div>
+          <!-- Add your other platform embeds below -->
+          <!-- Bandcamp placeholder -->
+          <iframe class="player-embed" src="https://bandcamp.com/EmbeddedPlayer/album=0000000000/size=large/bgcol=000000/linkcol=00ffff/transparent=true/" seamless loading="lazy" title="Bandcamp embed"></iframe>
+        </div>
+
+        <!-- Additional embeds: user-provided playlist iframe examples (keeps your previous ones) -->
+        <div class="embed-card">
+          <div style="font-weight:700;color:var(--neon);margin-bottom:8px">Featured Playlists</div>
+
+          <!-- Paste your playlist embeds here: -->
+          <iframe class="player-embed" src="https://open.spotify.com/embed/playlist/08i9sjghPv0YOJgvwrGypr?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media" loading="lazy" title="Playlist 1"></iframe>
+
+          <iframe class="player-embed" src="https://open.spotify.com/embed/playlist/4vi0drYKDFsH2RDNKxRhvn?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media" loading="lazy" title="Playlist 2"></iframe>
+
+          <iframe class="player-embed" src="https://open.spotify.com/embed/playlist/0Lp9po0968hO1xUakltvku?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media" loading="lazy" title="Playlist 3"></iframe>
+
+          <iframe class="player-embed" src="https://open.spotify.com/embed/playlist/3jav5a3YObRYtKCXARL21H?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media" loading="lazy" title="Playlist 4"></iframe>
+
+          <iframe class="player-embed" src="https://open.spotify.com/embed/playlist/6B6gTDEStQWTvd0yc4QBRb?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media" loading="lazy" title="Playlist 5"></iframe>
+
+          <iframe class="player-embed" src="https://open.spotify.com/embed/playlist/79sBSmkDjnqkXet7wJqKcU?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media" loading="lazy" title="Playlist 6"></iframe>
+
+          <iframe class="player-embed" src="https://open.spotify.com/embed/playlist/4nvV53xlNSDQ9ZnPB9gUYC?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media" loading="lazy" title="Playlist 7"></iframe>
+        </div>
+      </div>
+
+      <footer>
+        <div style="color:var(--muted)">© Amity Hayze — transmissions & static</div>
+      </footer>
+    </div>
+  </div>
+
+<script>
+/* Visualizer: vintage oscilloscope sphere (canvas 2D approximation of strings forming a ball)
+   - reactive to audio amplitude / frequency via Web Audio API
+   - sensitivity, string count, glow controlled via sliders
+*/
+
+(function(){
+  const audio = document.getElementById('sourceAudio');
+  const playBtn = document.getElementById('playBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const canvas = document.getElementById('vizCanvas');
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const sensitivityEl = document.getElementById('sensitivity');
+  const stringsEl = document.getElementById('strings');
+  const glowEl = document.getElementById('glow');
+
+  let audioCtx, analyser, sourceNode, dataArray, bufferLength;
+  let width=0, height=0, rafId;
+  let settings = { sensitivity: parseFloat(sensitivityEl.value), strings: parseInt(stringsEl.value,10), glow: parseFloat(glowEl.value) };
+
+  // Resize canvas to container size
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    width = Math.max(300, Math.floor(rect.width));
+    height = Math.max(180, Math.floor(rect.height));
+    canvas.width = width * devicePixelRatio;
+    canvas.height = height * devicePixelRatio;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Create AudioContext and analyser on first play (user gesture)
+  function initAudio() {
+    if (audioCtx) return;
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 2048;
+      bufferLength = analyser.frequencyBinCount;
+      dataArray = new Uint8Array(bufferLength);
+
+      sourceNode = audioCtx.createMediaElementSource(audio);
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+    } catch (err) {
+      console.warn('WebAudio unavailable', err);
+    }
+  }
+
+  // utility: get overall amplitude (0..1)
+  function getAmplitude() {
+    if(!analyser) return 0;
+    analyser.getByteTimeDomainData(dataArray);
+    let sum = 0;
+    for (let i=0;i<bufferLength;i++){
+      const v = (dataArray[i] - 128) / 128;
+      sum += v*v;
+    }
+    const rms = Math.sqrt(sum/bufferLength);
+    return Math.min(1, rms*1.6);
+  }
+
+  // draw the "string sphere" - ring of circular strings mapped into perspective
+  function draw(time){
+    ctx.clearRect(0,0,width,height);
+
+    // subtle vignette + CRT noise overlay (soft)
+    ctx.save();
+    // background soft noise glow
+    const pulseRoot = Math.max(0.04, Math.min(0.35, settings.sensitivity * 0.06));
+    document.body.style.setProperty('--pulse', pulseRoot * (0.6 + getAmplitude() * 0.8));
+    // dark screen fill
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.fillRect(0,0,width,height);
+
+    // calculate center & radius
+    const cx = width / 2;
+    const cy = height / 2;
+    const baseR = Math.min(width, height) * 0.32; // sphere radius
+    // amplitude (influences displacement)
+    const amp = getAmplitude() * settings.sensitivity;
+
+    const rings = Math.max(3, Math.round(settings.strings / 6)); // latitude rings
+    const stringsPerRing = Math.round(settings.strings / rings);
+
+    // draw glow halo
+    const glow = settings.glow * (0.6 + amp * 0.8);
+    const grad = ctx.createRadialGradient(cx,cy, baseR*0.2, cx,cy, baseR*1.8);
+    grad.addColorStop(0, `rgba(255,107,205,${0.06 * glow})`);
+    grad.addColorStop(0.6, `rgba(0,240,255,${0.02 * glow})`);
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(cx,cy, baseR*1.6, 0, Math.PI*2);
+    ctx.fill();
+
+    // Draw rings of strings to create sphere illusion
+    for (let r = 0; r < rings; r++){
+      const lat = (r / (rings-1)) * Math.PI - Math.PI/2; // -pi/2 to pi/2
+      const ringRadius = Math.cos(lat) * baseR;
+      const z = Math.sin(lat); // depth (-1..1)
+
+      // perspective scale: nearer rings brighter
+      const perspective = (z + 1) / 2 * 0.9 + 0.1;
+      const lineAlphaBase = 0.12 + perspective * 0.6;
+
+      for (let s = 0; s < stringsPerRing; s++){
+        const t = s / stringsPerRing;
+        const theta = t * Math.PI * 2;
+
+        // waveform displacement uses analyser frequency data: map theta to freq bin
+        let freqValue = 0;
+        if (analyser) {
+          const idx = Math.floor((t * bufferLength * 0.6)) % bufferLength;
+          freqValue = (dataArray ? Math.abs(dataArray[idx] - 128) / 128 : 0) * amp;
+        }
+
+        // small time-based wobble for glitch-y movement
+        const wobble = Math.sin(time*0.002 + r*0.6 + s*0.12) * 0.8;
+
+        // compute point on projected ring
+        const px = cx + Math.cos(theta) * (ringRadius + freqValue * baseR * 0.28 + wobble*4);
+        const py = cy + Math.sin(theta) * (ringRadius*0.5 + freqValue * baseR * 0.18 + wobble*2) * (0.9 - Math.abs(z)*0.3);
+
+        // color blend: mix cyan and pink slightly by theta and depth
+        const mix = 0.5 + 0.5 * Math.sin(theta + time*0.0008 + r*0.25);
+        const rC = Math.round(0 + (255 - 0) * mix);
+        const gC = Math.round(240 + (107 - 240) * mix);
+        const bC = Math.round(255 + (205 - 255) * mix);
+        ctx.fillStyle = `rgba(${rC},${gC},${bC},${lineAlphaBase * (0.6 + freqValue*1.4)})`;
+
+        // draw tiny glowing point (string pixel)
+        const size = 0.9 + perspective*2 + freqValue*4;
+        ctx.beginPath();
+        ctx.arc(px, py, size, 0, Math.PI*2);
+        ctx.fill();
+        // slight inner highlight
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255,255,255,${0.02 + freqValue*0.08})`;
+        ctx.arc(px, py, size*0.35, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+
+    // subtle scanline overlay
+    ctx.fillStyle = 'rgba(255,255,255,0.008)';
+    for (let y=0;y<height;y+=3){
+      ctx.fillRect(0,y,width,1);
+    }
+
+    ctx.restore();
+    rafId = requestAnimationFrame(draw);
+  }
+
+  // handle UI updates
+  sensitivityEl.addEventListener('input', ()=> { settings.sensitivity = parseFloat(sensitivityEl.value); });
+  stringsEl.addEventListener('input', ()=> { settings.strings = parseInt(stringsEl.value,10); });
+  glowEl.addEventListener('input', ()=> { settings.glow = parseFloat(glowEl.value); });
+
+  // play / stop behavior
+  playBtn.addEventListener('click', async ()=>{
+    initAudio();
+    if (audioCtx && audioCtx.state === 'suspended') {
+      await audioCtx.resume();
+    }
+    try {
+      await audio.play();
+    } catch (err) {
+      console.warn('autoplay blocked, user gesture required', err);
+      // still init visuals (silent) and wait for user play
+    }
+    // start analyser animation
+    if (analyser) analyser.getByteTimeDomainData(dataArray);
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(draw);
+    playBtn.textContent = 'Playing';
+    playBtn.classList.add('playing');
+  });
+
+  stopBtn.addEventListener('click', ()=>{
+    audio.pause();
+    audio.currentTime = 0;
+    cancelAnimationFrame(rafId);
+    playBtn.textContent = 'Play';
+    playBtn.classList.remove('playing');
+    // clear canvas
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  });
+
+  // pause visual when audio ends
+  audio.addEventListener('ended', () => {
+    cancelAnimationFrame(rafId);
+    playBtn.textContent = 'Play';
+    playBtn.classList.remove('playing');
+  });
+
+  // ensure canvas is correct size & start a subtle idle animation even when audio not playing
+  let idleTime=0;
+  function idleLoop(ts){
+    idleTime = ts;
+    // draw a soft idle pulse (lower amplitude) so screen isn't completely dark
+    if (!rafId) rafId = requestAnimationFrame(draw);
+    requestAnimationFrame(()=>{});
+  }
+  requestAnimationFrame(idleLoop);
+
+  // initialize small responsive resize on load
+  setTimeout(resize, 120);
+
+  // Safety: if WebAudio can't create (file CORS or missing), show message in console and allow embeds
+})();
+</script>
+</body>
+</html>
