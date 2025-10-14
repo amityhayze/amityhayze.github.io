@@ -3,133 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CRT Visualizer Room</title>
+<title>Amity Hayze — Visuals Room</title>
 <style>
-  body {
-    margin:0; background:#000; display:flex; flex-direction:column; align-items:center; font-family: monospace; color:#ff6bcd;
-  }
-  #tv-container {
-    position: relative;
-    width: 800px;
-    height: 450px;
-    border: 6px solid #ff6bcd;
-    border-radius: 12px;
-    margin-top: 40px;
-    overflow: hidden;
-    box-shadow: 0 0 64px rgba(255,107,205,0.6);
-  }
-  canvas {
-    width: 100%; height: 100%; display: block;
-  }
-  #controls {
-    margin-top: 16px;
-    display: flex; gap: 16px; justify-content: center;
-  }
-  .knob-container {
-    display:flex; flex-direction:column; align-items:center; font-size:14px;
-  }
-  input[type="range"] {
-    width:120px;
-    margin-top:4px;
-  }
-  #menu {
-    position: absolute; top:10px; right:10px;
-    background: rgba(0,0,0,0.7); padding:8px 12px; border-radius:8px; cursor:pointer;
-    z-index: 10;
-  }
-  #menu-items { display:none; flex-direction:column; margin-top:4px; }
-  #menu-items button { margin-top:4px; padding:4px 8px; border-radius:6px; background:rgba(255,255,255,0.1); border:none; color:#ff6bcd; cursor:pointer; }
+:root {
+  --neon: #00f0ff;
+  --bg-dark: #000;
+  --panel: rgba(0,0,0,0.7);
+  --muted: #9beef7;
+  --glass: rgba(255,255,255,0.03);
+  --hazy-pink: rgba(255,107,205,0.25);
+}
+body {
+  margin:0; height:100%; background:var(--bg-dark); font-family:"Courier New", monospace; color:var(--neon); overflow:hidden;
+}
+body::before {
+  content:""; position:fixed; inset:0; background:url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover no-repeat; opacity:0.12; z-index:-2; mix-blend-mode:screen; filter:grayscale(30%) contrast(1.05);
+}
+body::after {
+  content:""; position:fixed; inset:0; background:radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%); z-index:-1;
+}
+.main-nav {
+  position: fixed; top: 0; left: 0; right: 0; background: rgba(0,0,0,0.65); border-bottom: 1px solid rgba(255,107,205,0.08);
+  backdrop-filter: blur(4px); display:flex; justify-content:center; gap:32px; padding:12px 20px; z-index:1000;
+}
+.main-nav a { color:var(--neon); text-decoration:none; font-size:14px; letter-spacing:1px; text-transform:uppercase; position:relative; }
+.main-nav a::after { content:""; position:absolute; left:0; bottom:-4px; width:0%; height:2px; background:var(--neon); box-shadow:0 0 8px var(--neon); transition:width .3s ease; opacity:.8; }
+.main-nav a:hover::after, .main-nav a.active::after { width:100%; }
+.main-nav a:hover { color:#fff; text-shadow:0 0 6px var(--neon); }
+
+.wrap { max-width:980px; margin:80px auto; padding:20px; display:flex; flex-direction:column; gap:20px; }
+
+.panel { background:var(--panel); border:1px solid rgba(255,107,205,0.08); padding:20px; border-radius:12px; box-shadow:0 0 25px rgba(255,107,205,0.1); backdrop-filter:blur(2px); }
+
+header { text-align:center; }
+.title { font-size:32px; color:var(--neon); text-shadow:0 0 10px rgba(255,107,205,0.2); position:relative; }
+.title::before, .title::after { content:attr(data-text); position:absolute; left:0; top:0; opacity:.25; }
+.title::before { transform:translate(-2px,-1px); color:#ff6bcd; mix-blend-mode:screen; }
+.title::after { transform:translate(2px,1px); color:#9beef7; mix-blend-mode:screen; }
+.subtitle { font-size:13px; color:var(--muted); }
+
+.tv-container { position:relative; width:80%; max-width:800px; margin:0 auto; background:#111; border:4px solid #222; border-radius:8px; overflow:hidden; }
+canvas { display:block; width:100%; height:300px; background:#000; }
+
+.controls { display:flex; justify-content:center; gap:15px; margin-top:12px; flex-wrap:wrap; }
+.controls label { font-size:13px; color:var(--muted); }
+.controls input[type=range] { width:150px; }
+
+footer { text-align:center; color:var(--muted); margin-top:20px; font-size:13px; }
 </style>
 </head>
 <body>
+<nav class="main-nav">
+  <a href="index.html">Home</a>
+  <a href="press.html">Press + Features</a>
+  <a href="#" class="active">Visuals</a>
+</nav>
 
-<h1>CRT Visualizer Room</h1>
+<div class="wrap">
+  <header>
+    <h1 class="title" data-text="Visuals Room">Visuals Room</h1>
+    <div class="subtitle">Interact with your audio-visual playground</div>
+  </header>
 
-<div id="tv-container">
-  <canvas id="screen"></canvas>
-  <div id="menu">
-    Menu ▾
-    <div id="menu-items">
-      <button>Mini Game 1</button>
-      <button>Mini Game 2</button>
-    </div>
+  <div class="panel tv-container">
+    <canvas id="tvScreen"></canvas>
+    <!-- Mini-game placeholder -->
+    <div id="miniGame" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></div>
   </div>
+
+  <div class="panel controls">
+    <label>Color Shift Speed: <input type="range" id="colorShift" min="0" max="20" value="2"></label>
+    <label>Glitch Intensity: <input type="range" id="glitchIntensity" min="0" max="50" value="20"></label>
+    <label>Pulse Speed: <input type="range" id="pulseSpeed" min="1" max="20" value="8"></label>
+  </div>
+
+  <div class="panel">
+    <audio id="audioTrack" src="Cascade Canyon.mp3" controls autoplay loop></audio>
+  </div>
+
 </div>
 
-<div id="controls">
-  <div class="knob-container">
-    <label for="colorShift">Color Shift</label>
-    <input type="range" id="colorShift" min="0" max="360" value="0">
-  </div>
-  <div class="knob-container">
-    <label for="glitchIntensity">Glitch Intensity</label>
-    <input type="range" id="glitchIntensity" min="0" max="100" value="20">
-  </div>
-  <div class="knob-container">
-    <label for="pulseSpeed">Pulse Speed</label>
-    <input type="range" id="pulseSpeed" min="1" max="20" value="8">
-  </div>
-</div>
-
-<audio id="track" src="Cascade Canyon.mp3" controls autoplay loop style="margin-top:16px; width:80%;"></audio>
+<footer>
+  © Amity Hayze — CRT Visuals Playground
+</footer>
 
 <script>
-const canvas = document.getElementById('screen');
+const canvas = document.getElementById('tvScreen');
 const ctx = canvas.getContext('2d');
-canvas.width = canvas.offsetWidth;
-canvas.height = canvas.offsetHeight;
+let width = canvas.width = canvas.offsetWidth;
+let height = canvas.height = canvas.offsetHeight;
 
 // Audio setup
-const audio = document.getElementById('track');
+const audio = document.getElementById('audioTrack');
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const source = audioCtx.createMediaElementSource(audio);
 const analyser = audioCtx.createAnalyser();
-analyser.fftSize = 512;
-const bufferLength = analyser.frequencyBinCount;
-const dataArray = new Uint8Array(bufferLength);
+const source = audioCtx.createMediaElementSource(audio);
 source.connect(analyser);
 analyser.connect(audioCtx.destination);
+analyser.fftSize = 256;
+const bufferLength = analyser.frequencyBinCount;
+const dataArray = new Uint8Array(bufferLength);
 
+// Knobs
 let colorShift = 0, glitchIntensity = 20, pulseSpeed = 8;
-document.getElementById('colorShift').addEventListener('input', e=>colorShift=parseInt(e.target.value));
-document.getElementById('glitchIntensity').addEventListener('input', e=>glitchIntensity=parseInt(e.target.value));
-document.getElementById('pulseSpeed').addEventListener('input', e=>pulseSpeed=parseInt(e.target.value));
+let colorSpeed = 2;
 
-// Draw visualizer
+document.getElementById('colorShift').addEventListener('input', e => {
+  colorSpeed = parseInt(e.target.value)/2;
+});
+document.getElementById('glitchIntensity').addEventListener('input', e => glitchIntensity = parseInt(e.target.value));
+document.getElementById('pulseSpeed').addEventListener('input', e => pulseSpeed = parseInt(e.target.value));
+
 function draw() {
-  ctx.fillStyle = 'rgba(0,0,0,0.15)'; // screen persistence
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  ctx.fillRect(0,0,width,height);
 
   analyser.getByteFrequencyData(dataArray);
-  const barWidth = canvas.width / bufferLength;
+  const barWidth = width / bufferLength;
+
+  colorShift += colorSpeed;
 
   for(let i=0;i<bufferLength;i++){
     const barHeight = dataArray[i]*1.8;
-    const hue = (i*5 + colorShift) % 360;
+    const hue = (i*10 + colorShift) % 360;
     ctx.fillStyle = `hsl(${hue},100%,60%)`;
-    ctx.fillRect(i*barWidth, canvas.height-barHeight, barWidth, barHeight);
+    ctx.fillRect(i*barWidth, height-barHeight, barWidth, barHeight);
   }
 
   // Glitch overlay
   for(let i=0;i<glitchIntensity;i++){
     ctx.fillStyle = `rgba(255,0,255,0.1)`;
-    ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*15, Math.random()*8);
+    ctx.fillRect(Math.random()*width, Math.random()*height, Math.random()*15, Math.random()*8);
   }
 
   // Pulse / CRT flicker overlay
   const alpha = 0.08 + 0.05*Math.sin(Date.now()/100*pulseSpeed);
   ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillRect(0,0,width,height);
 
   requestAnimationFrame(draw);
 }
+
 draw();
 
-// Menu toggle
-const menu = document.getElementById('menu');
-const menuItems = document.getElementById('menu-items');
-menu.addEventListener('click', ()=> menuItems.style.display = menuItems.style.display==='flex'?'none':'flex');
+// Handle resizing
+window.addEventListener('resize', () => {
+  width = canvas.width = canvas.offsetWidth;
+  height = canvas.height = canvas.offsetHeight;
+});
 </script>
-
 </body>
 </html>
