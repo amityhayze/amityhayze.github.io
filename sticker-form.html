@@ -3,55 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sticker Request Form (and secret merch drops) For Amity Hayze</title>
+  <title>Sticker Request Form // Amity Hayze</title>
   <style>
-    /* CRT aesthetic */
+    :root {
+      --hazy-pink: rgba(255,107,205,0.25);
+      --hazy-pink-light: rgba(255,107,205,0.35);
+      --cyan: #00ffc6;
+      --bg-dark: #090910;
+      --text-glow: #e0faff;
+    }
+
     body {
       margin: 0;
       padding: 0;
-      font-family: "Courier New", monospace;
-      background: #0a0a0f;
-      color: #00f0ff;
-      text-align: center;
-      min-height: 100vh;
+      font-family: "Share Tech Mono", monospace;
+      background: radial-gradient(ellipse at top, #090910 0%, #050507 100%);
+      color: var(--text-glow);
       display: flex;
       justify-content: center;
       align-items: center;
+      min-height: 100vh;
       overflow: hidden;
+      text-align: center;
     }
 
-    /* subtle scanlines */
+    /* scanline overlay */
     body::before {
       content: "";
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      inset: 0;
       background: repeating-linear-gradient(
         to bottom,
-        rgba(255,255,255,0.05) 0px,
-        rgba(255,255,255,0.05) 1px,
-        transparent 2px,
-        transparent 3px
+        rgba(255,255,255,0.04) 0px,
+        rgba(255,255,255,0.04) 1px,
+        transparent 3px,
+        transparent 4px
       );
       pointer-events: none;
+      opacity: 0.3;
     }
 
     .card {
-      background: rgba(15, 15, 25, 0.9);
-      border: 2px solid #00ffc6;
+      background: rgba(10, 10, 20, 0.9);
+      border: 1px solid var(--hazy-pink-light);
       border-radius: 16px;
-      box-shadow: 0 0 20px #00ffc6aa, inset 0 0 10px #ff2efc55;
+      box-shadow: 0 0 22px var(--hazy-pink), inset 0 0 10px rgba(255,107,205,0.1);
       padding: 2rem;
       max-width: 500px;
       width: 90%;
       animation: flicker 3s infinite;
       position: relative;
+      backdrop-filter: blur(6px);
     }
 
     h1 {
       font-size: 1.8rem;
-      color: #00ffc6;
-      margin-bottom: 1rem;
-      text-shadow: 0 0 6px #00ffc6, 0 0 20px #ff2efc;
+      color: var(--cyan);
+      text-shadow: 0 0 6px var(--cyan), 0 0 22px #ff2efc;
+      margin-bottom: 1.4rem;
     }
 
     form {
@@ -61,46 +70,66 @@
     }
 
     label {
-      font-size: 0.9rem;
       text-align: left;
       color: #ff2efc;
+      font-size: 0.9rem;
       margin-bottom: -0.3rem;
     }
 
     input, select {
-      padding: 0.7rem;
-      border: 2px solid #00ffc6;
-      border-radius: 8px;
+      padding: 0.8rem;
+      border: 1px solid var(--hazy-pink-light);
+      border-radius: 10px;
       background: #111;
       color: #e0e0e0;
       font-size: 1rem;
       outline: none;
-      transition: 0.2s;
+      transition: all 0.3s ease;
     }
 
     input:focus, select:focus {
-      border-color: #ff2efc;
-      box-shadow: 0 0 8px #ff2efc;
+      border-color: #e813f0;
+      box-shadow: 0 0 10px var(--hazy-pink-light);
     }
 
-    button {
-      padding: 0.9rem;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #00ffc6;
-      color: #0a0a0f;
-      font-weight: bold;
+    /* pulsing pink button */
+    .btn-pink {
+      background: linear-gradient(180deg, rgba(255,107,205,0.25), rgba(255,107,205,0.1));
+      border: 1px solid rgba(255,107,205,0.4);
+      color: #e813f0;
+      text-transform: uppercase;
       letter-spacing: 1px;
-      box-shadow: 0 0 10px #00ffc6, 0 0 20px #00ffc677;
-      transition: 0.3s;
+      font-weight: 700;
+      padding: 14px 28px;
+      border-radius: 10px;
+      cursor: pointer;
+      animation: pulsePink 4s infinite ease-in-out;
+      box-shadow: 0 0 20px var(--hazy-pink), inset 0 0 8px rgba(255,107,205,0.1);
+      transition: transform 0.22s ease, box-shadow 0.4s ease, background 0.4s ease;
     }
 
-    button:hover {
-      background: #ff2efc;
-      box-shadow: 0 0 15px #ff2efc, 0 0 30px #00ffc6;
-      color: white;
+    .btn-pink:hover {
+      background: var(--hazy-pink);
+      box-shadow: 0 0 40px var(--hazy-pink-light), 0 0 80px var(--hazy-pink);
+      transform: translateY(-2px);
+      animation: pulsePinkHover 3s infinite ease-in-out;
+    }
+
+    @keyframes pulsePink {
+      0% { box-shadow: 0 0 18px var(--hazy-pink); }
+      50% { box-shadow: 0 0 46px var(--hazy-pink-light); }
+      100% { box-shadow: 0 0 22px var(--hazy-pink); }
+    }
+
+    @keyframes pulsePinkHover {
+      0% { box-shadow: 0 0 26px var(--hazy-pink-light), 0 0 8px var(--hazy-pink); }
+      50% { box-shadow: 0 0 52px var(--hazy-pink-light), 0 0 12px var(--hazy-pink); }
+      100% { box-shadow: 0 0 26px var(--hazy-pink-light), 0 0 8px var(--hazy-pink); }
+    }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 24%, 55% { opacity: 0.97; }
     }
 
     /* confirmation overlay */
@@ -116,34 +145,50 @@
       gap: 1rem;
       padding: 2rem;
       animation: fadeIn 0.6s ease forwards;
+      text-align: center;
     }
 
     .confirmation h2 {
-      color: #00ffc6;
-      font-size: 1.5rem;
-      text-shadow: 0 0 8px #00ffc6, 0 0 20px #ff2efc;
+      color: var(--cyan);
+      font-size: 1.6rem;
+      text-shadow: 0 0 8px var(--cyan), 0 0 20px #ff2efc;
     }
 
     .confirmation p {
       color: #e0e0e0;
       font-size: 1rem;
       max-width: 400px;
+      line-height: 1.5;
+    }
+
+    /* back link button */
+    .back-btn {
+      margin-top: 1rem;
+      background: transparent;
+      border: none;
+      color: #e813f0;
+      font-size: 1rem;
+      text-decoration: underline;
+      cursor: pointer;
+      animation: pulsePink 3s infinite ease-in-out;
+      transition: color 0.3s ease;
+    }
+
+    .back-btn:hover {
+      color: var(--cyan);
+      text-shadow: 0 0 10px var(--cyan);
     }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
     }
-
-    @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-      20%, 24%, 55% { opacity: 0.95; }
-    }
   </style>
 </head>
+
 <body>
   <div class="card">
-    <h1>Free Sticker Drop</h1>
+    <h1>Free Sticker Drop 💿</h1>
     <form id="stickerForm">
       <label for="name">Full Name</label>
       <input type="text" id="name" name="name" required>
@@ -163,13 +208,15 @@
         <option value="Other">Other</option>
       </select>
 
-      <button type="submit">Submit</button>
+      <button type="submit" class="btn-pink">Submit</button>
     </form>
 
     <div class="confirmation" id="confirmation">
-      <h2>✅ Request submitted!</h2>
-      <p>Thanks for supporting Amity Hayze 💿✨  
-      Your free sticker will be mailed soon. Keep an eye out for secret merch drops 👀</p>
+      <h2>✅ Request Submitted!</h2>
+      <p>Thanks for supporting <b>Amity Hayze</b> 🌊  
+      Your free sticker is on its way — and keep an eye out for <b>secret merch drops</b> 👀</p>
+
+      <button class="back-btn" onclick="window.location.href='index.html'">← Back to Site</button>
     </div>
   </div>
 
@@ -189,7 +236,6 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData)
         });
-        // hide form, show confirmation
         document.getElementById("stickerForm").style.display = "none";
         document.getElementById("confirmation").style.display = "flex";
         e.target.reset();
@@ -200,3 +246,4 @@
   </script>
 </body>
 </html>
+
