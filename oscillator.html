@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Amity Hayze — Oscillator Transmission App</title>
 <style>
-:root{ --neon: #00f0ff; --muted: #9beef7; --bg-dark: #000; --hazy-pink: rgba(255,107,205,0.25); --hazy-pink-light: rgba(255,107,205,0.35); /* palette (updated by presets) */ --viz-pink: 255,107,205; --viz-cyan: 0,240,255; --viz-strength: 1; }
-/* ===== page baseline (keeps your look) ===== */
+:root{ --neon: #00f0ff; --muted: #9beef7; --bg-dark: #000; --hazy-pink: rgba(255,107,205,0.25); --hazy-pink-light: rgba(255,107,205,0.35); --viz-pink: 255,107,205; --viz-cyan: 0,240,255; --viz-strength: 1; }
 html,body{height:100%;margin:0;background:radial-gradient(circle at center,#0a0a0f,#050509,#000);font-family:"Courier New",monospace;color:var(--neon);-webkit-font-smoothing:antialiased}
 body{overflow-x:hidden;text-align:center;display:flex;flex-direction:column;align-items:center;position:relative;padding-bottom:40px}
 header.app-header{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;box-sizing:border-box}
@@ -15,15 +14,12 @@ header.app-header .brand h1{margin:0;font-size:1.15rem}
 header.app-header .controls-row{display:flex;gap:8px;align-items:center}
 h1{margin-top:1.5rem;text-shadow:0 0 8px #ff00ff,0 0 20px #00fff6;font-size:1.8rem;z-index:3;color:var(--neon)}
 .pulse-bg{position:fixed;inset:0;z-index:0;background: radial-gradient(circle at center, rgba(255,0,255,0.02), rgba(0,255,255,0.04));pointer-events:none;transition:opacity .18s linear;mix-blend-mode:screen;opacity:0.9}
-/* ===== preset (collapsed) UI additions — only these rules are new ===== */
-/* container sits below the header so it won't overlap the top-right controls row */
+/* ===== preset UI ===== */
 .preset-container{ position:fixed; top:4.2rem; right:1rem; z-index:6; display:flex; flex-direction:column; align-items:flex-end; gap:.5rem; }
 .preset-toggle{ background:rgba(10,10,20,0.75); border:1px solid #ffb7ff; color:#ffb7ff; padding:.35rem .6rem; border-radius:10px; cursor:pointer; font-family:inherit; font-size:13px; box-shadow:0 0 8px rgba(255,46,252,0.12); }
 .preset-toggle:hover{background:#ffb7ff;color:#0a0a0a}
-/* reuse your original preset-menu look but allow collapsed state */
 .preset-menu{ display:flex; flex-direction:column; gap:.5rem; background:rgba(10,10,20,0.75); border:2px solid #ff2efc; border-radius:12px; padding:1rem; box-shadow:0 0 12px #ff2efc; transition:opacity .22s ease,transform .22s ease,max-height .22s ease; max-height:400px; overflow:hidden; }
 .preset-menu.collapsed{ max-height:0; opacity:0; transform:translateY(-6px) scaleY(0.98); padding-top:0; padding-bottom:0; border-width:0; }
-/* ===== end new rules ===== */
 .preset-menu button{background:transparent;border:1px solid #ffb7ff;border-radius:6px;color:#ffb7ff;padding:.4rem .8rem;cursor:pointer;font-family:inherit;transition:all .18s}
 .preset-menu button:disabled{opacity:.45;cursor:not-allowed}
 .preset-menu button:hover:not(:disabled){background:#ffb7ff;color:#0a0a0a;box-shadow:0 0 10px #ffb7ff}
@@ -36,9 +32,7 @@ h1{margin-top:1.5rem;text-shadow:0 0 8px #ff00ff,0 0 20px #00fff6;font-size:1.8r
 .tv-wrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
 .tv{width:min(760px,94%);aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);background:#000;margin:10px auto;position:relative;z-index:3}
 #vizCanvas{display:block;width:100%;height:100%}
-/* ===== ensure tv fills entire screen when fullscreened (tiny addition) ===== */
 .tv:fullscreen, .tv:-webkit-full-screen { width: 100% !important; height: 100% !important; aspect-ratio: auto !important; border-radius: 0 !important; }
-/* ===== end fullscreen rule ===== */
 .controls{min-width:240px;max-width:260px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
 .knob label{display:block;margin-bottom:6px;color:var(--muted);font-size:13px}
 .slider{width:100%}
@@ -51,13 +45,11 @@ input[type="range"]::-webkit-slider-thumb{appearance:none;width:14px;height:14px
 @media (max-width:680px){.player-embed{height:260px}.controls{width:100%;min-width:auto;max-width:none}}
 footer{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-/* small utility */
 .muted-note{font-size:12px;color:var(--muted);}
 .preset-list{display:flex;gap:6px;flex-wrap:wrap}
-.preset-chip{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;cursor:pointer}
+.preset-chip{background:rgba(255,255,255,0.02);border:1px solid rgba(0,0,0,0.04);padding:6px 8px;border-radius:8px;cursor:pointer}
 .small{font-size:12px;padding:6px 8px}
 input[type=file]{display:none}
-/* recording indicator */
 .rec-indicator{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9;padding:6px 10px;border-radius:999px;background:rgba(255,0,0,0.12);color:#ffb7b7;font-weight:700;font-size:13px;display:none;align-items:center;gap:8px;border:1px solid rgba(255,0,0,0.18)}
 .rec-indicator.show{display:inline-flex}
 .rec-dot{width:10px;height:10px;border-radius:50%;background:#ff3b3b;box-shadow:0 0 8px rgba(255,0,0,0.3)}
@@ -66,149 +58,134 @@ input[type=file]{display:none}
 <body>
 <div class="pulse-bg" id="pulseBg" aria-hidden="true"></div>
 <header class="app-header">
-<div class="brand">
-<h1>Amity Hayze — Oscillator Transmission App</h1>
-<div class="muted-note">Based on your vintage oscilloscope sphere — now an interactive app (save presets, upload audio, use mic, snapshot).</div>
-</div>
-<div class="controls-row">
-<label class="small" style="display:flex;align-items:center;gap:6px">
-<input id="useMic" type="checkbox"> Microphone
-</label>
-<label class="btn small" style="cursor:pointer">
-<input id="filePick" type="file" accept="audio/*"> Upload Audio
-</label>
-<button id="snapshotBtn" class="btn small">Snapshot</button>
-<button id="fullscreenBtn" class="btn small">Fullscreen</button>
-<!-- NEW: Record button (toggles recording) -->
-<button id="recordBtn" class="btn small">Record</button>
-</div>
+  <div class="brand">
+    <h1>Amity Hayze — Oscillator Transmission App</h1>
+    <div class="muted-note">Based on your vintage oscilloscope sphere — interactive app (save presets, upload audio, use mic, snapshot).</div>
+  </div>
+  <div class="controls-row">
+    <label class="small" style="display:flex;align-items:center;gap:6px">
+      <input id="useMic" type="checkbox"> Microphone
+    </label>
+    <label class="btn small" style="cursor:pointer">
+      <input id="filePick" type="file" accept="audio/*"> Upload Audio
+    </label>
+    <button id="snapshotBtn" class="btn small">Snapshot</button>
+    <button id="fullscreenBtn" class="btn small">Fullscreen</button>
+    <button id="recordBtn" class="btn small">Record</button>
+  </div>
 </header>
-<!-- recording indicator -->
+
 <div class="rec-indicator" id="recIndicator"><span class="rec-dot"></span><span id="recText">Recording</span></div>
-<!-- ===== replaced the static preset block with a collapsible container (ONLY this block changed) ===== -->
+
 <div class="preset-container" aria-hidden="false">
-<button id="presetToggle" class="preset-toggle" aria-expanded="true" aria-controls="presetMenu">🎛 Presets</button>
-<div id="presetMenu" class="preset-menu" role="region" aria-label="Presets menu">
-<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px"><strong style="font-size:13px">Presets</strong></div>
-<div class="preset-list" id="presetList">
-<button id="presetCRT" class="preset-chip">CRT</button>
-<button id="presetVHS" class="preset-chip">VHS</button>
-<button id="presetNeon" class="preset-chip">Neon</button>
+  <button id="presetToggle" class="preset-toggle" aria-expanded="true" aria-controls="presetMenu">🎛 Presets</button>
+  <div id="presetMenu" class="preset-menu" role="region" aria-label="Presets menu">
+    <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px"><strong style="font-size:13px">Presets</strong></div>
+    <div class="preset-list" id="presetList">
+      <button id="presetCRT" class="preset-chip">CRT</button>
+      <button id="presetVHS" class="preset-chip">VHS</button>
+      <button id="presetNeon" class="preset-chip">Neon</button>
+    </div>
+    <div style="margin-top:8px;display:flex;gap:6px">
+      <input id="presetName" placeholder="Save preset name" style="padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--neon)">
+      <button id="savePresetBtn" class="btn small">Save</button>
+    </div>
+    <div style="margin-top:8px;display:flex;gap:6px">
+      <button id="exportPresets" class="btn small">Export</button>
+      <button id="importPresets" class="btn small">Import</button>
+      <input id="importFile" type="file" accept="application/json" style="display:none">
+    </div>
+  </div>
 </div>
-<div style="margin-top:8px;display:flex;gap:6px">
-<input id="presetName" placeholder="Save preset name" style="padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--neon)">
-<button id="savePresetBtn" class="btn small">Save</button>
-</div>
-<div style="margin-top:8px;display:flex;gap:6px">
-<button id="exportPresets" class="btn small">Export</button>
-<button id="importPresets" class="btn small">Import</button>
-<input id="importFile" type="file" accept="application/json" style="display:none">
-</div>
-</div>
-</div>
-<!-- ===== end replacement ===== -->
+
 <div class="controls-top" role="region" aria-label="Playback controls">
-<button id="playBtn" class="btn btn-pink">▶ Play</button>
-<button id="stopBtn" class="btn" disabled>■ Stop</button>
-<a class="btn" href="index.html" style="text-decoration:none">Back</a>
+  <button id="playBtn" class="btn btn-pink">▶ Play</button>
+  <button id="stopBtn" class="btn" disabled>■ Stop</button>
 </div>
+
 <div class="wrap">
-<div class="panel" role="main">
-<header style="text-align:center;margin-bottom:12px">
-<div style="display:flex;justify-content:center;gap:10px;align-items:center">
-<div class="title" data-text="Amity Hayze" style="font-size:18px;color:var(--neon)">Vintage Oscilloscope Sphere — App</div>
+  <div class="panel" role="main">
+    <div class="tv-wrap" style="justify-content:center">
+      <div class="tv" role="region" aria-label="Visualizer TV">
+        <canvas id="vizCanvas" aria-hidden="false"></canvas>
+      </div>
+      <div class="controls" role="region" aria-label="Visualizer controls">
+        <div class="knob">
+          <label for="sensitivity" style="color:var(--muted)">Sensitivity</label>
+          <input id="sensitivity" class="slider" type="range" min="0.4" max="3" step="0.05" value="1.2">
+        </div>
+        <div class="knob">
+          <label for="strings" style="color:var(--muted)">Strings</label>
+          <input id="strings" class="slider" type="range" min="6" max="80" step="1" value="34">
+        </div>
+        <div class="knob">
+          <label for="glow" style="color:var(--muted)">Glow</label>
+          <input id="glow" class="slider" type="range" min="0" max="2" step="0.05" value="0.9">
+        </div>
+      </div>
+    </div>
+    <audio id="sourceAudio" src="Cascade Canyon.mp3" crossorigin="anonymous"></audio>
+  </div>
 </div>
-<div class="subtitle" style="color:var(--muted);font-size:13px;margin-top:6px">Centered, reactive, and preset-driven — click Play to start. Use Mic or Upload to change input.</div>
-</header>
-<div class="tv-wrap" style="justify-content:center">
-<div class="tv" role="region" aria-label="Visualizer TV">
-<canvas id="vizCanvas" aria-hidden="false"></canvas>
-</div>
-<div class="controls" role="region" aria-label="Visualizer controls">
-<div class="knob">
-<label for="sensitivity" style="color:var(--muted)">Sensitivity</label>
-<input id="sensitivity" class="slider" type="range" min="0.4" max="3" step="0.05" value="1.2">
-</div>
-<div class="knob">
-<label for="strings" style="color:var(--muted)">Strings</label>
-<input id="strings" class="slider" type="range" min="6" max="80" step="1" value="34">
-</div>
-<div class="knob">
-<label for="glow" style="color:var(--muted)">Glow</label>
-<input id="glow" class="slider" type="range" min="0" max="2" step="0.05" value="0.9">
-</div>
-<div style="display:flex;gap:8px;flex-direction:column">
-<div class="play-controls">
-<button id="presetApply" class="btn" disabled>Presets Active After Play</button>
-</div>
-<div style="display:flex;gap:6px">
-<button id="loadDefault" class="btn small">Load Default Audio</button>
-<button id="clearPresets" class="btn small">Clear Presets</button>
-</div>
-<div style="margin-top:6px;color:var(--muted);font-size:12px">Tip: save presets to local device. Export to back them up.</div>
-</div>
-</div>
-</div>
-<audio id="sourceAudio" src="Cascade Canyon.mp3" crossorigin="anonymous"></audio>
-<div class="embeds" id="statusArea"></div>
-</div>
-</div>
+
 <footer>Made by Amity Hayze — Oscillator Transmission App • <span id="version">v1.0</span></footer>
 
-<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.0/dist/ffmpeg.min.js"></script>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.1/dist/ffmpeg.min.js"></script>
 <script>
-/* Full app script with MP4 recording integration */
-(async function(){
-const { createFFmpeg, fetchFile } = FFmpeg;
-const ffmpeg = createFFmpeg({ log: true });
-await ffmpeg.load();
+// ===== Preset toggle =====
+const toggle = document.getElementById('presetToggle'); 
+const menu = document.getElementById('presetMenu'); 
+toggle.addEventListener('click', ()=>{ 
+    const closing = menu.classList.toggle('collapsed'); 
+    toggle.setAttribute('aria-expanded', String(!closing)); 
+});
 
-// DOM
-const audio = document.getElementById('sourceAudio');
+// ===== Recording to MP4 via FFmpeg.wasm =====
 const recordBtn = document.getElementById('recordBtn');
 const recIndicator = document.getElementById('recIndicator');
-let mediaRecorder, chunks = [];
-let recording = false;
+let mediaRecorder, recordedChunks = [], recording=false;
 
-// Record Button Handler
-recordBtn.addEventListener('click', async () => {
-if(recording){
-  mediaRecorder.stop();
-  recording=false;
-  recIndicator.classList.remove('show');
-}else{
-  // request mic
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-  mediaRecorder = new MediaRecorder(stream);
-  chunks=[];
-  mediaRecorder.ondataavailable=e=>chunks.push(e.data);
-  mediaRecorder.onstop=async()=>{
-    const blob = new Blob(chunks, {type:'audio/webm'});
-    // convert webm -> mp4 via ffmpeg
-    const arrayBuffer = await blob.arrayBuffer();
-    ffmpeg.FS('writeFile','input.webm',new Uint8Array(arrayBuffer));
-    await ffmpeg.run('-i','input.webm','-c:a','aac','output.mp4');
-    const data = ffmpeg.FS('readFile','output.mp4');
-    const mp4Blob = new Blob([data.buffer],{type:'video/mp4'});
-    const url = URL.createObjectURL(mp4Blob);
-    const a = document.createElement('a');
-    a.href=url;a.download='recording.mp4';a.click();
-    URL.revokeObjectURL(url);
-  };
-  mediaRecorder.start();
-  recording=true;
-  recIndicator.classList.add('show');
-}
-});
+const { createFFmpeg, fetchFile } = FFmpeg;
+const ffmpeg = createFFmpeg({ log: true });
 
-// Preset toggle
-const presetToggle = document.getElementById('presetToggle');
-const presetMenu = document.getElementById('presetMenu');
-presetToggle.addEventListener('click',()=>{
-const expanded=presetMenu.classList.toggle('collapsed');
-presetToggle.setAttribute('aria-expanded',(!expanded).toString());
+recordBtn.addEventListener('click', async ()=>{
+  if(recording){
+    mediaRecorder.stop();
+  }else{
+    recordedChunks = [];
+    let stream = await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => e.data.size>0 && recordedChunks.push(e.data);
+    mediaRecorder.onstop = async ()=>{
+      recIndicator.classList.remove('show');
+      recording=false;
+      recordBtn.textContent='Record';
+      try{
+        const webmBlob = new Blob(recordedChunks,{type:'video/webm'});
+        recIndicator.querySelector('#recText').textContent='Converting...';
+        recIndicator.classList.add('show');
+
+        await ffmpeg.load();
+        ffmpeg.FS('writeFile','input.webm',await fetchFile(webmBlob));
+        await ffmpeg.run('-i','input.webm','-c:v','libx264','-crf','23','-preset','veryfast','output.mp4');
+        const data = ffmpeg.FS('readFile','output.mp4');
+        const mp4Blob = new Blob([data.buffer],{type:'video/mp4'});
+        const url = URL.createObjectURL(mp4Blob);
+        const a = document.createElement('a');
+        a.href=url;
+        a.download='recording_'+new Date().toISOString().replace(/[:.]/g,'-')+'.mp4';
+        a.click();
+        URL.revokeObjectURL(url);
+        recIndicator.classList.remove('show');
+      }catch(e){alert('MP4 conversion failed: '+e.message);}
+    };
+    mediaRecorder.start();
+    recording=true;
+    recordBtn.textContent='Stop';
+    recIndicator.querySelector('#recText').textContent='Recording';
+    recIndicator.classList.add('show');
+  }
 });
-})();
 </script>
 </body>
 </html>
