@@ -116,6 +116,11 @@
     .preset-chip{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;cursor:pointer}
     .small{font-size:12px;padding:6px 8px}
     input[type=file]{display:none}
+
+    /* recording indicator */
+    .rec-indicator{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9;padding:6px 10px;border-radius:999px;background:rgba(255,0,0,0.12);color:#ffb7b7;font-weight:700;font-size:13px;display:none;align-items:center;gap:8px;border:1px solid rgba(255,0,0,0.18)}
+    .rec-indicator.show{display:inline-flex}
+    .rec-dot{width:10px;height:10px;border-radius:50%;background:#ff3b3b;box-shadow:0 0 8px rgba(255,0,0,0.3)}
   </style>
 </head>
 <body>
@@ -136,8 +141,13 @@
       </label>
       <button id="snapshotBtn" class="btn small">Snapshot</button>
       <button id="fullscreenBtn" class="btn small">Fullscreen</button>
+      <!-- NEW: Record button (toggles recording) -->
+      <button id="recordBtn" class="btn small">Record</button>
     </div>
   </header>
+
+  <!-- recording indicator -->
+  <div class="rec-indicator" id="recIndicator"><span class="rec-dot"></span><span id="recText">Recording</span></div>
 
   <!-- ===== replaced the static preset block with a collapsible container (ONLY this block changed) ===== -->
   <div class="preset-container" aria-hidden="false">
@@ -228,6 +238,7 @@
    - save/load presets to localStorage (export/import JSON)
    - snapshot (download PNG) and fullscreen
    - UI improvements while keeping your look
+   - recording feature (canvas + audio to webm) and fullscreen redrawing
 */
 (function(){
   // DOM
@@ -260,13 +271,23 @@
   const useMic = document.getElementById('useMic');
   const snapshotBtn = document.getElementById('snapshotBtn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const recordBtn = document.getElementById('recordBtn'); // NEW
   const loadDefault = document.getElementById('loadDefault');
   const statusArea = document.getElementById('statusArea');
+
+  const recIndicator = document.getElementById('recIndicator');
+  const recText = document.getElementById('recText');
 
   // audio / analyser
   let audioCtx = null, analyser = null, sourceNode = null;
   let dataArray = null, bufferLength = 0;
   let micStream = null;
+
+  // recording state (NEW)
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let recording = false;
+  let recordingDest = null; // MediaStreamDestination if we create one
 
   // visual state
   let raf = null;
@@ -294,6 +315,16 @@
   }
   window.addEventListener('resize', resizeCanvas);
   setTimeout(resizeCanvas, 80);
+
+  // ensure resize/redraw on fullscreen enter/exit (NEW)
+  document.addEventListener('fullscreenchange', ()=>{
+    // allow DOM to update, then resize canvas to the new fullscreen container size
+    setTimeout(()=> {
+      resizeCanvas();
+      // if animation is paused (no raf) and audio playing, restart draw loop
+      if (!raf && audioCtx && !playBtn.disabled) raf = requestAnimationFrame(draw);
+    }, 40);
+  });
 
   // create audio context and analyser
   function initAudio(){
@@ -577,6 +608,136 @@
     if (!document.fullscreenElement){ el.requestFullscreen?.(); }
     else { document.exitFullscreen?.(); }
   });
+
+  // ---- NEW: Recording logic (canvas + audio) ----
+  function getAudioStreamForRecording(){
+    // prioritize microphone stream if in use
+    if (useMic.checked && micStream) return micStream;
+    // try HTMLMediaElement.captureStream() for the audio element
+    if (typeof audio.captureStream === 'function') {
+      try {
+        const s = audio.captureStream();
+        if (s && s.getAudioTracks().length) return s;
+      } catch(e){ /* ignore */ }
+    }
+    // fallback: if we have an audioCtx, create a destination and connect sourceNode to it
+    if (audioCtx){
+      try {
+        recordingDest = audioCtx.createMediaStreamDestination();
+        // connect sourceNode to the destination in addition to analyser (safe extra connection)
+        if (sourceNode && typeof sourceNode.connect === 'function'){
+          try{ sourceNode.connect(recordingDest); }catch(e){ /* ignore */ }
+        } else {
+          // if sourceNode missing, attempt to create a media element source temporarily
+          try{ const temp = audioCtx.createMediaElementSource(audio); temp.connect(recordingDest); } catch(e){ /* ignore */ }
+        }
+        if (recordingDest.stream && recordingDest.stream.getAudioTracks().length) return recordingDest.stream;
+      } catch(e){ console.warn('recording audio dest failed', e); }
+    }
+    return null;
+  }
+
+  recordBtn.addEventListener('click', async ()=>{
+    if (recording) {
+      // stop
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      return;
+    }
+
+    initAudio(); // ensure audioCtx exists for fallback
+    // ensure audio is playing (so we capture audio)
+    if (audio.paused && !useMic.checked) {
+      try { await audio.play(); } catch(e){ console.warn('play for record failed', e); }
+    }
+
+    // get streams
+    const canvasStream = viz.captureStream(60); // capture canvas at 60fps (browser permitting)
+    const audioStream = getAudioStreamForRecording();
+
+    if (!audioStream || !audioStream.getAudioTracks().length) {
+      alert('Unable to capture audio for recording in this browser. Try using a modern browser (Chrome/Edge/Firefox) or enable microphone input.');
+      return;
+    }
+
+    // mix streams (video from canvas + audio from audioStream)
+    const mixed = new MediaStream();
+    canvasStream.getVideoTracks().forEach(t => mixed.addTrack(t));
+    audioStream.getAudioTracks().forEach(t => mixed.addTrack(t));
+
+    // choose mimeType gracefully
+    let mime = 'video/webm;codecs=vp9,opus';
+    if (!MediaRecorder.isTypeSupported(mime)) {
+      mime = 'video/webm;codecs=vp8,opus';
+      if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm';
+    }
+
+    try {
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(mixed, { mimeType });
+    } catch(e) {
+      alert('MediaRecorder not supported or failed to start: ' + e.message);
+      console.warn('MediaRecorder error', e);
+      return;
+    }
+
+    mediaRecorder.ondataavailable = (ev) => {
+      if (ev.data && ev.data.size) recordedChunks.push(ev.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      // download blob
+      const blob = new Blob(recordedChunks, { type: recordedChunks[0]?.type || 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+
+      // try to pick a sensible filename from audio source
+      let name = 'visual_capture';
+      try {
+        const src = audio.currentSrc || audio.src || '';
+        if (src) {
+          const parts = src.split('/').pop().split('?')[0];
+          if (parts) name = parts.replace(/\.[^/.]+$/, '');
+        }
+      } catch(e){ /* ignore */ }
+      const ts = new Date().toISOString().replace(/[:.]/g,'-');
+      a.href = url;
+      a.download = `${name}_${ts}.webm`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      // cleanup
+      recording = false;
+      recordBtn.textContent = 'Record';
+      recIndicator.classList.remove('show');
+      // disconnect recordingDest if we created it (to avoid re-connections)
+      try{
+        if (recordingDest && sourceNode && typeof sourceNode.disconnect === 'function'){ sourceNode.disconnect(recordingDest); }
+      }catch(e){ /* ignore */ }
+      recordingDest = null;
+      logStatus('Recording saved.');
+      // re-enable UI
+      snapshotBtn.disabled = false;
+      fullscreenBtn.disabled = false;
+      playBtn.disabled = false;
+    };
+
+    mediaRecorder.onerror = (e) => {
+      console.warn('recorder error', e);
+      alert('Recording error: ' + (e?.error?.message || e?.message || 'unknown'));
+    };
+
+    // start recording
+    mediaRecorder.start();
+    recording = true;
+    recordBtn.textContent = 'Stop';
+    recIndicator.classList.add('show');
+    logStatus('Recording started...');
+    // disable snapshot/fullscreen to avoid interference
+    snapshotBtn.disabled = true;
+    fullscreenBtn.disabled = true;
+    playBtn.disabled = true;
+  });
+  // ---- end recording logic ----
 
   // presets persistence load
   renderPresetChips();
