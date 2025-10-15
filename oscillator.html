@@ -1,191 +1,618 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Amity Hayze — Oscillator Transmission App</title>
-<style>
-:root{ --neon: #00f0ff; --muted: #9beef7; --bg-dark: #000; --hazy-pink: rgba(255,107,205,0.25); --hazy-pink-light: rgba(255,107,205,0.35); --viz-pink: 255,107,205; --viz-cyan: 0,240,255; --viz-strength: 1; }
-html,body{height:100%;margin:0;background:radial-gradient(circle at center,#0a0a0f,#050509,#000);font-family:"Courier New",monospace;color:var(--neon);-webkit-font-smoothing:antialiased}
-body{overflow-x:hidden;text-align:center;display:flex;flex-direction:column;align-items:center;position:relative;padding-bottom:40px}
-header.app-header{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;box-sizing:border-box}
-header.app-header .brand{display:flex;flex-direction:column;align-items:flex-start}
-header.app-header .brand h1{margin:0;font-size:1.15rem}
-header.app-header .controls-row{display:flex;gap:8px;align-items:center}
-h1{margin-top:1.5rem;text-shadow:0 0 8px #ff00ff,0 0 20px #00fff6;font-size:1.8rem;z-index:3;color:var(--neon)}
-.pulse-bg{position:fixed;inset:0;z-index:0;background: radial-gradient(circle at center, rgba(255,0,255,0.02), rgba(0,255,255,0.04));pointer-events:none;transition:opacity .18s linear;mix-blend-mode:screen;opacity:0.9}
-/* ===== preset UI ===== */
-.preset-container{ position:fixed; top:4.2rem; right:1rem; z-index:6; display:flex; flex-direction:column; align-items:flex-end; gap:.5rem; }
-.preset-toggle{ background:rgba(10,10,20,0.75); border:1px solid #ffb7ff; color:#ffb7ff; padding:.35rem .6rem; border-radius:10px; cursor:pointer; font-family:inherit; font-size:13px; box-shadow:0 0 8px rgba(255,46,252,0.12); }
-.preset-toggle:hover{background:#ffb7ff;color:#0a0a0a}
-.preset-menu{ display:flex; flex-direction:column; gap:.5rem; background:rgba(10,10,20,0.75); border:2px solid #ff2efc; border-radius:12px; padding:1rem; box-shadow:0 0 12px #ff2efc; transition:opacity .22s ease,transform .22s ease,max-height .22s ease; max-height:400px; overflow:hidden; }
-.preset-menu.collapsed{ max-height:0; opacity:0; transform:translateY(-6px) scaleY(0.98); padding-top:0; padding-bottom:0; border-width:0; }
-.preset-menu button{background:transparent;border:1px solid #ffb7ff;border-radius:6px;color:#ffb7ff;padding:.4rem .8rem;cursor:pointer;font-family:inherit;transition:all .18s}
-.preset-menu button:disabled{opacity:.45;cursor:not-allowed}
-.preset-menu button:hover:not(:disabled){background:#ffb7ff;color:#0a0a0a;box-shadow:0 0 10px #ffb7ff}
-.controls-top{z-index:5;margin-top:12px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
-.btn{--pad:12px 20px;display:inline-block;padding:var(--pad);border-radius:10px;background:linear-gradient(180deg,rgba(0,255,255,0.06),rgba(0,255,255,0.02));color:var(--neon);text-decoration:none;font-weight:700;border:1px solid rgba(0,255,255,0.18);box-shadow:0 0 18px rgba(0,240,255,0.06);cursor:pointer;transition:all .18s;text-transform:uppercase;letter-spacing:1px}
-.btn-pink{background:linear-gradient(180deg,var(--hazy-pink),rgba(255,107,205,0.1));border:1px solid rgba(255,107,205,0.4);color:#e813f0;box-shadow:0 0 20px var(--hazy-pink)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.wrap{max-width:980px;width:100%;padding:22px;z-index:2}
-.panel{background:rgba(0,0,0,0.7);border-radius:12px;padding:20px;border:1px solid rgba(0,255,255,0.06);box-shadow:0 20px 60px rgba(0,240,255,0.03);position:relative;overflow:visible}
-.tv-wrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
-.tv{width:min(760px,94%);aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);background:#000;margin:10px auto;position:relative;z-index:3}
-#vizCanvas{display:block;width:100%;height:100%}
-.tv:fullscreen, .tv:-webkit-full-screen { width: 100% !important; height: 100% !important; aspect-ratio: auto !important; border-radius: 0 !important; }
-.controls{min-width:240px;max-width:260px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
-.knob label{display:block;margin-bottom:6px;color:var(--muted);font-size:13px}
-.slider{width:100%}
-input[type="range"]{appearance:none;height:8px;background:rgba(255,255,255,0.04);border-radius:8px}
-input[type="range"]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(0,0,0,0.6)}
-.play-controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.embeds{margin-top:18px;padding:18px;z-index:2;width:90%;max-width:980px}
-.embed-card{background:rgba(255,255,255,0.02);border-radius:10px;padding:12px;border:1px solid rgba(0,255,255,0.04);margin-bottom:12px}
-.player-embed{width:100%;height:360px;border:0;border-radius:8px;display:block;overflow:hidden}
-@media (max-width:680px){.player-embed{height:260px}.controls{width:100%;min-width:auto;max-width:none}}
-footer{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-.muted-note{font-size:12px;color:var(--muted);}
-.preset-list{display:flex;gap:6px;flex-wrap:wrap}
-.preset-chip{background:rgba(255,255,255,0.02);border:1px solid rgba(0,0,0,0.04);padding:6px 8px;border-radius:8px;cursor:pointer}
-.small{font-size:12px;padding:6px 8px}
-input[type=file]{display:none}
-.rec-indicator{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9;padding:6px 10px;border-radius:999px;background:rgba(255,0,0,0.12);color:#ffb7b7;font-weight:700;font-size:13px;display:none;align-items:center;gap:8px;border:1px solid rgba(255,0,0,0.18)}
-.rec-indicator.show{display:inline-flex}
-.rec-dot{width:10px;height:10px;border-radius:50%;background:#ff3b3b;box-shadow:0 0 8px rgba(255,0,0,0.3)}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Amity Hayze — Oscillator App</title>
+  <style>
+    :root{
+      --neon: #00f0ff;
+      --muted: #9beef7;
+      --bg-dark: #000;
+      --hazy-pink: rgba(255,107,205,0.25);
+      --hazy-pink-light: rgba(255,107,205,0.35);
+
+      /* palette (updated by presets) */
+      --viz-pink: 255,107,205;
+      --viz-cyan: 0,240,255;
+      --viz-strength: 1;
+    }
+
+    /* ===== page baseline (keeps your look) ===== */
+    html,body{height:100%;margin:0;background:radial-gradient(circle at center,#0a0a0f,#050509,#000);font-family:"Courier New",monospace;color:var(--neon);-webkit-font-smoothing:antialiased}
+    body{overflow-x:hidden;text-align:center;display:flex;flex-direction:column;align-items:center;position:relative;padding-bottom:40px}
+
+    header.app-header{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;box-sizing:border-box}
+    header.app-header .brand{display:flex;flex-direction:column;align-items:flex-start}
+    header.app-header .brand h1{margin:0;font-size:1.15rem}
+    header.app-header .controls-row{display:flex;gap:8px;align-items:center}
+
+    h1{margin-top:1.5rem;text-shadow:0 0 8px #ff00ff,0 0 20px #00fff6;font-size:1.8rem;z-index:3;color:var(--neon)}
+
+    .pulse-bg{position:fixed;inset:0;z-index:0;background: radial-gradient(circle at center, rgba(255,0,255,0.02), rgba(0,255,255,0.04));pointer-events:none;transition:opacity .18s linear;mix-blend-mode:screen;opacity:0.9}
+
+    /* ===== preset (collapsed) UI additions — only these rules are new ===== */
+    /* container sits below the header so it won't overlap the top-right controls row */
+    .preset-container{
+      position:fixed;
+      top:4.2rem;         /* moved down to avoid overlapping header controls */
+      right:1rem;
+      z-index:6;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:.5rem;
+    }
+    .preset-toggle{
+      background:rgba(10,10,20,0.75);
+      border:1px solid #ffb7ff;
+      color:#ffb7ff;
+      padding:.35rem .6rem;
+      border-radius:10px;
+      cursor:pointer;
+      font-family:inherit;
+      font-size:13px;
+      box-shadow:0 0 8px rgba(255,46,252,0.12);
+    }
+    .preset-toggle:hover{background:#ffb7ff;color:#0a0a0a}
+    /* reuse your original preset-menu look but allow collapsed state */
+    .preset-menu{
+      display:flex;
+      flex-direction:column;
+      gap:.5rem;
+      background:rgba(10,10,20,0.75);
+      border:2px solid #ff2efc;
+      border-radius:12px;
+      padding:1rem;
+      box-shadow:0 0 12px #ff2efc;
+      transition:opacity .22s ease,transform .22s ease,max-height .22s ease;
+      max-height:400px;
+      overflow:hidden;
+    }
+    .preset-menu.collapsed{
+      max-height:0;
+      opacity:0;
+      transform:translateY(-6px) scaleY(0.98);
+      padding-top:0;
+      padding-bottom:0;
+      border-width:0;
+    }
+    /* ===== end new rules ===== */
+
+    .preset-menu button{background:transparent;border:1px solid #ffb7ff;border-radius:6px;color:#ffb7ff;padding:.4rem .8rem;cursor:pointer;font-family:inherit;transition:all .18s}
+    .preset-menu button:disabled{opacity:.45;cursor:not-allowed}
+    .preset-menu button:hover:not(:disabled){background:#ffb7ff;color:#0a0a0a;box-shadow:0 0 10px #ffb7ff}
+
+    .controls-top{z-index:5;margin-top:12px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+    .btn{--pad:12px 20px;display:inline-block;padding:var(--pad);border-radius:10px;background:linear-gradient(180deg,rgba(0,255,255,0.06),rgba(0,255,255,0.02));color:var(--neon);text-decoration:none;font-weight:700;border:1px solid rgba(0,255,255,0.18);box-shadow:0 0 18px rgba(0,240,255,0.06);cursor:pointer;transition:all .18s;text-transform:uppercase;letter-spacing:1px}
+    .btn-pink{background:linear-gradient(180deg,var(--hazy-pink),rgba(255,107,205,0.1));border:1px solid rgba(255,107,205,0.4);color:#e813f0;box-shadow:0 0 20px var(--hazy-pink)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+
+    .wrap{max-width:980px;width:100%;padding:22px;z-index:2}
+    .panel{background:rgba(0,0,0,0.7);border-radius:12px;padding:20px;border:1px solid rgba(0,255,255,0.06);box-shadow:0 20px 60px rgba(0,240,255,0.03);position:relative;overflow:visible}
+    .tv-wrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
+    .tv{width:min(760px,94%);aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);background:#000;margin:10px auto;position:relative;z-index:3}
+    #vizCanvas{display:block;width:100%;height:100%}
+
+    .controls{min-width:240px;max-width:260px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
+    .knob label{display:block;margin-bottom:6px;color:var(--muted);font-size:13px}
+    .slider{width:100%}
+    input[type="range"]{appearance:none;height:8px;background:rgba(255,255,255,0.04);border-radius:8px}
+    input[type="range"]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(0,0,0,0.6)}
+    .play-controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+
+    .embeds{margin-top:18px;padding:18px;z-index:2;width:90%;max-width:980px}
+    .embed-card{background:rgba(255,255,255,0.02);border-radius:10px;padding:12px;border:1px solid rgba(0,255,255,0.04);margin-bottom:12px}
+    .player-embed{width:100%;height:360px;border:0;border-radius:8px;display:block;overflow:hidden}
+    @media (max-width:680px){.player-embed{height:260px}.controls{width:100%;min-width:auto;max-width:none}}
+
+    footer{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
+
+    @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+    /* small utility */
+    .muted-note{font-size:12px;color:var(--muted);}
+    .preset-list{display:flex;gap:6px;flex-wrap:wrap}
+    .preset-chip{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;cursor:pointer}
+    .small{font-size:12px;padding:6px 8px}
+    input[type=file]{display:none}
+  </style>
 </head>
 <body>
-<div class="pulse-bg" id="pulseBg" aria-hidden="true"></div>
-<header class="app-header">
-  <div class="brand">
-    <h1>Amity Hayze — Oscillator Transmission App</h1>
-    <div class="muted-note">Based on your vintage oscilloscope sphere — interactive app (save presets, upload audio, use mic, snapshot).</div>
-  </div>
-  <div class="controls-row">
-    <label class="small" style="display:flex;align-items:center;gap:6px">
-      <input id="useMic" type="checkbox"> Microphone
-    </label>
-    <label class="btn small" style="cursor:pointer">
-      <input id="filePick" type="file" accept="audio/*"> Upload Audio
-    </label>
-    <button id="snapshotBtn" class="btn small">Snapshot</button>
-    <button id="fullscreenBtn" class="btn small">Fullscreen</button>
-    <button id="recordBtn" class="btn small">Record</button>
-  </div>
-</header>
+  <div class="pulse-bg" id="pulseBg" aria-hidden="true"></div>
 
-<div class="rec-indicator" id="recIndicator"><span class="rec-dot"></span><span id="recText">Recording</span></div>
-
-<div class="preset-container" aria-hidden="false">
-  <button id="presetToggle" class="preset-toggle" aria-expanded="true" aria-controls="presetMenu">🎛 Presets</button>
-  <div id="presetMenu" class="preset-menu" role="region" aria-label="Presets menu">
-    <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px"><strong style="font-size:13px">Presets</strong></div>
-    <div class="preset-list" id="presetList">
-      <button id="presetCRT" class="preset-chip">CRT</button>
-      <button id="presetVHS" class="preset-chip">VHS</button>
-      <button id="presetNeon" class="preset-chip">Neon</button>
+  <header class="app-header">
+    <div class="brand">
+      <h1>Amity Hayze — Oscillator App</h1>
+      <div class="muted-note">Based on your vintage oscilloscope sphere — now an interactive app (save presets, upload audio, use mic, snapshot).</div>
     </div>
-    <div style="margin-top:8px;display:flex;gap:6px">
-      <input id="presetName" placeholder="Save preset name" style="padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--neon)">
-      <button id="savePresetBtn" class="btn small">Save</button>
-    </div>
-    <div style="margin-top:8px;display:flex;gap:6px">
-      <button id="exportPresets" class="btn small">Export</button>
-      <button id="importPresets" class="btn small">Import</button>
-      <input id="importFile" type="file" accept="application/json" style="display:none">
-    </div>
-  </div>
-</div>
 
-<div class="controls-top" role="region" aria-label="Playback controls">
-  <button id="playBtn" class="btn btn-pink">▶ Play</button>
-  <button id="stopBtn" class="btn" disabled>■ Stop</button>
-</div>
+    <div class="controls-row">
+      <label class="small" style="display:flex;align-items:center;gap:6px">
+        <input id="useMic" type="checkbox"> Microphone
+      </label>
+      <label class="btn small" style="cursor:pointer">
+        <input id="filePick" type="file" accept="audio/*"> Upload Audio
+      </label>
+      <button id="snapshotBtn" class="btn small">Snapshot</button>
+      <button id="fullscreenBtn" class="btn small">Fullscreen</button>
+    </div>
+  </header>
 
-<div class="wrap">
-  <div class="panel" role="main">
-    <div class="tv-wrap" style="justify-content:center">
-      <div class="tv" role="region" aria-label="Visualizer TV">
-        <canvas id="vizCanvas" aria-hidden="false"></canvas>
+  <!-- ===== replaced the static preset block with a collapsible container (ONLY this block changed) ===== -->
+  <div class="preset-container" aria-hidden="false">
+    <button id="presetToggle" class="preset-toggle" aria-expanded="true" aria-controls="presetMenu">🎛 Presets</button>
+
+    <div id="presetMenu" class="preset-menu" role="region" aria-label="Presets menu">
+      <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px"><strong style="font-size:13px">Presets</strong></div>
+      <div class="preset-list" id="presetList">
+        <button id="presetCRT" class="preset-chip">CRT</button>
+        <button id="presetVHS" class="preset-chip">VHS</button>
+        <button id="presetNeon" class="preset-chip">Neon</button>
       </div>
-      <div class="controls" role="region" aria-label="Visualizer controls">
-        <div class="knob">
-          <label for="sensitivity" style="color:var(--muted)">Sensitivity</label>
-          <input id="sensitivity" class="slider" type="range" min="0.4" max="3" step="0.05" value="1.2">
-        </div>
-        <div class="knob">
-          <label for="strings" style="color:var(--muted)">Strings</label>
-          <input id="strings" class="slider" type="range" min="6" max="80" step="1" value="34">
-        </div>
-        <div class="knob">
-          <label for="glow" style="color:var(--muted)">Glow</label>
-          <input id="glow" class="slider" type="range" min="0" max="2" step="0.05" value="0.9">
-        </div>
+      <div style="margin-top:8px;display:flex;gap:6px">
+        <input id="presetName" placeholder="Save preset name" style="padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--neon)">
+        <button id="savePresetBtn" class="btn small">Save</button>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px">
+        <button id="exportPresets" class="btn small">Export</button>
+        <button id="importPresets" class="btn small">Import</button>
+        <input id="importFile" type="file" accept="application/json" style="display:none">
       </div>
     </div>
-    <audio id="sourceAudio" src="Cascade Canyon.mp3" crossorigin="anonymous"></audio>
   </div>
-</div>
+  <!-- ===== end replacement ===== -->
 
-<footer>Made by Amity Hayze — Oscillator Transmission App • <span id="version">v1.0</span></footer>
+  <div class="controls-top" role="region" aria-label="Playback controls">
+    <button id="playBtn" class="btn btn-pink">▶ Play</button>
+    <button id="stopBtn" class="btn" disabled>■ Stop</button>
+    <a class="btn" href="index.html" style="text-decoration:none">Back</a>
+  </div>
 
-<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.1/dist/ffmpeg.min.js"></script>
+  <div class="wrap">
+    <div class="panel" role="main">
+      <header style="text-align:center;margin-bottom:12px">
+        <div style="display:flex;justify-content:center;gap:10px;align-items:center">
+          <div class="title" data-text="Amity Hayze" style="font-size:18px;color:var(--neon)">Vintage Oscilloscope Sphere — App</div>
+        </div>
+        <div class="subtitle" style="color:var(--muted);font-size:13px;margin-top:6px">Centered, reactive, and preset-driven — click Play to start. Use Mic or Upload to change input.</div>
+      </header>
+
+      <div class="tv-wrap" style="justify-content:center">
+        <div class="tv" role="region" aria-label="Visualizer TV">
+          <canvas id="vizCanvas" aria-hidden="false"></canvas>
+        </div>
+
+        <div class="controls" role="region" aria-label="Visualizer controls">
+          <div class="knob">
+            <label for="sensitivity" style="color:var(--muted)">Sensitivity</label>
+            <input id="sensitivity" class="slider" type="range" min="0.4" max="3" step="0.05" value="1.2">
+          </div>
+
+          <div class="knob">
+            <label for="strings" style="color:var(--muted)">Strings</label>
+            <input id="strings" class="slider" type="range" min="6" max="80" step="1" value="34">
+          </div>
+
+          <div class="knob">
+            <label for="glow" style="color:var(--muted)">Glow</label>
+            <input id="glow" class="slider" type="range" min="0" max="2" step="0.05" value="0.9">
+          </div>
+
+          <div style="display:flex;gap:8px;flex-direction:column">
+            <div class="play-controls">
+              <button id="presetApply" class="btn" disabled>Presets Active After Play</button>
+            </div>
+
+            <div style="display:flex;gap:6px">
+              <button id="loadDefault" class="btn small">Load Default Audio</button>
+              <button id="clearPresets" class="btn small">Clear Presets</button>
+            </div>
+
+            <div style="margin-top:6px;color:var(--muted);font-size:12px">Tip: save presets to local device. Export to back them up.</div>
+          </div>
+        </div>
+      </div>
+
+      <audio id="sourceAudio" src="Cascade Canyon.mp3" crossorigin="anonymous"></audio>
+
+      <div class="embeds" id="statusArea"></div>
+    </div>
+  </div>
+
+  <footer>Made for Amity — Oscillator App • <span id="version">v1.0</span></footer>
+
 <script>
-// ===== Preset toggle =====
-const toggle = document.getElementById('presetToggle'); 
-const menu = document.getElementById('presetMenu'); 
-toggle.addEventListener('click', ()=>{ 
-    const closing = menu.classList.toggle('collapsed'); 
-    toggle.setAttribute('aria-expanded', String(!closing)); 
-});
+/* App script — expanded features from your original visualizer:
+   - audio input: file upload, embedded default file, or microphone
+   - save/load presets to localStorage (export/import JSON)
+   - snapshot (download PNG) and fullscreen
+   - UI improvements while keeping your look
+*/
+(function(){
+  // DOM
+  const audio = document.getElementById('sourceAudio');
+  const playBtn = document.getElementById('playBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const viz = document.getElementById('vizCanvas');
+  const ctx = viz.getContext('2d', { alpha: true });
 
-// ===== Recording to MP4 via FFmpeg.wasm =====
-const recordBtn = document.getElementById('recordBtn');
-const recIndicator = document.getElementById('recIndicator');
-let mediaRecorder, recordedChunks = [], recording=false;
+  const sensitivityEl = document.getElementById('sensitivity');
+  const stringsEl = document.getElementById('strings');
+  const glowEl = document.getElementById('glow');
 
-const { createFFmpeg, fetchFile } = FFmpeg;
-const ffmpeg = createFFmpeg({ log: true });
+  const pulseBg = document.getElementById('pulseBg');
+  const presetApplyBtn = document.getElementById('presetApply');
+  const presetButtons = {
+    crt: document.getElementById('presetCRT'),
+    vhs: document.getElementById('presetVHS'),
+    neon: document.getElementById('presetNeon')
+  };
+  const presetListEl = document.getElementById('presetList');
+  const savePresetBtn = document.getElementById('savePresetBtn');
+  const presetNameEl = document.getElementById('presetName');
+  const exportPresetsBtn = document.getElementById('exportPresets');
+  const importPresetsBtn = document.getElementById('importPresets');
+  const importFileEl = document.getElementById('importFile');
+  const clearPresetsBtn = document.getElementById('clearPresets');
 
-recordBtn.addEventListener('click', async ()=>{
-  if(recording){
-    mediaRecorder.stop();
-  }else{
-    recordedChunks = [];
-    let stream = await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
-    mediaRecorder = new MediaRecorder(stream);
-    mediaRecorder.ondataavailable = e => e.data.size>0 && recordedChunks.push(e.data);
-    mediaRecorder.onstop = async ()=>{
-      recIndicator.classList.remove('show');
-      recording=false;
-      recordBtn.textContent='Record';
-      try{
-        const webmBlob = new Blob(recordedChunks,{type:'video/webm'});
-        recIndicator.querySelector('#recText').textContent='Converting...';
-        recIndicator.classList.add('show');
+  const filePick = document.getElementById('filePick');
+  const useMic = document.getElementById('useMic');
+  const snapshotBtn = document.getElementById('snapshotBtn');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const loadDefault = document.getElementById('loadDefault');
+  const statusArea = document.getElementById('statusArea');
 
-        await ffmpeg.load();
-        ffmpeg.FS('writeFile','input.webm',await fetchFile(webmBlob));
-        await ffmpeg.run('-i','input.webm','-c:v','libx264','-crf','23','-preset','veryfast','output.mp4');
-        const data = ffmpeg.FS('readFile','output.mp4');
-        const mp4Blob = new Blob([data.buffer],{type:'video/mp4'});
-        const url = URL.createObjectURL(mp4Blob);
-        const a = document.createElement('a');
-        a.href=url;
-        a.download='recording_'+new Date().toISOString().replace(/[:.]/g,'-')+'.mp4';
-        a.click();
-        URL.revokeObjectURL(url);
-        recIndicator.classList.remove('show');
-      }catch(e){alert('MP4 conversion failed: '+e.message);}
-    };
-    mediaRecorder.start();
-    recording=true;
-    recordBtn.textContent='Stop';
-    recIndicator.querySelector('#recText').textContent='Recording';
-    recIndicator.classList.add('show');
+  // audio / analyser
+  let audioCtx = null, analyser = null, sourceNode = null;
+  let dataArray = null, bufferLength = 0;
+  let micStream = null;
+
+  // visual state
+  let raf = null;
+  let width = 0, height = 0, dpr = Math.max(1, window.devicePixelRatio || 1);
+  const settings = {
+    sensitivity: parseFloat(sensitivityEl.value),
+    strings: parseInt(stringsEl.value, 10),
+    glow: parseFloat(glowEl.value)
+  };
+
+  function logStatus(msg){
+    statusArea.innerHTML = '<div class="embed-card">' + msg + '</div>';
   }
-});
+
+  // init canvas size to tv area
+  function resizeCanvas(){
+    const rect = viz.getBoundingClientRect();
+    width = Math.max(320, Math.floor(rect.width));
+    height = Math.max(180, Math.floor(rect.height));
+    viz.width = width * dpr;
+    viz.height = height * dpr;
+    viz.style.width = width + 'px';
+    viz.style.height = height + 'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener('resize', resizeCanvas);
+  setTimeout(resizeCanvas, 80);
+
+  // create audio context and analyser
+  function initAudio(){
+    if (audioCtx) return;
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 2048;
+      bufferLength = analyser.frequencyBinCount;
+      dataArray = new Uint8Array(bufferLength);
+    } catch (err) {
+      console.warn('WebAudio error:', err);
+      logStatus('WebAudio not supported in this browser.');
+    }
+  }
+
+  function connectSourceNode(node){
+    if (!audioCtx) initAudio();
+    if (sourceNode) try{ sourceNode.disconnect(); }catch(e){}
+    sourceNode = node;
+    try{
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+    }catch(e){ console.warn('connect error', e); }
+  }
+
+  // amplitude (RMS) helper
+  function getAmplitude(){
+    if (!analyser) return 0;
+    analyser.getByteTimeDomainData(dataArray);
+    let sum = 0;
+    for (let i=0;i<bufferLength;i++){
+      const v = (dataArray[i] - 128) / 128;
+      sum += v*v;
+    }
+    const rms = Math.sqrt(sum / bufferLength);
+    return Math.min(1, rms * 1.8);
+  }
+
+  function draw(time){
+    ctx.clearRect(0,0,width,height);
+
+    ctx.fillStyle = 'rgba(0,0,0,0.38)';
+    ctx.fillRect(0,0,width,height);
+
+    const cx = width/2, cy = height/2;
+    const baseR = Math.min(width, height) * 0.32;
+    const amp = getAmplitude() * settings.sensitivity;
+
+    const pv = getComputedStyle(document.documentElement).getPropertyValue('--viz-pink').trim().split(',').map(x=>parseInt(x));
+    const cv = getComputedStyle(document.documentElement).getPropertyValue('--viz-cyan').trim().split(',').map(x=>parseInt(x));
+    const pink = (pv.length===3) ? pv : [255,107,205];
+    const cyan = (cv.length===3) ? cv : [0,240,255];
+
+    const glow = settings.glow * (0.6 + amp * 0.9);
+    const g = ctx.createRadialGradient(cx,cy, baseR*0.2, cx,cy, baseR*1.8);
+    g.addColorStop(0, `rgba(${pink[0]},${pink[1]},${pink[2]},${0.06 * glow})`);
+    g.addColorStop(0.6, `rgba(${cyan[0]},${cyan[1]},${cyan[2]},${0.025 * glow})`);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(cx,cy, baseR*1.6,0,Math.PI*2); ctx.fill();
+
+    const rings = Math.max(3, Math.round(settings.strings / 6));
+    const perRing = Math.round(settings.strings / rings);
+
+    if (analyser && dataArray) analyser.getByteFrequencyData(dataArray);
+
+    for (let r=0; r<rings; r++){
+      const lat = (r / (rings-1)) * Math.PI - Math.PI/2;
+      const ringRadius = Math.cos(lat) * baseR;
+      const z = Math.sin(lat);
+      const perspective = (z + 1)/2 * 0.9 + 0.1;
+      const alphaBase = 0.12 + perspective * 0.6;
+
+      for (let s=0; s<perRing; s++){
+        const t = s / perRing;
+        const theta = t * Math.PI * 2;
+
+        let freqVal = 0;
+        if (analyser && dataArray){
+          const idx = Math.floor((t * bufferLength * 0.7)) % bufferLength;
+          freqVal = Math.abs(dataArray[idx] - 128) / 128 * amp;
+        }
+
+        const wobble = Math.sin(time*0.002 + r*0.6 + s*0.12) * 0.8;
+        const px = cx + Math.cos(theta) * (ringRadius + freqVal * baseR * 0.28 + wobble*4);
+        const py = cy + Math.sin(theta) * (ringRadius*0.5 + freqVal * baseR * 0.18 + wobble*2) * (0.9 - Math.abs(z)*0.3);
+
+        const mix = 0.5 + 0.5 * Math.sin(theta + time*0.0008 + r*0.25);
+        const rC = Math.round(cyan[0] * (1-mix) + pink[0] * mix);
+        const gC = Math.round(cyan[1] * (1-mix) + pink[1] * mix);
+        const bC = Math.round(cyan[2] * (1-mix) + pink[2] * mix);
+        ctx.fillStyle = `rgba(${rC},${gC},${bC},${alphaBase * (0.6 + freqVal*1.4)})`;
+
+        const size = 0.9 + perspective*2 + freqVal*4;
+        ctx.beginPath(); ctx.arc(px,py,size,0,Math.PI*2); ctx.fill();
+
+        ctx.beginPath(); ctx.fillStyle = `rgba(255,255,255,${0.02 + freqVal*0.08})`; ctx.arc(px,py,size*0.35,0,Math.PI*2); ctx.fill();
+      }
+    }
+
+    ctx.fillStyle = 'rgba(255,255,255,0.008)';
+    for (let y=0;y<height;y+=3){ ctx.fillRect(0,y,width,1); }
+
+    const pulseStrength = 0.06 + amp * 0.24;
+    pulseBg.style.opacity = 0.35 + pulseStrength;
+    raf = requestAnimationFrame(draw);
+  }
+
+  // UI wiring
+  sensitivityEl.addEventListener('input', ()=> settings.sensitivity = parseFloat(sensitivityEl.value));
+  stringsEl.addEventListener('input', ()=> settings.strings = parseInt(stringsEl.value,10));
+  glowEl.addEventListener('input', ()=> settings.glow = parseFloat(glowEl.value));
+
+  // presets - CSS var changes
+  function setPreset(p){
+    if (!audioCtx) return;
+    if (p === 'crt'){
+      document.documentElement.style.setProperty('--viz-pink','220,255,200');
+      document.documentElement.style.setProperty('--viz-cyan','80,220,120');
+      document.documentElement.style.setProperty('--hazy-pink','rgba(120,255,180,0.10)');
+      document.documentElement.style.setProperty('--hazy-pink-light','rgba(120,255,180,0.18)');
+      document.documentElement.style.setProperty('--viz-strength','0.8');
+    } else if (p === 'vhs'){
+      document.documentElement.style.setProperty('--viz-pink','255,120,160');
+      document.documentElement.style.setProperty('--viz-cyan','150,160,255');
+      document.documentElement.style.setProperty('--hazy-pink','rgba(255,120,160,0.16)');
+      document.documentElement.style.setProperty('--hazy-pink-light','rgba(255,120,160,0.28)');
+      document.documentElement.style.setProperty('--viz-strength','1.05');
+    } else {
+      document.documentElement.style.setProperty('--viz-pink','255,107,205');
+      document.documentElement.style.setProperty('--viz-cyan','0,240,255');
+      document.documentElement.style.setProperty('--hazy-pink','rgba(255,107,205,0.25)');
+      document.documentElement.style.setProperty('--hazy-pink-light','rgba(255,107,205,0.35)');
+      document.documentElement.style.setProperty('--viz-strength','1.2');
+    }
+  }
+
+  // simple preset storage (localStorage)
+  const PRESET_KEY = 'amity_osc_presets_v1';
+  function loadSavedPresets(){
+    try{
+      const raw = localStorage.getItem(PRESET_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }catch(e){ return {}; }
+  }
+  function savePresets(obj){ localStorage.setItem(PRESET_KEY, JSON.stringify(obj)); renderPresetChips(); }
+
+  function renderPresetChips(){
+    const p = loadSavedPresets();
+    // remove existing user chips (we keep the three default buttons in place)
+    const existing = document.querySelectorAll('.user-preset'); existing.forEach(n=>n.remove());
+    Object.keys(p).forEach(name=>{
+      const btn = document.createElement('button'); btn.className='preset-chip user-preset'; btn.textContent = name;
+      btn.addEventListener('click', ()=> applyPresetObject(p[name]));
+      btn.title = 'Load preset ' + name;
+      // add small remove
+      const rem = document.createElement('button'); rem.className='small'; rem.textContent='×'; rem.style.marginLeft='6px'; rem.addEventListener('click', (e)=>{ e.stopPropagation(); const d=confirm('Delete preset \"'+name+'\"?'); if(d){ const q=loadSavedPresets(); delete q[name]; savePresets(q); } });
+      const wrapper = document.createElement('span'); wrapper.style.display='inline-flex'; wrapper.style.alignItems='center'; wrapper.appendChild(btn); wrapper.appendChild(rem);
+      presetListEl.appendChild(wrapper);
+    });
+  }
+
+  function applyPresetObject(obj){
+    if (obj.css){
+      Object.keys(obj.css).forEach(k=> document.documentElement.style.setProperty(k, obj.css[k]));
+    }
+    if (obj.settings){
+      if (obj.settings.sensitivity !== undefined){ settings.sensitivity = obj.settings.sensitivity; sensitivityEl.value = obj.settings.sensitivity; }
+      if (obj.settings.strings !== undefined){ settings.strings = obj.settings.strings; stringsEl.value = obj.settings.strings; }
+      if (obj.settings.glow !== undefined){ settings.glow = obj.settings.glow; glowEl.value = obj.settings.glow; }
+    }
+  }
+
+  savePresetBtn.addEventListener('click', ()=>{
+    const name = (presetNameEl.value || '').trim();
+    if (!name) return alert('Please enter a preset name');
+    const css = {
+      '--viz-pink': getComputedStyle(document.documentElement).getPropertyValue('--viz-pink') || '255,107,205',
+      '--viz-cyan': getComputedStyle(document.documentElement).getPropertyValue('--viz-cyan') || '0,240,255',
+      '--hazy-pink': getComputedStyle(document.documentElement).getPropertyValue('--hazy-pink') || 'rgba(255,107,205,0.25)'
+    };
+    const obj = { css, settings: { sensitivity: settings.sensitivity, strings: settings.strings, glow: settings.glow } };
+    const p = loadSavedPresets(); p[name] = obj; savePresets(p);
+    presetNameEl.value = '';
+    logStatus('Saved preset \"' + name + '\"');
+  });
+
+  exportPresetsBtn.addEventListener('click', ()=>{
+    const p = loadSavedPresets(); const data = JSON.stringify(p, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'amity_presets.json'; a.click(); URL.revokeObjectURL(url);
+  });
+
+  importPresetsBtn.addEventListener('click', ()=> importFileEl.click());
+  importFileEl.addEventListener('change', async (ev)=>{
+    const f = ev.target.files && ev.target.files[0]; if(!f) return;
+    try{
+      const txt = await f.text(); const parsed = JSON.parse(txt); savePresets(parsed); logStatus('Imported presets from file.');
+    }catch(e){ alert('Failed to import presets: ' + e.message); }
+    importFileEl.value = '';
+  });
+
+  clearPresetsBtn.addEventListener('click', ()=>{ if(confirm('Clear all saved presets?')){ savePresets({}); logStatus('Cleared presets.'); } });
+
+  // enable/disable preset buttons depending on audio state
+  function setControlsEnabled(enabled){
+    Object.values(presetButtons).forEach(b => b.disabled = !enabled);
+    presetApplyBtn.disabled = !enabled;
+    stopBtn.disabled = !enabled;
+  }
+
+  presetButtons.crt.addEventListener('click', ()=> setPreset('crt'));
+  presetButtons.vhs.addEventListener('click', ()=> setPreset('vhs'));
+  presetButtons.neon.addEventListener('click', ()=> setPreset('neon'));
+
+  // Play & stop
+  playBtn.addEventListener('click', async ()=>{
+    initAudio();
+    // resume AudioContext if suspended
+    if (audioCtx && audioCtx.state === 'suspended') { await audioCtx.resume(); }
+
+    // if mic selected, getUserMedia
+    if (useMic.checked){
+      try{
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const micSource = audioCtx.createMediaStreamSource(micStream);
+        connectSourceNode(micSource);
+        logStatus('Using microphone input.');
+      }catch(e){ console.warn('mic error', e); alert('Microphone permission denied or unavailable.'); return; }
+    } else {
+      // ensure audio element is used
+      try{
+        const mediaSrc = audioCtx.createMediaElementSource(audio);
+        connectSourceNode(mediaSrc);
+      }catch(e){ console.warn('elem source', e); }
+      try { await audio.play(); }catch(err){ console.warn('play failed', err); }
+    }
+
+    cancelAnimationFrame(raf);
+    resizeCanvas();
+    raf = requestAnimationFrame(draw);
+    setControlsEnabled(true);
+    playBtn.textContent = 'Playing'; playBtn.disabled = true; stopBtn.disabled = false;
+    logStatus('Playing — visualizer active.');
+  });
+
+  stopBtn.addEventListener('click', ()=>{
+    if (audio){ audio.pause(); audio.currentTime = 0; }
+    if (micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream = null; }
+    try{ if (sourceNode) sourceNode.disconnect(); }catch(e){}
+    cancelAnimationFrame(raf);
+    ctx.clearRect(0,0,viz.width,viz.height);
+    setControlsEnabled(false);
+    playBtn.textContent = '▶ Play'; playBtn.disabled = false; stopBtn.disabled = true;
+    logStatus('Stopped.');
+  });
+
+  // file pick
+  filePick.addEventListener('change', (e)=>{
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    const url = URL.createObjectURL(f);
+    audio.src = url; audio.load(); useMic.checked = false;
+    logStatus('Loaded ' + (f.name || 'audio file') + '. Click Play to use it.');
+  });
+
+  loadDefault.addEventListener('click', ()=>{ audio.src = 'Cascade Canyon.mp3'; audio.load(); useMic.checked = false; logStatus('Reset to default audio.'); });
+
+  // snapshot
+  snapshotBtn.addEventListener('click', ()=>{
+    try{
+      const data = viz.toDataURL('image/png');
+      const a = document.createElement('a'); a.href = data; a.download = 'osc_snapshot.png'; a.click();
+    }catch(e){ alert('Snapshot failed: ' + e.message); }
+  });
+
+  // fullscreen
+  fullscreenBtn.addEventListener('click', ()=>{
+    const el = document.querySelector('.tv');
+    if (!document.fullscreenElement){ el.requestFullscreen?.(); }
+    else { document.exitFullscreen?.(); }
+  });
+
+  // presets persistence load
+  renderPresetChips();
+
+  // default enabled/disabled states
+  setControlsEnabled(false);
+  setPreset('neon');
+
+  // accessibility: stop rendering on page hide
+  document.addEventListener('visibilitychange', ()=>{
+    if (document.hidden) cancelAnimationFrame(raf);
+    else if (audioCtx && !raf && !playBtn.disabled) raf = requestAnimationFrame(draw);
+  });
+
+  // expose setPreset for console or external use
+  window.setPreset = setPreset;
+
+  // small helper: if user navigates away, stop mic
+  window.addEventListener('beforeunload', ()=>{ if (micStream) micStream.getTracks().forEach(t=>t.stop()); });
+
+  // resize once more after load
+  window.addEventListener('load', ()=> setTimeout(resizeCanvas, 60));
+
+})();
+</script>
+
+<!-- ===== only the tiny toggle handler below is added (2 lines) ===== -->
+<script>
+  (function(){
+    const toggle = document.getElementById('presetToggle');
+    const menu = document.getElementById('presetMenu');
+    toggle.addEventListener('click', ()=>{
+      const closing = menu.classList.toggle('collapsed');
+      toggle.setAttribute('aria-expanded', String(!closing));
+    });
+  })();
 </script>
 </body>
 </html>
