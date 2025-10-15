@@ -647,20 +647,33 @@
     return null;
   }
 
-  /* === Replaced handler below: uses the exact toggle code you provided === */
+<!-- ---- NEW: Recording logic (canvas + audio) + MP4 via FFmpeg ---- -->
+<script type="module">
+import { createFFmpeg, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.0/dist/ffmpeg.min.js';
+const ffmpeg = createFFmpeg({ log: true });
+
+(function(){
+  const recordBtn = document.getElementById('recordBtn');
+  const viz = document.getElementById('vizCanvas');
+  const recIndicator = document.getElementById('recIndicator');
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let recording = false;
+  let recordingDest = null;
+
+  const audioCtx = window.audioCtx;
+  const sourceNode = window.sourceNode;
+
   recordBtn.addEventListener('click', async () => {
     if (!recording) {
-      // start recording
-      if (!audioCtx) initAudio();
+      if (!audioCtx) return alert('Audio context not initialized.');
       if (!recordingDest) recordingDest = audioCtx.createMediaStreamDestination();
-      if (sourceNode && analyser) {
+      if (sourceNode) {
         sourceNode.disconnect();
-        sourceNode.connect(analyser);
-        analyser.connect(recordingDest);
-        analyser.connect(audioCtx.destination);
+        sourceNode.connect(recordingDest);
+        sourceNode.connect(audioCtx.destination);
       }
 
-      // capture both canvas + audio
       const canvasStream = viz.captureStream(60);
       const audioTracks = recordingDest.stream.getAudioTracks();
       const combined = new MediaStream([...canvasStream.getVideoTracks(), ...audioTracks]);
@@ -668,36 +681,43 @@
       mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm;codecs=vp9,opus' });
       recordedChunks = [];
 
-      mediaRecorder.ondataavailable = (e) => {
+      mediaRecorder.ondataavailable = e => {
         if (e.data.size > 0) recordedChunks.push(e.data);
       };
 
-      // 🟢 when recording stops, auto-download file
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(recordedChunks, { type: 'video/webm' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'transmission_recording_' + new Date().toISOString().replace(/[:.]/g, '-') + '.webm';
-        a.click();
-        URL.revokeObjectURL(url);
-        logStatus('Recording saved and downloaded automatically.');
+      mediaRecorder.onstop = async () => {
         recIndicator.classList.remove('show');
         recording = false;
         recordBtn.textContent = 'Record';
+
+        const webmBlob = new Blob(recordedChunks, { type: 'video/webm' });
+        const webmFile = new File([webmBlob], 'recording.webm');
+
+        if (!ffmpeg.isLoaded()) await ffmpeg.load();
+        ffmpeg.FS('writeFile', 'recording.webm', await fetchFile(webmFile));
+        await ffmpeg.run('-i', 'recording.webm', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', 'recording.mp4');
+        const data = ffmpeg.FS('readFile', 'recording.mp4');
+        const mp4Blob = new Blob([data.buffer], { type: 'video/mp4' });
+        const url = URL.createObjectURL(mp4Blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'transmission_recording_' + new Date().toISOString().replace(/[:.]/g,'-') + '.mp4';
+        a.click();
+        URL.revokeObjectURL(url);
       };
 
       mediaRecorder.start();
       recording = true;
       recordBtn.textContent = 'Stop Recording';
       recIndicator.classList.add('show');
-      logStatus('Recording started...');
+      console.log('Recording started...');
     } else {
-      // stop recording
       mediaRecorder.stop();
+      console.log('Recording stopped...');
     }
   });
-  // ---- end recording logic ----
+})();
+</script>
 
   // presets persistence load
   renderPresetChips();
