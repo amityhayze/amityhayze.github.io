@@ -31,7 +31,54 @@
 
     .pulse-bg{position:fixed;inset:0;z-index:0;background: radial-gradient(circle at center, rgba(255,0,255,0.02), rgba(0,255,255,0.04));pointer-events:none;transition:opacity .18s linear;mix-blend-mode:screen;opacity:0.9}
 
-    .preset-menu{position:fixed;top:1rem;right:1rem;z-index:6;display:flex;flex-direction:column;gap:.5rem;background:rgba(10,10,20,0.75);border:2px solid #ff2efc;border-radius:12px;padding:1rem;box-shadow:0 0 12px #ff2efc}
+    /* ===== preset (collapsed) UI additions — only these rules are new ===== */
+    /* container sits below the header so it won't overlap the top-right controls row */
+    .preset-container{
+      position:fixed;
+      top:4.2rem;         /* moved down to avoid overlapping header controls */
+      right:1rem;
+      z-index:6;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:.5rem;
+    }
+    .preset-toggle{
+      background:rgba(10,10,20,0.75);
+      border:1px solid #ffb7ff;
+      color:#ffb7ff;
+      padding:.35rem .6rem;
+      border-radius:10px;
+      cursor:pointer;
+      font-family:inherit;
+      font-size:13px;
+      box-shadow:0 0 8px rgba(255,46,252,0.12);
+    }
+    .preset-toggle:hover{background:#ffb7ff;color:#0a0a0a}
+    /* reuse your original preset-menu look but allow collapsed state */
+    .preset-menu{
+      display:flex;
+      flex-direction:column;
+      gap:.5rem;
+      background:rgba(10,10,20,0.75);
+      border:2px solid #ff2efc;
+      border-radius:12px;
+      padding:1rem;
+      box-shadow:0 0 12px #ff2efc;
+      transition:opacity .22s ease,transform .22s ease,max-height .22s ease;
+      max-height:400px;
+      overflow:hidden;
+    }
+    .preset-menu.collapsed{
+      max-height:0;
+      opacity:0;
+      transform:translateY(-6px) scaleY(0.98);
+      padding-top:0;
+      padding-bottom:0;
+      border-width:0;
+    }
+    /* ===== end new rules ===== */
+
     .preset-menu button{background:transparent;border:1px solid #ffb7ff;border-radius:6px;color:#ffb7ff;padding:.4rem .8rem;cursor:pointer;font-family:inherit;transition:all .18s}
     .preset-menu button:disabled{opacity:.45;cursor:not-allowed}
     .preset-menu button:hover:not(:disabled){background:#ffb7ff;color:#0a0a0a;box-shadow:0 0 10px #ffb7ff}
@@ -92,24 +139,29 @@
     </div>
   </header>
 
-  <!-- preset menu visible by default -->
-  <div class="preset-menu" aria-hidden="false">
-    <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px"><strong style="font-size:13px">Presets</strong></div>
-    <div class="preset-list" id="presetList">
-      <button id="presetCRT" class="preset-chip">CRT</button>
-      <button id="presetVHS" class="preset-chip">VHS</button>
-      <button id="presetNeon" class="preset-chip">Neon</button>
-    </div>
-    <div style="margin-top:8px;display:flex;gap:6px">
-      <input id="presetName" placeholder="Save preset name" style="padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--neon)">
-      <button id="savePresetBtn" class="btn small">Save</button>
-    </div>
-    <div style="margin-top:8px;display:flex;gap:6px">
-      <button id="exportPresets" class="btn small">Export</button>
-      <button id="importPresets" class="btn small">Import</button>
-      <input id="importFile" type="file" accept="application/json" style="display:none">
+  <!-- ===== replaced the static preset block with a collapsible container (ONLY this block changed) ===== -->
+  <div class="preset-container" aria-hidden="false">
+    <button id="presetToggle" class="preset-toggle" aria-expanded="true" aria-controls="presetMenu">🎛 Presets</button>
+
+    <div id="presetMenu" class="preset-menu" role="region" aria-label="Presets menu">
+      <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px"><strong style="font-size:13px">Presets</strong></div>
+      <div class="preset-list" id="presetList">
+        <button id="presetCRT" class="preset-chip">CRT</button>
+        <button id="presetVHS" class="preset-chip">VHS</button>
+        <button id="presetNeon" class="preset-chip">Neon</button>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px">
+        <input id="presetName" placeholder="Save preset name" style="padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--neon)">
+        <button id="savePresetBtn" class="btn small">Save</button>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px">
+        <button id="exportPresets" class="btn small">Export</button>
+        <button id="importPresets" class="btn small">Import</button>
+        <input id="importFile" type="file" accept="application/json" style="display:none">
+      </div>
     </div>
   </div>
+  <!-- ===== end replacement ===== -->
 
   <div class="controls-top" role="region" aria-label="Playback controls">
     <button id="playBtn" class="btn btn-pink">▶ Play</button>
@@ -399,7 +451,7 @@
       btn.addEventListener('click', ()=> applyPresetObject(p[name]));
       btn.title = 'Load preset ' + name;
       // add small remove
-      const rem = document.createElement('button'); rem.className='small'; rem.textContent='×'; rem.style.marginLeft='6px'; rem.addEventListener('click', (e)=>{ e.stopPropagation(); const d=confirm('Delete preset "'+name+'"?'); if(d){ const q=loadSavedPresets(); delete q[name]; savePresets(q); } });
+      const rem = document.createElement('button'); rem.className='small'; rem.textContent='×'; rem.style.marginLeft='6px'; rem.addEventListener('click', (e)=>{ e.stopPropagation(); const d=confirm('Delete preset \"'+name+'\"?'); if(d){ const q=loadSavedPresets(); delete q[name]; savePresets(q); } });
       const wrapper = document.createElement('span'); wrapper.style.display='inline-flex'; wrapper.style.alignItems='center'; wrapper.appendChild(btn); wrapper.appendChild(rem);
       presetListEl.appendChild(wrapper);
     });
@@ -427,7 +479,7 @@
     const obj = { css, settings: { sensitivity: settings.sensitivity, strings: settings.strings, glow: settings.glow } };
     const p = loadSavedPresets(); p[name] = obj; savePresets(p);
     presetNameEl.value = '';
-    logStatus('Saved preset "' + name + '"');
+    logStatus('Saved preset \"' + name + '\"');
   });
 
   exportPresetsBtn.addEventListener('click', ()=>{
@@ -549,6 +601,18 @@
   window.addEventListener('load', ()=> setTimeout(resizeCanvas, 60));
 
 })();
+</script>
+
+<!-- ===== only the tiny toggle handler below is added (2 lines) ===== -->
+<script>
+  (function(){
+    const toggle = document.getElementById('presetToggle');
+    const menu = document.getElementById('presetMenu');
+    toggle.addEventListener('click', ()=>{
+      const closing = menu.classList.toggle('collapsed');
+      toggle.setAttribute('aria-expanded', String(!closing));
+    });
+  })();
 </script>
 </body>
 </html>
