@@ -94,6 +94,16 @@
     .tv{width:min(760px,94%);aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);background:#000;margin:10px auto;position:relative;z-index:3}
     #vizCanvas{display:block;width:100%;height:100%}
 
+/* ===== ensure tv fills entire screen when fullscreened (tiny addition) ===== */
+    .tv:fullscreen,
+    .tv:-webkit-full-screen {
+      width: 100% !important;
+      height: 100% !important;
+      aspect-ratio: auto !important;
+      border-radius: 0 !important;
+    }
+/* ===== end fullscreen rule ===== */
+
     .controls{min-width:240px;max-width:260px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
     .knob label{display:block;margin-bottom:6px;color:var(--muted);font-size:13px}
     .slider{width:100%}
@@ -637,105 +647,55 @@
     return null;
   }
 
-  recordBtn.addEventListener('click', async ()=>{
-    if (recording) {
-      // stop
-      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-      return;
-    }
+  /* === Replaced handler below: uses the exact toggle code you provided === */
+  recordBtn.addEventListener('click', async () => {
+    if (!recording) {
+      // start recording
+      if (!audioCtx) initAudio();
+      if (!recordingDest) recordingDest = audioCtx.createMediaStreamDestination();
+      if (sourceNode && analyser) {
+        sourceNode.disconnect();
+        sourceNode.connect(analyser);
+        analyser.connect(recordingDest);
+        analyser.connect(audioCtx.destination);
+      }
 
-    initAudio(); // ensure audioCtx exists for fallback
-    // ensure audio is playing (so we capture audio)
-    if (audio.paused && !useMic.checked) {
-      try { await audio.play(); } catch(e){ console.warn('play for record failed', e); }
-    }
+      // capture both canvas + audio
+      const canvasStream = viz.captureStream(60);
+      const audioTracks = recordingDest.stream.getAudioTracks();
+      const combined = new MediaStream([...canvasStream.getVideoTracks(), ...audioTracks]);
 
-    // get streams
-    const canvasStream = viz.captureStream(60); // capture canvas at 60fps (browser permitting)
-    const audioStream = getAudioStreamForRecording();
-
-    if (!audioStream || !audioStream.getAudioTracks().length) {
-      alert('Unable to capture audio for recording in this browser. Try using a modern browser (Chrome/Edge/Firefox) or enable microphone input.');
-      return;
-    }
-
-    // mix streams (video from canvas + audio from audioStream)
-    const mixed = new MediaStream();
-    canvasStream.getVideoTracks().forEach(t => mixed.addTrack(t));
-    audioStream.getAudioTracks().forEach(t => mixed.addTrack(t));
-
-    // choose mimeType gracefully
-    let mime = 'video/webm;codecs=vp9,opus';
-    if (!MediaRecorder.isTypeSupported(mime)) {
-      mime = 'video/webm;codecs=vp8,opus';
-      if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm';
-    }
-
-    try {
+      mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm;codecs=vp9,opus' });
       recordedChunks = [];
-      mediaRecorder = new MediaRecorder(mixed, { mimeType });
-    } catch(e) {
-      alert('MediaRecorder not supported or failed to start: ' + e.message);
-      console.warn('MediaRecorder error', e);
-      return;
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      };
+
+      // 🟢 when recording stops, auto-download file
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'transmission_recording_' + new Date().toISOString().replace(/[:.]/g, '-') + '.webm';
+        a.click();
+        URL.revokeObjectURL(url);
+        logStatus('Recording saved and downloaded automatically.');
+        recIndicator.classList.remove('show');
+        recording = false;
+        recordBtn.textContent = 'Record';
+      };
+
+      mediaRecorder.start();
+      recording = true;
+      recordBtn.textContent = 'Stop Recording';
+      recIndicator.classList.add('show');
+      logStatus('Recording started...');
+    } else {
+      // stop recording
+      mediaRecorder.stop();
     }
-
-    mediaRecorder.ondataavailable = (ev) => {
-      if (ev.data && ev.data.size) recordedChunks.push(ev.data);
-    };
-
-    mediaRecorder.onstop = () => {
-      // download blob
-      const blob = new Blob(recordedChunks, { type: recordedChunks[0]?.type || 'video/webm' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-
-      // try to pick a sensible filename from audio source
-      let name = 'visual_capture';
-      try {
-        const src = audio.currentSrc || audio.src || '';
-        if (src) {
-          const parts = src.split('/').pop().split('?')[0];
-          if (parts) name = parts.replace(/\.[^/.]+$/, '');
-        }
-      } catch(e){ /* ignore */ }
-      const ts = new Date().toISOString().replace(/[:.]/g,'-');
-      a.href = url;
-      a.download = `${name}_${ts}.webm`;
-      a.click();
-      URL.revokeObjectURL(url);
-
-      // cleanup
-      recording = false;
-      recordBtn.textContent = 'Record';
-      recIndicator.classList.remove('show');
-      // disconnect recordingDest if we created it (to avoid re-connections)
-      try{
-        if (recordingDest && sourceNode && typeof sourceNode.disconnect === 'function'){ sourceNode.disconnect(recordingDest); }
-      }catch(e){ /* ignore */ }
-      recordingDest = null;
-      logStatus('Recording saved.');
-      // re-enable UI
-      snapshotBtn.disabled = false;
-      fullscreenBtn.disabled = false;
-      playBtn.disabled = false;
-    };
-
-    mediaRecorder.onerror = (e) => {
-      console.warn('recorder error', e);
-      alert('Recording error: ' + (e?.error?.message || e?.message || 'unknown'));
-    };
-
-    // start recording
-    mediaRecorder.start();
-    recording = true;
-    recordBtn.textContent = 'Stop';
-    recIndicator.classList.add('show');
-    logStatus('Recording started...');
-    // disable snapshot/fullscreen to avoid interference
-    snapshotBtn.disabled = true;
-    fullscreenBtn.disabled = true;
-    playBtn.disabled = true;
   });
   // ---- end recording logic ----
 
@@ -777,3 +737,4 @@
 </script>
 </body>
 </html>
+
