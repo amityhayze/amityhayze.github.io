@@ -134,8 +134,9 @@
       <label class="btn small" style="cursor:pointer">
         <input id="filePick" type="file" accept="audio/*"> Upload Audio
       </label>
-      <button id="snapshotBtn" class="btn small">Snapshot</button>
-      <button id="fullscreenBtn" class="btn small">Fullscreen</button>
+
+      <!-- Record button retained, shows "Record" / "Stop Recording" -->
+      <button id="recordBtn" class="btn small">Record</button>
     </div>
   </header>
 
@@ -220,14 +221,17 @@
     </div>
   </div>
 
-  <footer>Made for Amity — Oscillator App • <span id="version">v1.0</span></footer>
+  <footer>Made by Amity Hayze — Oscillator App • <span id="version">v1.0</span></footer>
+
+<!-- FFmpeg.wasm from CDN -->
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.7/dist/ffmpeg.min.js"></script>
 
 <script>
 /* App script — expanded features from your original visualizer:
    - audio input: file upload, embedded default file, or microphone
    - save/load presets to localStorage (export/import JSON)
-   - snapshot (download PNG) and fullscreen
-   - UI improvements while keeping your look
+   - RECORD button to capture canvas + audio, transcode to MP4 via ffmpeg.wasm
+   - shows "Processing..." while ffmpeg converts, then auto-downloads MP4
 */
 (function(){
   // DOM
@@ -258,8 +262,7 @@
 
   const filePick = document.getElementById('filePick');
   const useMic = document.getElementById('useMic');
-  const snapshotBtn = document.getElementById('snapshotBtn');
-  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const recordBtn = document.getElementById('recordBtn');
   const loadDefault = document.getElementById('loadDefault');
   const statusArea = document.getElementById('statusArea');
 
@@ -267,6 +270,18 @@
   let audioCtx = null, analyser = null, sourceNode = null;
   let dataArray = null, bufferLength = 0;
   let micStream = null;
+
+  // recording state
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let recording = false;
+  let recordingDest = null; // MediaStreamDestination used for recording
+
+  // ffmpeg state
+  const { createFFmpeg, fetchFile } = FFmpeg;
+  const ffmpeg = createFFmpeg({ log: false });
+  let ffmpegLoading = false;
+  let ffmpegLoaded = false;
 
   // visual state
   let raf = null;
@@ -563,19 +578,172 @@
 
   loadDefault.addEventListener('click', ()=>{ audio.src = 'Cascade Canyon.mp3'; audio.load(); useMic.checked = false; logStatus('Reset to default audio.'); });
 
-  // snapshot
-  snapshotBtn.addEventListener('click', ()=>{
-    try{
-      const data = viz.toDataURL('image/png');
-      const a = document.createElement('a'); a.href = data; a.download = 'osc_snapshot.png'; a.click();
-    }catch(e){ alert('Snapshot failed: ' + e.message); }
-  });
+  // PREPARE audio stream for recording (prioritize mic if checked)
+  function getAudioStreamForRecording(){
+    if (useMic.checked && micStream) return micStream;
+    // try HTMLMediaElement.captureStream
+    if (typeof audio.captureStream === 'function') {
+      try {
+        const s = audio.captureStream();
+        if (s && s.getAudioTracks().length) return s;
+      } catch(e){ /* ignore */ }
+    }
+    // fallback: use AudioContext destination
+    if (audioCtx){
+      try {
+        recordingDest = audioCtx.createMediaStreamDestination();
+        if (sourceNode && typeof sourceNode.connect === 'function'){
+          try{ sourceNode.connect(recordingDest); }catch(e){ /* ignore */ }
+        } else {
+          try{ const temp = audioCtx.createMediaElementSource(audio); temp.connect(recordingDest); }catch(e){}
+        }
+        if (recordingDest.stream && recordingDest.stream.getAudioTracks().length) return recordingDest.stream;
+      } catch(e){ console.warn('recording audio dest failed', e); }
+    }
+    return null;
+  }
 
-  // fullscreen
-  fullscreenBtn.addEventListener('click', ()=>{
-    const el = document.querySelector('.tv');
-    if (!document.fullscreenElement){ el.requestFullscreen?.(); }
-    else { document.exitFullscreen?.(); }
+  // Recording handler (Record ↔ Stop Recording)
+  recordBtn.addEventListener('click', async () => {
+    if (!recording) {
+      // start recording
+      initAudio();
+      // ensure audio is routed so there's audio to capture
+      if (!useMic.checked && (!audio || audio.paused)) {
+        try { await audio.play(); } catch(e){ /* ignore */ }
+      }
+      // ensure recording destination exists
+      const audioStream = getAudioStreamForRecording();
+      if (!audioStream) {
+        alert('Unable to access audio stream for recording in this browser.');
+        return;
+      }
+
+      // create a MediaStream combining canvas video + audio tracks
+      const canvasStream = viz.captureStream(60);
+      const audioTracks = audioStream.getAudioTracks();
+      const combined = new MediaStream([...canvasStream.getVideoTracks(), ...audioTracks]);
+
+      // create MediaRecorder (webm)
+      try {
+        mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm;codecs=vp9,opus' });
+      } catch (err) {
+        try {
+          mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm;codecs=vp8,opus' });
+        } catch (err2) {
+          mediaRecorder = new MediaRecorder(combined);
+        }
+      }
+
+      recordedChunks = [];
+      mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = async () => {
+        // assemble webm blob
+        const webmBlob = new Blob(recordedChunks, { type: 'video/webm' });
+
+        // show processing
+        logStatus('Processing... (converting to MP4)');
+        // load ffmpeg if needed
+        if (!ffmpegLoaded && !ffmpegLoading) {
+          ffmpegLoading = true;
+          try {
+            await ffmpeg.load();
+            ffmpegLoaded = true;
+          } catch (e) {
+            console.error('ffmpeg load failed', e);
+            logStatus('FFmpeg failed to load in this browser. Conversion unavailable.');
+            recording = false;
+            recordBtn.textContent = 'Record';
+            return;
+          } finally {
+            ffmpegLoading = false;
+          }
+        }
+
+        try {
+          // write input webm
+          ffmpeg.FS('writeFile', 'input.webm', await fetchFile(webmBlob));
+
+          // try main conversion using libx264 + aac (may fail on some builds)
+          let conversionFailed = false;
+          try {
+            await ffmpeg.run(
+              '-i','input.webm',
+              '-c:v','libx264',
+              '-preset','veryfast',
+              '-crf','23',
+              '-c:a','aac',
+              '-b:a','128k',
+              'output.mp4'
+            );
+          } catch (e) {
+            console.warn('primary conversion failed, trying fallback copy container', e);
+            conversionFailed = true;
+          }
+
+          // fallback: try copy (may or may not be playable in MP4)
+          if (conversionFailed) {
+            try {
+              await ffmpeg.run('-i','input.webm','-c:v','copy','-c:a','copy','output.mp4');
+            } catch (e2) {
+              console.error('fallback conversion failed', e2);
+              logStatus('Conversion failed in-browser. Downloading original WebM instead.');
+              // offer webm download
+              const url = URL.createObjectURL(webmBlob);
+              const a = document.createElement('a'); a.href = url;
+              a.download = 'transmission_recording_'+new Date().toISOString().replace(/[:.]/g,'-')+'.webm';
+              a.click();
+              URL.revokeObjectURL(url);
+              recording = false;
+              recordBtn.textContent = 'Record';
+              return;
+            }
+          }
+
+          // read result
+          const data = ffmpeg.FS('readFile', 'output.mp4');
+          const mp4Blob = new Blob([data.buffer], { type: 'video/mp4' });
+
+          // auto-download mp4
+          const url = URL.createObjectURL(mp4Blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'transmission_recording_' + new Date().toISOString().replace(/[:.]/g, '-') + '.mp4';
+          a.click();
+          URL.revokeObjectURL(url);
+
+          logStatus('Recording converted and downloaded as MP4.');
+        } catch (err) {
+          console.error('Conversion error', err);
+          logStatus('Conversion failed: ' + (err && err.message ? err.message : 'unknown error'));
+          // fallback: download webm
+          const url = URL.createObjectURL(webmBlob);
+          const a = document.createElement('a'); a.href = url;
+          a.download = 'transmission_recording_'+new Date().toISOString().replace(/[:.]/g,'-')+'.webm';
+          a.click();
+          URL.revokeObjectURL(url);
+        } finally {
+          // cleanup ffmpeg FS files if present
+          try { ffmpeg.FS('unlink','input.webm'); } catch(e){}
+          try { ffmpeg.FS('unlink','output.mp4'); } catch(e){}
+        }
+
+        // done
+        recording = false;
+        recordBtn.textContent = 'Record';
+      };
+
+      mediaRecorder.start();
+      recording = true;
+      recordBtn.textContent = 'Stop Recording';
+      logStatus('Recording started...');
+    } else {
+      // stop recording
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        logStatus('Finalizing recording — please wait...');
+      }
+    }
   });
 
   // presets persistence load
@@ -616,4 +784,3 @@
 </script>
 </body>
 </html>
-
