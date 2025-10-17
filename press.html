@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Amity Hayze — Press + Features</title>
-
   <meta name="description" content="Amity Hayze — Press & features. Articles, playlists, and places that included Amity's transmissions.">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
 
@@ -16,7 +15,6 @@
       --muted: #eab2d5;
       --glass: rgba(255,255,255,0.03);
       --wrap-max: 980px;
-
       --hazy-pink: rgba(255,107,205,0.25);
       --hazy-pink-light: rgba(255,107,205,0.35);
     }
@@ -31,7 +29,6 @@
     }
     body { padding-top: 62px; }
 
-    /* CRT GIF background */
     body::before {
       content: "";
       position: fixed;
@@ -41,7 +38,6 @@
       z-index: -2;
       mix-blend-mode: screen;
       filter: grayscale(30%) contrast(1.05);
-      will-change: opacity, filter;
     }
     body::after {
       content: "";
@@ -97,7 +93,6 @@
       max-width: var(--wrap-max);
       margin: 8vh auto 6vh auto;
       padding: 30px;
-      display: block;
     }
 
     .panel {
@@ -110,12 +105,12 @@
       opacity: 0;
       transform: translateY(14px);
       transition: opacity .7s ease, transform .7s ease;
+      animation: softFlicker 3.2s infinite;
     }
     .panel.visible { opacity: 1; transform: translateY(0); }
     @keyframes softFlicker {
       0%, 97%, 100% { opacity: 1; } 98%, 99% { opacity: 0.97; }
     }
-    .panel { animation: softFlicker 3.2s infinite; }
 
     header { text-align:center; margin-bottom:18px; display:flex; flex-direction:column; align-items:center; gap:6px; }
     .title {
@@ -145,15 +140,19 @@
       text-transform: uppercase; letter-spacing:1px; transition: all .22s ease;
     }
     .btn.pulse { animation: pulseGlow 4s infinite ease-in-out; }
-    @keyframes pulseGlow { 0% { box-shadow: 0 0 18px rgba(255,107,205,0.06); } 50% { box-shadow:0 0 46px rgba(255,107,205,0.16); } 100% { box-shadow:0 0 22px rgba(255,107,205,0.08); } }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 18px rgba(255,107,205,0.06); }
+      50% { box-shadow:0 0 46px rgba(255,107,205,0.16); }
+      100% { box-shadow:0 0 22px rgba(255,107,205,0.08); }
+    }
 
-    /* cards grid for articles */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
       gap: 18px;
       margin-top: 14px;
     }
+
     .press-card {
       background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.35));
       border-radius: 10px;
@@ -163,70 +162,29 @@
       flex-direction:column;
       gap:10px;
     }
+
     .press-card img {
       width:100%;
       height:140px;
       object-fit:cover;
       border-radius:8px;
       border: 1px solid rgba(255,255,255,0.03);
-      background:#000;
     }
+
     .press-card h4 { margin:0; color:var(--neon); font-size:16px; }
     .press-card p { margin:0; color:#ffc0e6; font-size:14px; line-height:1.4; }
     .press-meta { font-size:12px; color:var(--muted); opacity:.9; }
 
-    .embed-wrap {
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      margin-top:12px;
-    }
-    .player {
-      width:100%;
-      height:360px;
-      border:0;
-      border-radius:8px;
-      overflow:hidden;
-    }
+    .embed-wrap { display:flex; flex-direction:column; gap:12px; margin-top:12px; }
+    .player { width:100%; height:360px; border:0; border-radius:8px; overflow:hidden; }
     @media (max-width:480px) { .player { height:300px; } }
 
-    .small-link { color:var(--neon); text-decoration:none; margin-top:8px; display:inline-block; }
-
     footer { text-align:center; margin:28px 0; color:var(--muted); font-size:13px; }
-
-    /* subtle search/filter area */
-    .controls {
-      display:flex; gap:10px; align-items:center; margin-top:12px; flex-wrap:wrap;
-    }
-    .controls input, .controls select {
-      padding:8px 10px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,107,205,0.06);
-      color: var(--neon);
-      border-radius:8px;
-      outline:none;
-      font-family:inherit;
-    }
-    .controls input::placeholder { color: rgba(255,107,205,0.5); }
-
-    .signal { display:inline-flex; gap:4px; align-items:end; margin-left:8px; transform:translateY(-2px); }
-    .signal .bar { width:4px; background:linear-gradient(180deg, rgba(255,107,205,0.9), rgba(255,107,205,0.35)); border-radius:2px; opacity:0.9; animation:signalPulse 1.6s infinite ease-in-out; transform-origin:bottom; }
-    .signal .bar:nth-child(1){height:6px}
-    .signal .bar:nth-child(2){height:10px}
-    .signal .bar:nth-child(3){height:16px}
-    .signal .bar:nth-child(4){height:22px}
-    @keyframes signalPulse { 0%{transform:scaleY(0.65);opacity:.6} 50%{transform:scaleY(1);opacity:1} 100%{transform:scaleY(0.7);opacity:.6} }
-
-    .wiki-dot { position: fixed; right: 14px; bottom: 12px; z-index: 9999; color: rgba(255,107,205,0.14); font-size:16px; background:none; border:none; cursor:pointer; }
-    .wiki-dot:hover { color: rgba(255,107,205,0.8); }
-
-    @media (prefers-reduced-motion: reduce) {
-      * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
-    }
   </style>
 </head>
+
 <body>
-  <nav class="main-nav" role="navigation" aria-label="Main navigation">
+  <nav class="main-nav">
     <a href="index.html">Home</a>
     <a href="press.html" class="active">Press + Features</a>
     <a href="index.html#music">Music</a>
@@ -236,13 +194,10 @@
   </nav>
 
   <div class="wrap">
-    <div class="panel" role="banner">
+    <div class="panel">
       <header>
         <div style="display:flex;align-items:center;gap:10px;">
           <h1 class="title" data-text="Press + Features">Press + Features</h1>
-          <div class="signal" aria-hidden="true" title="Signal strength">
-            <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
-          </div>
         </div>
         <div class="subtitle">A curated archive of articles, playlists, and features that include Amity Hayze.</div>
       </header>
@@ -253,63 +208,36 @@
       </div>
     </div>
 
-    <!-- FILTER + SEARCH -->
-    <section class="panel" id="filters">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-        <div style="font-size:13px;color:var(--muted)">Explore press articles and playlists featuring Amity.</div>
-        <div class="controls" aria-hidden="false">
-          <input id="q" placeholder="Search articles / playlists (title, source)..." />
-          <select id="typeFilter">
-            <option value="all">All</option>
-            <option value="article">Article</option>
-            <option value="playlist">Playlist</option>
-            <option value="video">Video</option>
-          </select>
-          <button class="btn" id="applyFilter">Filter</button>
-        </div>
+    <section class="panel">
+      <h3 style="margin-top:0;color:var(--neon)">Featured Article</h3>
+      <div class="press-card">
+        <iframe src="https://indieemusic.com/amity-hayze-strikes-emotional-chords-with-how-could-you-love-me/" width="100%" height="500" style="border:none;border-radius:12px;" loading="lazy"></iframe>
+        <h4>“Amity Hayze Strikes Emotional Chords with 'How Could You Love Me?’”</h4>
+        <div class="press-meta">IndieEMusic — October 2025</div>
+        <p>“Amity Hayze’s ability to capture unrest and vulnerability lyrically impresses, proving her prowess as a singer-songwriter.”</p>
+        <a href="https://indieemusic.com/amity-hayze-strikes-emotional-chords-with-how-could-you-love-me/" target="_blank" rel="noopener" class="small-link">→ Read Article</a>
       </div>
     </section>
 
-    <!-- FEATURED ARTICLES -->
-    <section class="panel" id="articles">
-      <h3 style="margin-top:0;color:var(--neon)">Featured Articles</h3>
-      <div class="grid" id="articlesGrid">
-        <!-- Placeholder cards -->
-        <article class="press-card" data-type="article" data-title="'Amity hayze Strikes Emotional Chords with 'How Could You Love Me?'" data-source="Music Blog">
-          <img src="https://indieemusic.com/amity-hayze-strikes-emotional-chords-with-how-could-you-love-me/" alt="Article preview">
-          <div>
-            <h4>Late Night Transmission: Amity's New Single</h4>
-            <div class="press-meta">Indie Music Blog — October 2025</div>
-            <p> 'Amity Hayze‘s ability to capture so distinctively the unrest and vulnerability lyrically impresses, proving her prowess as a singer-songwriter.".</p>
-            <a class="https://indieemusic.com/amity-hayze-strikes-emotional-chords-with-how-could-you-love-me/" href="#" target="_blank" rel="noopener">→ Read Article</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- PLAYLISTS / EMBEDS -->
-    <section class="panel" id="playlists">
+    <section class="panel">
       <h3 style="margin-top:0;color:var(--neon)">Playlists & Features</h3>
-
       <div class="embed-wrap">
-        <!-- Your 7 Spotify embeds -->
-        <iframe class="player" src="https://open.spotify.com/embed/playlist/08i9sjghPv0YOJgvwrGypr?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist 1"></iframe>
-        <iframe class="player" src="https://open.spotify.com/embed/playlist/4vi0drYKDFsH2RDNKxRhvn?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist 2"></iframe>
-        <iframe class="player" src="https://open.spotify.com/embed/playlist/0Lp9po0968hO1xUakltvku?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist 3"></iframe>
-        <iframe class="player" src="https://open.spotify.com/embed/playlist/3jav5a3YObRYtKCXARL21H?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist 4"></iframe>
-        <iframe class="player" src="https://open.spotify.com/embed/playlist/6B6gTDEStQWTvd0yc4QBRb?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist 5"></iframe>
-        <iframe class="player" src="https://open.spotify.com/embed/playlist/79sBSmkDjnqkXet7wJqKcU?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist 6"></iframe>
-        <iframe class="player" src="https://open.spotify.com/embed/playlist/4nvV53xlNSDQ9ZnPB9gUYC?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist 7"></iframe>
+        <iframe class="player" src="https://open.spotify.com/embed/playlist/08i9sjghPv0YOJgvwrGypr?utm_source=generator" loading="lazy"></iframe>
+        <iframe class="player" src="https://open.spotify.com/embed/playlist/4vi0drYKDFsH2RDNKxRhvn?utm_source=generator" loading="lazy"></iframe>
+        <iframe class="player" src="https://open.spotify.com/embed/playlist/0Lp9po0968hO1xUakltvku?utm_source=generator" loading="lazy"></iframe>
+        <iframe class="player" src="https://open.spotify.com/embed/playlist/3jav5a3YObRYtKCXARL21H?utm_source=generator" loading="lazy"></iframe>
+        <iframe class="player" src="https://open.spotify.com/embed/playlist/6B6gTDEStQWTvd0yc4QBRb?utm_source=generator" loading="lazy"></iframe>
+        <iframe class="player" src="https://open.spotify.com/embed/playlist/79sBSmkDjnqkXet7wJqKcU?utm_source=generator" loading="lazy"></iframe>
+        <iframe class="player" src="https://open.spotify.com/embed/playlist/4nvV53xlNSDQ9ZnPB9gUYC?utm_source=generator" loading="lazy"></iframe>
       </div>
     </section>
 
-    <!-- ARCHIVE / LIST -->
-    <section class="panel" id="archive">
+    <section class="panel">
       <h3 style="margin-top:0;color:var(--neon)">Press Archive</h3>
       <div style="display:flex;flex-direction:column;gap:12px;margin-top:10px;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div style="color:#ffc0e6">October 2025 — 'Amity hayze Strikes Emotional Chords with 'How Could You Love Me?'</div>
-          <a class="https://indieemusic.com/amity-hayze-strikes-emotional-chords-with-how-could-you-love-me/" href="#" target="_blank">Read</a>
+          <div style="color:#ffc0e6">October 2025 — “Amity Hayze Strikes Emotional Chords with 'How Could You Love Me?’”</div>
+          <a href="https://indieemusic.com/amity-hayze-strikes-emotional-chords-with-how-could-you-love-me/" target="_blank" rel="noopener" class="small-link">Read</a>
         </div>
       </div>
     </section>
@@ -323,70 +251,15 @@
   <button class="wiki-dot" title="archive" onclick="window.location.href='wiki-unlock.html'">▦</button>
 
   <script>
-    // IntersectionObserver reveal
-    (function(){
-      const panels = document.querySelectorAll('.panel');
-      if (!('IntersectionObserver' in window)) {
-        panels.forEach(p => p.classList.add('visible'));
-        return;
-      }
-      const obs = new IntersectionObserver((entries, o) => {
-        entries.forEach(en => {
-          if (en.isIntersecting) {
-            en.target.classList.add('visible');
-            o.unobserve(en.target);
-          }
-        });
-      }, { threshold: 0.12 });
-      panels.forEach(p => obs.observe(p));
-    })();
-
-    // Nav active
-    document.querySelectorAll('.main-nav a').forEach(a=>{
-      if (a.getAttribute('href') === 'press.html') a.classList.add('active');
-    });
-
-    // Basic filter/search
-    const qInput = document.getElementById('q');
-    const typeFilter = document.getElementById('typeFilter');
-    const applyBtn = document.getElementById('applyFilter');
-    const cards = Array.from(document.querySelectorAll('.press-card'));
-
-    function runFilter() {
-      const q = (qInput.value || '').toLowerCase().trim();
-      const type = (typeFilter.value || 'all');
-      cards.forEach(card=>{
-        const title = (card.dataset.title || '').toLowerCase();
-        const source = (card.dataset.source || '').toLowerCase();
-        const cardType = (card.dataset.type || 'article');
-        const matchesQ = !q || title.includes(q) || source.includes(q);
-        const matchesType = (type === 'all') || (cardType === type);
-        card.style.display = (matchesQ && matchesType) ? 'flex' : 'none';
+    // Reveal animation
+    const panels = document.querySelectorAll('.panel');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
       });
-    }
-    applyBtn && applyBtn.addEventListener('click', runFilter);
-    qInput && qInput.addEventListener('keydown', e => { if (e.key === 'Enter') runFilter(); });
-
-    // Signal bars respond to mouse
-    const signalBars = document.querySelectorAll('.signal .bar');
-    window.addEventListener('mousemove', e => {
-      const strength = Math.ceil((e.clientX / window.innerWidth) * signalBars.length);
-      signalBars.forEach((bar, i) => { bar.style.opacity = (i < strength ? '1' : '0.3'); });
-    });
-
-    // Parallax background drift
-    window.addEventListener('scroll', () => {
-      document.body.style.backgroundPosition = `center ${window.scrollY * 0.05}px`;
-    });
-
-    // Smooth anchors
-    document.querySelectorAll('a[href^="#"]').forEach(a=>{
-      a.addEventListener('click', e=>{
-        e.preventDefault();
-        const el = document.querySelector(a.getAttribute('href'));
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
+    }, { threshold: 0.12 });
+    panels.forEach(p => obs.observe(p));
   </script>
 </body>
 </html>
+
