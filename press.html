@@ -13,12 +13,11 @@
       --bg-dark: #000;
       --panel: rgba(0,0,0,0.7);
       --muted: #eab2d5;
-      --glass: rgba(255,255,255,0.03);
-      --wrap-max: 980px;
       --hazy-pink: rgba(255,107,205,0.25);
-      --hazy-pink-light: rgba(255,107,205,0.35);
     }
+
     * { box-sizing: border-box; }
+
     html, body {
       height: 100%;
       margin: 0;
@@ -27,7 +26,10 @@
       color: var(--neon);
       -webkit-font-smoothing: antialiased;
     }
-    body { padding-top: 62px; }
+
+    body {
+      padding-top: 62px;
+    }
 
     body::before {
       content: "";
@@ -37,8 +39,8 @@
       opacity: 0.12;
       z-index: -2;
       mix-blend-mode: screen;
-      filter: grayscale(30%) contrast(1.05);
     }
+
     body::after {
       content: "";
       position: fixed;
@@ -64,7 +66,9 @@
       animation: fadeInNav 1.2s ease forwards;
       opacity: 0;
     }
+
     @keyframes fadeInNav { to { opacity: 1; } }
+
     .main-nav a {
       color: var(--neon);
       text-decoration: none;
@@ -74,6 +78,7 @@
       text-transform: uppercase;
       transition: color .25s ease, text-shadow .25s ease;
     }
+
     .main-nav a::after {
       content: "";
       position: absolute;
@@ -86,11 +91,17 @@
       transition: width .3s ease;
       opacity: .8;
     }
-    .main-nav a:hover::after, .main-nav a.active::after { width: 100%; }
-    .main-nav a:hover { color: #fff; text-shadow: 0 0 6px var(--neon); }
+
+    .main-nav a:hover::after,
+    .main-nav a.active::after { width: 100%; }
+
+    .main-nav a:hover {
+      color: #fff;
+      text-shadow: 0 0 6px var(--neon);
+    }
 
     .wrap {
-      max-width: var(--wrap-max);
+      max-width: 980px;
       margin: 8vh auto 6vh auto;
       padding: 30px;
     }
@@ -107,12 +118,23 @@
       transition: opacity .7s ease, transform .7s ease;
       animation: softFlicker 3.2s infinite;
     }
+
     .panel.visible { opacity: 1; transform: translateY(0); }
+
     @keyframes softFlicker {
-      0%, 97%, 100% { opacity: 1; } 98%, 99% { opacity: 0.97; }
+      0%, 97%, 100% { opacity: 1; } 
+      98%, 99% { opacity: 0.97; }
     }
 
-    header { text-align:center; margin-bottom:18px; display:flex; flex-direction:column; align-items:center; gap:6px; }
+    header {
+      text-align:center;
+      margin-bottom:18px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+    }
+
     .title {
       font-size: 34px;
       letter-spacing: 2px;
@@ -121,36 +143,30 @@
       position: relative;
       display: inline-block;
     }
-    .title::before, .title::after {
-      content: attr(data-text);
-      position: absolute; left:0; top:0; opacity:.25;
-    }
-    .title::before { transform: translate(-2px,-1px); color:#ff6bcd; mix-blend-mode:screen; }
-    .title::after { transform: translate(2px,1px); color:#ffb3e6; mix-blend-mode:screen; }
+
     .subtitle { font-size:13px; color:var(--muted); opacity:.95; }
 
-    .hero-cta { display:flex; justify-content:center; margin:18px 0; gap:10px; flex-wrap:wrap; }
     .btn {
-      --pad: 12px 22px;
-      display:inline-block; padding: var(--pad); border-radius:10px;
-      background: linear-gradient(180deg, rgba(255,107,205,0.06), rgba(255,107,205,0.02));
-      color: var(--neon); text-decoration:none; font-weight:700;
+      display:inline-block;
+      padding: 12px 22px;
+      border-radius:10px;
+      background: rgba(255,107,205,0.08);
+      color: var(--neon);
+      text-decoration:none;
       border: 1px solid rgba(255,107,205,0.18);
-      box-shadow: 0 0 25px rgba(255,107,205,0.08), inset 0 0 6px rgba(255,107,205,0.02);
-      text-transform: uppercase; letter-spacing:1px; transition: all .22s ease;
+      text-transform: uppercase;
+      letter-spacing:1px;
+      transition: all .22s ease;
     }
-    .btn.pulse { animation: pulseGlow 4s infinite ease-in-out; }
+
+    .btn.pulse {
+      animation: pulseGlow 4s infinite ease-in-out;
+    }
+
     @keyframes pulseGlow {
       0% { box-shadow: 0 0 18px rgba(255,107,205,0.06); }
       50% { box-shadow:0 0 46px rgba(255,107,205,0.16); }
       100% { box-shadow:0 0 22px rgba(255,107,205,0.08); }
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
-      gap: 18px;
-      margin-top: 14px;
     }
 
     .press-card {
@@ -168,18 +184,41 @@
       height:140px;
       object-fit:cover;
       border-radius:8px;
-      border: 1px solid rgba(255,255,255,0.03);
     }
 
     .press-card h4 { margin:0; color:var(--neon); font-size:16px; }
-    .press-card p { margin:0; color:#ffc0e6; font-size:14px; line-height:1.4; }
-    .press-meta { font-size:12px; color:var(--muted); opacity:.9; }
+    .press-meta { font-size:12px; color:var(--muted); }
 
-    .embed-wrap { display:flex; flex-direction:column; gap:12px; margin-top:12px; }
-    .player { width:100%; height:360px; border:0; border-radius:8px; overflow:hidden; }
-    @media (max-width:480px) { .player { height:300px; } }
+    .press-archive {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 12px;
+    }
 
-    footer { text-align:center; margin:28px 0; color:var(--muted); font-size:13px; }
+    .archive-item {
+      display: flex;
+      flex-direction: column;
+      background: rgba(255,107,205,0.04);
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .archive-item a {
+      color: #ffc0e6;
+      text-decoration: none;
+      margin-top: 6px;
+      font-size: 13px;
+    }
+
+    .archive-item a:hover { text-shadow: 0 0 6px var(--neon); }
+
+    footer {
+      text-align:center;
+      margin:28px 0;
+      color:var(--muted);
+      font-size:13px;
+    }
   </style>
 </head>
 
@@ -192,62 +231,66 @@
   </nav>
 
   <div class="wrap">
-    <div class="panel">
+
+    <div class="panel visible">
       <header>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <h1 class="title" data-text="Press + Features">Press + Features</h1>
-        </div>
+        <h1 class="title">Press + Features</h1>
         <div class="subtitle">A curated archive of articles, playlists, and features that include Amity Hayze.</div>
       </header>
-
-      <div class="hero-cta">
-        <a class="btn" href="index.html">Back to Transmission</a>
-        <a class="btn pulse" href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf" target="_blank" rel="noopener">Listen</a>
-      </div>
     </div>
 
-    <section class="panel">
+    <!-- FEATURED ARTICLE -->
+    <section class="panel visible">
       <h3 style="margin-top:0;color:var(--neon)">Featured Article</h3>
       <div class="press-card">
-        <iframe src="https://boredcity.co/amity-hayze-drunk-on-expectations/" width="100%" height="500" style="border:none;border-radius:12px;" loading="lazy"></iframe>
-        <h4>“Amity Hayze’s new single “Drunk on Expectations” is a total rush of energy”</h4>
+        <a href="https://boredcity.co/amity-hayze-drunk-on-expectations/" target="_blank" rel="noopener">
+          <img src="https://boredcity.co/wp-content/uploads/2025/10/amity-hayze-drunk-on-expectations.jpg" alt="Amity Hayze - Bored City">
+        </a>
+        <h4>“Amity Hayze’s new single ‘Drunk on Expectations’ is a total rush of energy”</h4>
         <div class="press-meta">Bored City Blog — October 18th 2025</div>
-        <p>““Drunk on Expectations” feels like the kind of anthem that reminds you it’s okay to break free from what people think you should be and we’re all for that.”</p>
-        <a href="https://boredcity.co/amity-hayze-drunk-on-expectations/" target="_blank" rel="noopener" class="small-link">→ Read Article</a>
+        <p>“Drunk on Expectations feels like the kind of anthem that reminds you it’s okay to break free from what people think you should be — and we’re all for that.”</p>
+        <a href="https://boredcity.co/amity-hayze-drunk-on-expectations/" target="_blank" rel="noopener">→ Read Article</a>
       </div>
     </section>
 
-    <section class="panel">
+    <!-- PLAYLISTS -->
+    <section class="panel visible">
       <h3 style="margin-top:0;color:var(--neon)">Playlists</h3>
-      <div class="embed-wrap">
-        <iframe class="player" src="https://open.spotify.com/embed/playlist/08i9sjghPv0YOJgvwrGypr?utm_source=generator" loading="lazy"></iframe>
-        <iframe class="player" src="https://open.spotify.com/embed/playlist/1mJFggQPFQHv8K2V8Rv768?utm_source=generator" loading="lazy"></iframe>
-        <iframe class="player" src="https://open.spotify.com/embed/playlist/4vi0drYKDFsH2RDNKxRhvn?utm_source=generator" loading="lazy"></iframe>
+      <div class="press-card">
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/08i9sjghPv0YOJgvwrGypr?utm_source=generator" width="100%" height="352" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4vi0drYKDFsH2RDNKxRhvn?utm_source=generator" width="100%" height="352" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/79sBSmkDjnqkXet7wJqKcU?utm_source=generator" width="100%" height="352" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
       </div>
     </section>
 
-    <section class="panel">
+    <!-- PRESS ARCHIVE -->
+    <section class="panel visible">
       <h3 style="margin-top:0;color:var(--neon)">Press Archive</h3>
-      <div style="display:flex;flex-direction:column;gap:12px;margin-top:10px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div style="color:#ffc0e6">October 4th 2025 — “Amity Hayze Strikes Emotional Chords with 'How Could You Love Me?”</div>
-          <a href="https://indieemusic.com/amity-hayze-strikes-emotional-chords-with-how-could-you-love-me/" target="_blank" rel="noopener" class="small-link">Read</a>
-          <div style="color:#ffc0e6">October 18th 2025 — “Amity Hayze’s new single “Drunk on Expectations” is a total rush of energy”</div>
-          <a href="https://boredcity.co/amity-hayze-drunk-on-expectations/" target="_blank" rel="noopener" class="small-link">Read</a>
+      <div class="press-archive">
+        <div class="archive-item">
+          <strong>October 4th 2025</strong>
+          <div>“Amity Hayze Strikes Emotional Chords with ‘How Could You Love Me’” — Indie E Music</div>
+          <a href="https://indieemusic.com/amity-hayze-strikes-emotional-chords-with-how-could-you-love-me/" target="_blank" rel="noopener">→ Read Article</a>
+        </div>
+        <div class="archive-item">
+          <strong>October 18th 2025</strong>
+          <div>“Amity Hayze’s new single ‘Drunk on Expectations’ is a total rush of energy” — Bored City Blog</div>
+          <a href="https://boredcity.co/amity-hayze-drunk-on-expectations/" target="_blank" rel="noopener">→ Read Article</a>
         </div>
       </div>
     </section>
 
     <footer>
-      <div style="margin-bottom:8px;color:var(--muted)">Want something added here? Send press links to <a href="mailto:amityhayzemusic@gmail.com" style="color:var(--neon)">amityhayzemusic@gmail.com</a></div>
-      <div style="color:var(--muted)">© Amity Hayze — transmissions & static</div>
+      <div style="margin-bottom:8px;">Want something added here? Send press links to 
+        <a href="mailto:amityhayzemusic@gmail.com" style="color:var(--neon)">amityhayzemusic@gmail.com</a>
+      </div>
+      <div>© Amity Hayze — transmissions & static</div>
     </footer>
+
   </div>
 
-  <button class="wiki-dot" title="archive" onclick="window.location.href='wiki-unlock.html'">▦</button>
-
   <script>
-    // Reveal animation
+    // Fade-in animation on scroll
     const panels = document.querySelectorAll('.panel');
     const obs = new IntersectionObserver(entries => {
       entries.forEach(e => {
@@ -258,4 +301,3 @@
   </script>
 </body>
 </html>
-
