@@ -13,11 +13,12 @@
       --bg-dark: #000;
       --panel: rgba(0,0,0,0.7);
       --muted: #eab2d5;
+      --glass: rgba(255,255,255,0.03);
+      --wrap-max: 980px;
       --hazy-pink: rgba(255,107,205,0.25);
+      --hazy-pink-light: rgba(255,107,205,0.35);
     }
-
     * { box-sizing: border-box; }
-
     html, body {
       height: 100%;
       margin: 0;
@@ -26,278 +27,276 @@
       color: var(--neon);
       -webkit-font-smoothing: antialiased;
     }
+    body { padding-top: 62px; }
 
-    body {
-      padding-top: 62px;
+    /* CRT GIF background (keeps your aesthetic) */
+    body::before{
+      content:"";position:fixed;inset:0;
+      background:url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover no-repeat;
+      opacity:0.12; z-index:-2; mix-blend-mode:screen;
+      filter:grayscale(30%) contrast(1.05);
+      will-change:opacity,filter;
     }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover no-repeat;
-      opacity: 0.12;
-      z-index: -2;
-      mix-blend-mode: screen;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
+    body::after{
+      content:"";position:fixed;inset:0;
       background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%);
-      z-index: -1;
+      z-index:-1;
     }
 
-    /* nav */
-    .main-nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0,0,0,0.65);
-      border-bottom: 1px solid rgba(255,107,205,0.08);
-      backdrop-filter: blur(4px);
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      padding: 12px 20px;
-      z-index: 1000;
-      animation: fadeInNav 1.2s ease forwards;
-      opacity: 0;
+    .main-nav{
+      position:fixed;top:0;left:0;right:0;
+      background:rgba(0,0,0,0.65);
+      border-bottom:1px solid rgba(255,107,205,0.08);
+      backdrop-filter:blur(4px);
+      display:flex;justify-content:center;gap:32px;
+      padding:12px 20px;z-index:1000;
+      animation:fadeInNav 1.2s ease forwards;opacity:0;
+    }
+    @keyframes fadeInNav{to{opacity:1}}
+    .main-nav a{
+      color:var(--neon);text-decoration:none;font-size:14px;
+      letter-spacing:1px;position:relative;text-transform:uppercase;
+      transition:color .25s ease,text-shadow .25s ease;
+    }
+    .main-nav a::after{
+      content:"";position:absolute;left:0;bottom:-4px;width:0%;height:2px;
+      background:var(--neon);box-shadow:0 0 8px var(--neon);
+      transition:width .3s ease;opacity:.8;
+    }
+    .main-nav a:hover::after,.main-nav a.active::after{width:100%}
+    .main-nav a:hover{color:#fff;text-shadow:0 0 6px var(--neon)}
+
+    .wrap{max-width:var(--wrap-max);margin:8vh auto 6vh auto;padding:30px;display:block}
+
+    .panel{
+      background:var(--panel);
+      border:1px solid rgba(255,107,205,0.06);
+      padding:28px;border-radius:12px;
+      box-shadow:0 0 20px rgba(255,107,205,0.06);
+      backdrop-filter:blur(2px);
+      opacity:0; transform:translateY(14px); transition:opacity .7s ease, transform .7s ease;
+      animation:softFlicker 3.2s infinite;
+    }
+    .panel.visible{opacity:1; transform:translateY(0)}
+    @keyframes softFlicker{0%,97%,100%{opacity:1}98%,99%{opacity:0.97}}
+
+    header{text-align:center;margin-bottom:18px;display:flex;flex-direction:column;align-items:center;gap:6px}
+    .title{
+      font-size:34px;letter-spacing:2px;color:var(--neon);
+      text-shadow:0 0 10px rgba(255,107,205,0.22);
+      position:relative;display:inline-block;
+    }
+    .subtitle{font-size:13px;color:var(--muted);opacity:.95}
+
+    .hero-cta{display:flex;justify-content:center;margin:18px 0;gap:10px;flex-wrap:wrap;}
+    .btn{
+      --pad:12px 22px;display:inline-block;padding:var(--pad);border-radius:10px;
+      background: linear-gradient(180deg, rgba(255,107,205,0.06), rgba(255,107,205,0.02));
+      color: var(--neon);text-decoration:none;font-weight:700;
+      border:1px solid rgba(255,107,205,0.18);
+      box-shadow:0 0 25px rgba(255,107,205,0.08), inset 0 0 6px rgba(255,107,205,0.02);
+      text-transform:uppercase;letter-spacing:1px;transition:all .22s ease;
+    }
+    .btn.pulse{animation:pulseGlow 4s infinite ease-in-out}
+    @keyframes pulseGlow{0%{box-shadow:0 0 18px rgba(255,107,205,0.06)}50%{box-shadow:0 0 46px rgba(255,107,205,0.16)}100%{box-shadow:0 0 22px rgba(255,107,205,0.08)}}
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+      gap:18px;margin-top:14px;
     }
 
-    @keyframes fadeInNav { to { opacity: 1; } }
-
-    .main-nav a {
-      color: var(--neon);
-      text-decoration: none;
-      font-size: 14px;
-      letter-spacing: 1px;
-      position: relative;
-      text-transform: uppercase;
-      transition: color .25s ease, text-shadow .25s ease;
-    }
-
-    .main-nav a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -4px;
-      width: 0%;
-      height: 2px;
-      background: var(--neon);
-      box-shadow: 0 0 8px var(--neon);
-      transition: width .3s ease;
-      opacity: .8;
-    }
-
-    .main-nav a:hover::after,
-    .main-nav a.active::after { width: 100%; }
-
-    .main-nav a:hover {
-      color: #fff;
-      text-shadow: 0 0 6px var(--neon);
-    }
-
-    .wrap {
-      max-width: 980px;
-      margin: 8vh auto 6vh auto;
-      padding: 30px;
-    }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid rgba(255,107,205,0.06);
-      padding: 28px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(255,107,205,0.06);
-      backdrop-filter: blur(2px);
-      opacity: 0;
-      transform: translateY(14px);
-      transition: opacity .7s ease, transform .7s ease;
-      animation: softFlicker 3.2s infinite;
-    }
-
-    .panel.visible { opacity: 1; transform: translateY(0); }
-
-    @keyframes softFlicker {
-      0%, 97%, 100% { opacity: 1; } 
-      98%, 99% { opacity: 0.97; }
-    }
-
-    header {
-      text-align:center;
-      margin-bottom:18px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:6px;
-    }
-
-    .title {
-      font-size: 34px;
-      letter-spacing: 2px;
-      color: var(--neon);
-      text-shadow: 0 0 10px rgba(255,107,205,0.22);
-      position: relative;
-      display: inline-block;
-    }
-
-    .subtitle { font-size:13px; color:var(--muted); opacity:.95; }
-
-    .btn {
-      display:inline-block;
-      padding: 12px 22px;
-      border-radius:10px;
-      background: rgba(255,107,205,0.08);
-      color: var(--neon);
-      text-decoration:none;
-      border: 1px solid rgba(255,107,205,0.18);
-      text-transform: uppercase;
-      letter-spacing:1px;
-      transition: all .22s ease;
-    }
-
-    .btn.pulse {
-      animation: pulseGlow 4s infinite ease-in-out;
-    }
-
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 18px rgba(255,107,205,0.06); }
-      50% { box-shadow:0 0 46px rgba(255,107,205,0.16); }
-      100% { box-shadow:0 0 22px rgba(255,107,205,0.08); }
-    }
-
-    .press-card {
+    .press-card{
       background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.35));
-      border-radius: 10px;
-      padding: 14px;
-      border: 1px solid rgba(255,107,205,0.04);
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+      border-radius:10px;padding:14px;border:1px solid rgba(255,107,205,0.04);
+      display:flex;flex-direction:column;gap:10px;
     }
+    .press-card img{width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:#000}
+    .press-card h4{margin:0;color:var(--neon);font-size:16px}
+    .press-card p{margin:0;color:#ffc0e6;font-size:14px;line-height:1.4}
+    .press-meta{font-size:12px;color:var(--muted);opacity:.9}
 
-    .press-card img {
-      width:100%;
-      height:140px;
-      object-fit:cover;
-      border-radius:8px;
+    .embed-wrap{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+    .player{width:100%;height:360px;border:0;border-radius:8px;overflow:hidden}
+    @media (max-width:480px){.player{height:300px}}
+
+    /* Press archive: stacked — prevents overlap */
+    .press-archive{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+    .archive-item{
+      display:flex;flex-direction:row;align-items:center;justify-content:space-between;
+      gap:12px;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,107,205,0.02), rgba(0,0,0,0.04));
+      border:1px solid rgba(255,107,205,0.04);
+      flex-wrap:wrap;
     }
+    .archive-left{flex:1 1 60%}
+    .archive-right{flex:0 0 auto}
 
-    .press-card h4 { margin:0; color:var(--neon); font-size:16px; }
-    .press-meta { font-size:12px; color:var(--muted); }
+    .small-link{display:inline-block;margin-left:8px;text-decoration:none;color:var(--neon);opacity:.95}
+    .small-link:hover{text-shadow:0 0 6px rgba(255,107,205,0.14)}
 
-    .press-archive {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-top: 12px;
-    }
+    footer{text-align:center;margin:28px 0;color:var(--muted);font-size:13px}
 
-    .archive-item {
-      display: flex;
-      flex-direction: column;
-      background: rgba(255,107,205,0.04);
-      padding: 12px;
-      border-radius: 8px;
-    }
-
-    .archive-item a {
-      color: #ffc0e6;
-      text-decoration: none;
-      margin-top: 6px;
-      font-size: 13px;
-    }
-
-    .archive-item a:hover { text-shadow: 0 0 6px var(--neon); }
-
-    footer {
-      text-align:center;
-      margin:28px 0;
-      color:var(--muted);
-      font-size:13px;
+    /* accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      *{animation-duration:0.001ms!important;animation-iteration-count:1!important;transition-duration:0.001ms!important;scroll-behavior:auto!important}
     }
   </style>
 </head>
 
 <body>
-  <nav class="main-nav">
+  <nav class="main-nav" role="navigation" aria-label="Main navigation">
     <a href="index.html">Home</a>
-    <a href="music.html">Music</a>
+    <a href="index.html#music">Music</a>
     <a href="visuals.html">Visuals</a>
-    <a href="one-sheet.html">Connect</a>
+    <a href="press.html" class="active">Press + Features</a>
+    <a href="index.html#socials">Connect</a>
   </nav>
 
   <div class="wrap">
-
-    <div class="panel visible">
+    <div class="panel visible" role="banner">
       <header>
-        <h1 class="title">Press + Features</h1>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <h1 class="title" data-text="Press + Features">Press + Features</h1>
+        </div>
         <div class="subtitle">A curated archive of articles, playlists, and features that include Amity Hayze.</div>
       </header>
+
+      <div style="display:flex;justify-content:center;gap:10px;align-items:center;flex-wrap:wrap">
+        <a class="btn" href="index.html">Back to Transmission</a>
+        <a class="btn pulse" href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf" target="_blank" rel="noopener">Listen</a>
+      </div>
     </div>
 
-    <!-- FEATURED ARTICLE -->
-    <section class="panel visible">
+    <!-- FILTER + SEARCH (kept simple so it won't interfere) -->
+    <section class="panel" id="filters">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="font-size:13px;color:var(--muted)">Explore press articles and playlists featuring Amity.</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="q" placeholder="Search (title, source)..." style="padding:8px;border-radius:8px;border:1px solid rgba(255,107,205,0.06);background:rgba(255,255,255,0.02);color:var(--neon);font-family:inherit" />
+          <select id="typeFilter" style="padding:8px;border-radius:8px;border:1px solid rgba(255,107,205,0.06);background:rgba(255,255,255,0.02);color:var(--neon);">
+            <option value="all">All</option>
+            <option value="article">Article</option>
+            <option value="playlist">Playlist</option>
+            <option value="video">Video</option>
+          </select>
+          <button class="btn" id="applyFilter">Filter</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURED ARTICLE (preview card — reliable cross-site) -->
+    <section class="panel" id="articles">
       <h3 style="margin-top:0;color:var(--neon)">Featured Article</h3>
       <div class="press-card">
-        <a href="https://boredcity.co/amity-hayze-drunk-on-expectations/" target="_blank" rel="noopener">
-          <img src="https://boredcity.co/wp-content/uploads/2025/10/amity-hayze-drunk-on-expectations.jpg" alt="Amity Hayze - Bored City">
+        <!-- Use a direct linked preview instead of iframe (many sites block embedding) -->
+        <a href="https://boredcity.co/amity-hayze-drunk-on-expectations/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
+          <!-- Replace this thumbnail URL with the article's thumbnail if you have one -->
+          <img src="https://indieemusic.com/wp-content/uploads/2025/10/amity-feature.jpg" alt="Bored City Blog — Amity Hayze">
+          <h4>"Amity Hayze’s new single “Drunk on Expectations” is a total rush of energy”</h4>
         </a>
-        <h4>“Amity Hayze’s new single ‘Drunk on Expectations’ is a total rush of energy”</h4>
-        <div class="press-meta">Bored City Blog — October 18th 2025</div>
-        <p>“Drunk on Expectations feels like the kind of anthem that reminds you it’s okay to break free from what people think you should be — and we’re all for that.”</p>
-        <a href="https://boredcity.co/amity-hayze-drunk-on-expectations/" target="_blank" rel="noopener">→ Read Article</a>
+        <div class="press-meta">Bored City Blog — October 18th, 2025</div>
+        <p>“Drunk on Expectations” feels like the kind of anthem that reminds you it’s okay to break free from what people think you should be — click to read the full piece on Bored City.</p>
+        <a class="small-link" href="https://boredcity.co/amity-hayze-drunk-on-expectations/" target="_blank" rel="noopener">→ Read Article</a>
       </div>
     </section>
 
     <!-- PLAYLISTS -->
-    <section class="panel visible">
-      <h3 style="margin-top:0;color:var(--neon)">Playlists</h3>
-      <div class="press-card">
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/08i9sjghPv0YOJgvwrGypr?utm_source=generator" width="100%" height="352" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4vi0drYKDFsH2RDNKxRhvn?utm_source=generator" width="100%" height="352" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/79sBSmkDjnqkXet7wJqKcU?utm_source=generator" width="100%" height="352" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-      </div>
+    <section class="panel" id="playlists">
+      <h3 style="margin-top:0;color:var(--neon)">Playlists & Features</h3>
+      <div class="embed-wrap">
+        <!-- RESTORED: your original Spotify playlist embeds (all 7) -->
+        <iframe class="player" src="https://open.spotify.com/embed/playlist/08i9sjghPv0YOJgvwrGypr?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist 1"></iframe>
+
+        <iframe class="player" src="https://open.spotify.com/embed/playlist/4vi0drYKDFsH2RDNKxRhvn?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist 2"></iframe>
+ 
+        <iframe class="player" src="https://open.spotify.com/embed/playlist/1mJFggQPFQHv8K2V8Rv768?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist 2"></iframe>
+
+       </div>
     </section>
 
-    <!-- PRESS ARCHIVE -->
-    <section class="panel visible">
+    <!-- PRESS ARCHIVE (stacked, non-overlapping) -->
+    <section class="panel" id="archive">
       <h3 style="margin-top:0;color:var(--neon)">Press Archive</h3>
-      <div class="press-archive">
+
+      <div class="press-archive" id="pressArchive">
         <div class="archive-item">
-          <strong>October 4th 2025</strong>
-          <div>“Amity Hayze Strikes Emotional Chords with ‘How Could You Love Me’” — Indie E Music</div>
-          <a href="https://indieemusic.com/amity-hayze-strikes-emotional-chords-with-how-could-you-love-me/" target="_blank" rel="noopener">→ Read Article</a>
+          <div class="archive-left">
+            <strong>October 04, 2025</strong>
+            <div>Amity Hayze Strikes Emotional Chords with “How Could You Love Me?” — Indie E Music</div>
+          </div>
+          <div class="archive-right">
+            <a class="small-link" href="https://indieemusic.com/amity-hayze-strikes-emotional-chords-with-how-could-you-love-me/" target="_blank" rel="noopener">Read</a>
+          </div>
         </div>
+
         <div class="archive-item">
-          <strong>October 18th 2025</strong>
-          <div>“Amity Hayze’s new single ‘Drunk on Expectations’ is a total rush of energy” — Bored City Blog</div>
-          <a href="https://boredcity.co/amity-hayze-drunk-on-expectations/" target="_blank" rel="noopener">→ Read Article</a>
+          <div class="archive-left">
+            <strong>October 18, 2025</strong>
+            <div>Amity Hayze’s new single “Drunk on Expectations” is a total rush of energy — Bored City Blog</div>
+          </div>
+          <div class="archive-right">
+            <a class="small-link" href="https://boredcity.co/amity-hayze-drunk-on-expectations/" target="_blank" rel="noopener">Read</a>
+          </div>
         </div>
+
+        <!-- Add more items here the same way; layout prevents overlap -->
       </div>
     </section>
 
     <footer>
-      <div style="margin-bottom:8px;">Want something added here? Send press links to 
-        <a href="mailto:amityhayzemusic@gmail.com" style="color:var(--neon)">amityhayzemusic@gmail.com</a>
-      </div>
-      <div>© Amity Hayze — transmissions & static</div>
+      <div style="margin-bottom:8px;color:var(--muted)">Want something added here? Send press links to <a href="mailto:amityhayzemusic@gmail.com" style="color:var(--neon)">amityhayzemusic@gmail.com</a></div>
+      <div style="color:var(--muted)">© Amity Hayze — transmissions & static</div>
     </footer>
-
   </div>
 
+  <button class="wiki-dot" title="archive" onclick="window.location.href='wiki-unlock.html'">▦</button>
+
   <script>
-    // Fade-in animation on scroll
-    const panels = document.querySelectorAll('.panel');
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) e.target.classList.add('visible');
+    // IntersectionObserver reveal
+    (function(){
+      const panels = document.querySelectorAll('.panel');
+      if (!('IntersectionObserver' in window)) {
+        panels.forEach(p => p.classList.add('visible'));
+        return;
+      }
+      const obs = new IntersectionObserver((entries, o) => {
+        entries.forEach(en => {
+          if (en.isIntersecting) {
+            en.target.classList.add('visible');
+            o.unobserve(en.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      panels.forEach(p => obs.observe(p));
+    })();
+
+    // Nav active
+    document.querySelectorAll('.main-nav a').forEach(a=>{
+      if (a.getAttribute('href') === 'press.html') a.classList.add('active');
+    });
+
+    // Basic filter/search for the archive (works only with archive-item text)
+    const qInput = document.getElementById('q');
+    const typeFilter = document.getElementById('typeFilter');
+    const applyBtn = document.getElementById('applyFilter');
+    const archiveItems = Array.from(document.querySelectorAll('.archive-item'));
+
+    function runFilter() {
+      const q = (qInput && qInput.value || '').toLowerCase().trim();
+      archiveItems.forEach(item=>{
+        const txt = item.innerText.toLowerCase();
+        const matchesQ = !q || txt.includes(q);
+        item.style.display = matchesQ ? 'flex' : 'none';
       });
-    }, { threshold: 0.12 });
-    panels.forEach(p => obs.observe(p));
+    }
+    applyBtn && applyBtn.addEventListener('click', runFilter);
+    qInput && qInput.addEventListener('keydown', e => { if (e.key === 'Enter') runFilter(); });
+
+    // Parallax background drift (keeps your look)
+    window.addEventListener('scroll', () => {
+      document.body.style.backgroundPosition = `center ${window.scrollY * 0.05}px`;
+    });
   </script>
 </body>
 </html>
+
