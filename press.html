@@ -184,7 +184,7 @@
       </div>
     </section>
 
- <!-- FEATURED PRESS / SOCIAL HIGHLIGHT -->
+<!-- FEATURED PRESS / SOCIAL HIGHLIGHT -->
 <section class="panel" id="articles">
   <h3 style="margin-top:0;color:var(--neon);text-align:center;">Featured Highlight</h3>
 
@@ -208,6 +208,17 @@
     Amuse — Instagram Feature
   </div>
 </section>
+
+<!-- Instagram embed loader (must be AFTER the section) -->
+<script src="https://www.instagram.com/embed.js"></script>
+<script>
+  window.addEventListener('load', () => {
+    if (window.instgrm) {
+      window.instgrm.Embeds.process();
+    }
+  });
+</script>
+
 
 
     <!-- PLAYLISTS -->
