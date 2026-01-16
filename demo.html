@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Amity Hayze — Transmission</title>
+
+  <!-- ====== SEO / Social Preview ====== -->
+  <meta name="description" content="Amity Hayze — transmissions & static. Music for late nights: gone is the time, demos, and exclusive drops.">
+  <meta name="keywords" content="Amity Hayze, indie, music, alt, demos, presave, bandcamp, spotify">
+  <meta property="og:title" content="Amity Hayze — Transmission">
+  <meta property="og:description" content="Music from the static. Nostalgic alt-rock & late-night transmissions by Amity Hayze.">
+  <meta property="og:image" content="https://amityhayze.github.io/images/amity-preview.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://amityhayze.github.io/">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  
+  <style>
+    :root {
+      --neon: #00f0ff;
+      --bg-dark: #000;
+      --panel: rgba(0,0,0,0.7);
+      --muted: #9beef7;
+      --glass: rgba(255,255,255,0.03);
+      --wrap-max: 980px;
+
+      --hazy-pink: rgba(255,107,205,0.25);
+      --hazy-pink-light: rgba(255,107,205,0.35);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg-dark);
+      font-family: "Courier New", monospace;
+      color: var(--neon);
+      -webkit-font-smoothing: antialiased;
+    }
+    body { padding-top: 62px; }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover no-repeat;
+      opacity: 0.12;
+      z-index: -2;
+      mix-blend-mode: screen;
+      filter: grayscale(30%) contrast(1.05);
+      will-change: opacity, filter;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%);
+      z-index: -1;
+    }
+
+    .main-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.65);
+      border-bottom: 1px solid rgba(0,255,255,0.08);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      padding: 12px 20px;
+      z-index: 1000;
+      animation: fadeInNav 1.5s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeInNav { to { opacity: 1; } }
+    .main-nav a {
+      color: var(--neon);
+      text-decoration: none;
+      font-size: 14px;
+      letter-spacing: 1px;
+      position: relative;
+      text-transform: uppercase;
+      transition: color .3s ease, text-shadow .3s ease;
+    }
+    .main-nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 0%;
+      height: 2px;
+      background: var(--neon);
+      box-shadow: 0 0 8px var(--neon);
+      transition: width .3s ease;
+      opacity: .8;
+    }
+    .main-nav a:hover::after, .main-nav a.active::after {
+      width: 100%;
+    }
+    .main-nav a:hover {
+      color: #fff;
+      text-shadow: 0 0 6px var(--neon);
+    }
+
+    .wrap {
+      max-width: var(--wrap-max);
+      margin: 8vh auto 6vh auto;
+      padding: 30px;
+      display: block;
+    }
+    @media (min-width:1200px) {
+      .wrap { margin: 10vh auto 6vh auto; }
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(0,255,255,0.06);
+      padding: 28px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,240,255,0.06);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .panel.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @keyframes softFlicker {
+      0%, 97%, 100% { opacity: 1; }
+      98%, 99% { opacity: 0.97; }
+    }
+    .panel {
+      animation: softFlicker 3.2s infinite;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .title {
+      font-size: 36px;
+      letter-spacing: 2px;
+      margin: 0 0 6px;
+      color: var(--neon);
+      text-shadow: 0 0 10px rgba(0,240,255,0.22);
+      position: relative;
+      display: inline-block;
+    }
+    .title::before, .title::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: .25;
+    }
+    .title::before {
+      transform: translate(-2px, -1px);
+      color: #ff6bcd;
+      mix-blend-mode: screen;
+    }
+    .title::after {
+      transform: translate(2px, 1px);
+      color: #9beef7;
+      mix-blend-mode: screen;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 6px 0 0;
+      opacity: .95;
+    }
+
+    .hero-cta {
+      display: flex;
+      justify-content: center;
+      margin: 22px 0 8px;
+    }
+    .btn {
+      --pad: 14px 28px;
+      display: inline-block;
+      padding: var(--pad);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(0,255,255,0.06), rgba(0,255,255,0.02));
+      color: var(--neon);
+      text-decoration: none;
+      font-weight: 700;
+      border: 1px solid rgba(0,255,255,0.18);
+      box-shadow: 0 0 25px rgba(0,240,255,0.08), inset 0 0 6px rgba(0,255,255,0.02);
+      transition: all .22s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .btn.pulse {
+      animation: pulseGlow 4s infinite ease-in-out;
+    }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 18px rgba(0,240,255,0.06); }
+      50% { box-shadow: 0 0 46px rgba(0,240,255,0.16); }
+      100% { box-shadow: 0 0 22px rgba(0,240,255,0.08); }
+    }
+    .btn:hover {
+      background: var(--neon);
+      color: #001;
+      box-shadow: 0 6px 40px rgba(0,240,255,0.35), 0 0 60px rgba(0,240,255,0.25);
+      transform: translateY(-2px);
+    }
+
+    /* Pink pulse button */
+    .btn-pink {
+      background: linear-gradient(180deg, var(--hazy-pink), rgba(255,107,205,0.1));
+      border: 1px solid rgba(255,107,205,0.4);
+      color: #e813f0;
+      box-shadow: 0 0 20px var(--hazy-pink), inset 0 0 8px rgba(255,107,205,0.1);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+      padding: 14px 28px;
+      border-radius: 10px;
+      cursor: pointer;
+      animation: pulsePink 4s infinite ease-in-out;
+      transition: transform 0.22s ease, box-shadow 0.4s ease, background 0.4s ease;
+    }
+    .btn-pink:hover {
+      background: var(--hazy-pink);
+      color: #e813f0;
+      transform: translateY(-2px);
+      animation: pulsePinkHover 4s infinite ease-in-out, flickerHover 0.3s infinite;
+    }
+    @keyframes pulsePink {
+      0% { box-shadow: 0 0 18px var(--hazy-pink); }
+      50% { box-shadow: 0 0 46px var(--hazy-pink-light); }
+      100% { box-shadow: 0 0 22px var(--hazy-pink); }
+    }
+    @keyframes pulsePinkHover {
+      0% { box-shadow: 0 0 26px var(--hazy-pink-light), 0 0 8px var(--hazy-pink); }
+      50% { box-shadow: 0 0 52px var(--hazy-pink-light), 0 0 12px var(--hazy-pink); }
+      100% { box-shadow: 0 0 26px var(--hazy-pink-light), 0 0 8px var(--hazy-pink); }
+    }
+    @keyframes flickerHover {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        box-shadow: 0 0 26px var(--hazy-pink-light), 0 0 8px var(--hazy-pink);
+      }
+      20% { box-shadow: 0 0 36px var(--hazy-pink-light), 0 0 12px var(--hazy-pink); }
+      22% { box-shadow: 0 0 30px var(--hazy-pink-light), 0 0 10px var(--hazy-pink); }
+      24% { box-shadow: 0 0 38px var(--hazy-pink-light), 0 0 14px var(--hazy-pink); }
+      55% { box-shadow: 0 0 40px var(--hazy-pink-light), 0 0 16px var(--hazy-pink); }
+    }
+
+    .columns {
+      display: flex;
+      gap: 22px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .col { flex: 1 1 320px; min-width: 280px; }
+
+    .about-figure {
+      float: right;
+      width: 220px;
+      margin-left: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .about-figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      filter: contrast(.95) saturate(.95);
+    }
+    .about-text p {
+      color: #cbeff4;
+      margin: 0 0 12px;
+      line-height: 1.5;
+    }
+
+    .music-wrap {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      flex-direction: column;
+    }
+    .embed {
+      background: var(--glass);
+      border-radius: 10px;
+      border: 1px solid rgba(0,255,255,0.04);
+      box-shadow: inset 0 0 6px rgba(0,255,255,0.02);
+      padding: 12px;
+      width: 100%;
+    }
+    .player {
+      width: 100%;
+      height: 380px;
+      border: 0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    @media (max-width:480px) {
+      .player { height: 320px; }
+    }
+
+    .visuals-preview {
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(0,255,255,0.04);
+    }
+    .visuals-preview iframe, .visuals-preview video {
+      width: 100%;
+      height: 320px;
+      display: block;
+      border: 0;
+      background: #000;
+    }
+
+    .cards {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .card {
+      flex: 1 1 220px;
+      min-width: 200px;
+      padding: 14px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.35));
+      border: 1px solid rgba(0,255,255,0.04);
+    }
+    .card h4 {
+      margin: 0 0 8px;
+      color: var(--neon);
+    }
+    .card p {
+      margin: 0;
+      color: #bfeff8;
+      font-size: 14px;
+    }
+    .small-link {
+      display: inline-block;
+      margin-top: 12px;
+      text-decoration: none;
+      color: var(--neon);
+      opacity: .95;
+    }
+
+    .socials {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .socials a {
+      color: var(--neon);
+      text-decoration: none;
+      border: 1px solid rgba(0,255,255,0.06);
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.35);
+    }
+    .socials a:hover {
+      background: var(--neon);
+      color: #001;
+    }
+
+    .secret-transmission {
+      display: block;
+      margin: 6px auto 0 auto;
+      font-size: 12px;
+      color: rgba(0,255,255,0.06);
+      background: none;
+      border: none;
+      padding: 2px 6px;
+      cursor: pointer;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: staticFlicker 2s infinite;
+      transition: color .25s ease, transform .12s ease;
+    }
+    .secret-transmission:hover {
+      color: rgba(0,255,255,0.7);
+      transform: translateY(-1px);
+      text-shadow: 0 0 6px rgba(0,255,255,0.4);
+      animation: none;
+    }
+
+    @keyframes staticFlicker {
+      0% { opacity: .05; }
+      10% { opacity: .15; }
+      20% { opacity: .08; }
+      30% { opacity: .12; }
+      40% { opacity: .05; }
+      50% { opacity: .2; }
+      60% { opacity: .07; }
+      70% { opacity: .1; }
+      80% { opacity: .06; }
+      90% { opacity: .15; }
+      100% { opacity: .05; }
+    }
+
+    .wiki-dot {
+      position: fixed;
+      right: 14px;
+      bottom: 12px;
+      z-index: 9999;
+      color: rgba(0,255,255,0.14);
+      font-size: 16px;
+      border: none;
+      background: none;
+      cursor:pointer;
+      transition: color .2s ease;
+    }
+    .wiki-dot:hover {
+      color: rgba(0,255,255,0.8);
+    }
+   /* ===== added: signal strength (small, subtle) ===== */
+    .signal {
+      display:inline-flex;
+      gap:4px;
+      align-items:end;
+      margin-left:8px;
+      margin-top:6px;
+      transform:translateY(-2px);
+    }
+    .signal .bar {
+      width:4px;
+      background:linear-gradient(180deg, rgba(0,240,255,0.9), rgba(0,240,255,0.35));
+      border-radius:2px;
+      opacity:0.9;
+      animation:signalPulse 1.6s infinite ease-in-out;
+      transform-origin:bottom;
+    }
+    .signal .bar:nth-child(1){height:6px;animation-delay:0s}
+    .signal .bar:nth-child(2){height:10px;animation-delay:0.12s}
+    .signal .bar:nth-child(3){height:16px;animation-delay:0.22s}
+    .signal .bar:nth-child(4){height:22px;animation-delay:0.32s}
+    @keyframes signalPulse {
+      0%{transform:scaleY(0.65);opacity:.6}
+      50%{transform:scaleY(1);opacity:1}
+      100%{transform:scaleY(0.7);opacity:.6}
+    }
+    .thanks-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .35s ease;
+    }
+    .thanks-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .thanks-card {
+      width: min(720px,92%);
+      background: rgba(0,0,0,0.75);
+      border: 1px solid rgba(0,255,255,0.12);
+      box-shadow: 0 30px 80px rgba(0,240,255,0.06);
+      padding: 28px;
+      border-radius: 12px;
+      text-align: center;
+      color: var(--neon);
+      transform: translateY(0);
+      animation: glowFade .6s ease;
+    }
+    @keyframes glowFade {
+      from { transform: translateY(8px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .thanks-card h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+    .thanks-card p {
+      margin: 0 0 10px;
+      color: var(--muted);
+    }
+    .thanks-close {
+      margin-top: 14px;
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(0,255,255,0.06), rgba(0,255,255,0.02));
+      color: #001;
+      font-weight: 700;
+      border: 1px solid rgba(0,255,255,0.12);
+      cursor: pointer;
+    }
+ /* Sticky Mini Player */
+    .sticky-player {
+      position: fixed;
+      left: 14px;
+      bottom: 14px;
+      width: 260px;
+      background: rgba(0,0,0,0.85);
+      border: 1px solid rgba(0,255,255,0.18);
+      border-radius: 10px;
+      box-shadow: 0 0 24px rgba(0,240,255,0.18);
+      z-index: 1500;
+      overflow: hidden;
+    }
+    .sticky-player iframe {
+      width: 100%;
+      height: 80px;
+      border: 0;
+    }
+
+    /* Discography */
+    .discography {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .release {
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(0,255,255,0.06);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .release h4 {
+      margin: 0 0 6px;
+    }
+    .release p {
+      font-size: 13px;
+      color: #bfeff8;
+      line-height: 1.4;
+    }
+
+    /* Inline Mailing List */
+    .mailing-inline {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,107,205,0.35);
+      background: linear-gradient(180deg, rgba(255,107,205,0.12), rgba(0,0,0,0.4));
+      text-align: center;
+    }
+
+    /* Instagram Embed */
+    .insta-embed iframe {
+      width: 100%;
+      height: 420px;
+      border: 0;
+    }
+
+    /* Footer Nav */
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .footer-nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+    }
+    /* Accessibility: reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="main-nav" role="navigation" aria-label="Main navigation">
+    <a href="press.html">Press + Features</a>
+    <a href="music.html">Music</a>
+    <a href="visuals.html">Visuals</a>
+  </nav>
+
+  <div class="wrap">
+    <div class="panel" role="banner">
+      <header>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <h1 class="title" data-text="Amity Hayze">Amity Hayze</h1>
+          <div class="signal" aria-hidden="true" title="Signal strength">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+        <div class="subtitle">
+          You've entered the static ... music for late nights & burnt CD binders
+        </div>
+      </header>
+      <div class="hero-cta">
+        <a class="btn pulse" href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=1Tts4ifrQceQLN_-TrWDTw" target="_blank" rel="noopener">Listen Now</a>
+      </div>
+    </div>
+
+    <section class="panel" id="about">
+      <div class="columns">
+        <div class="col about-text">
+          <div style="margin-bottom:8px;color:var(--muted)">About</div>
+          <p>
+            <strong>Amity Hayze</strong> writes from the static...mixing washed-out guitar tones,
+            haunting vocals, and honest late-night lyrics. As a multi-instrumentalist producer
+            who records in LA, Amity’s work blends nostalgia and immediacy into short
+            transmissions meant for headphones at 2am.
+          </p>
+        </div>
+        <div class="col" aria-hidden="false">
+          <figure class="about-figure">
+            <img src="IMG_4166.jpg" alt="Amity Hayze" loading="lazy">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="music">
+      <h3 style="margin-top:0;color:var(--neon)">Music</h3>
+      <div class="embed" aria-hidden="false">
+        <iframe class="player" src="https://open.spotify.com/embed/artist/5NMNo5sQFABJdY3jHH53wf?utm_source=generator&theme=0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+                title="Spotify player — Amity Hayze"></iframe>
+      </div>
+      <div style="margin-top:10px;font-size:13px;color:var(--muted)">
+        Prefer other platforms? Use the buttons below!
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;">
+        <a class="btn" href="https://music.apple.com/us/album/gone-is-the-time-single/1831479105" target="_blank" rel="noopener">Apple Music</a>
+        <a class="btn" href="https://amityhayze.bandcamp.com/track/gone-is-the-time-2" target="_blank" rel="noopener">Bandcamp</a>
+        <a class="btn" href="https://www.youtube.com/channel/UC_pmUMOy38-nuohKv7W9IsQ?sub_confirmation=1" target="_blank" rel="noopener">YouTube</a>
+        <a class="btn" href="https://www.deezer.com/en/artist/337447931" target="_blank" rel="noopener">Deezer</a>
+        <a class="btn" href="https://www.amazon.com/s?k=amity+hayze&rh=n%3A163856011&dc&ds=v1%3AIco5qefBazPkz1gKcYAM8cMFWGdGRqGA%2B1tlc65Di8w&crid=EV5PC6CA2G84&qid=1759971038&rnid=2941120011&sprefix=%2Caps%2C109&ref=sr_nr_n_7" target="_blank" rel="noopener">Amazon Music</a>
+      </div>
+    </section>
+
+    <section class="panel" id="visuals">
+      <h3 style="margin-top:0;color:var(--neon)">Visuals</h3>
+      <div class="visuals-preview">
+        <iframe src="https://www.youtube.com/embed/UnX8Bns1Nzg?si=razV9MBcSZ2JYudR"
+                title="Music Video"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen
+                loading="lazy"></iframe>
+      </div>
+    </section>
+
+    <div class="hero-cta" style="margin-bottom:24px;">
+      <a class="btn btn-pink" href="https://amityhayze.github.io/sticker-form.html" target="_blank" rel="noopener">
+        Claim Your Free Drop
+      </a>
+    </div>
+
+    <section class="panel" id="merch">
+      <h3 style="margin-top:0;color:var(--neon)">Merch & Stickers</h3>
+      <div class="cards">
+        <div class="card">
+          <h4>Exclusive Demos and Content</h4>
+          <p>This is where you’ll hear the deep cuts and possibly insane lore drops.</p>
+          <a class="small-link" href="https://ps.tribly.fm/kxkd4wr" target="_blank">→ Join the Static</a>
+        </div>
+        <div class="card">
+          <h4>Digital Pack</h4>
+          <p>Download phone wallpapers and PNG stickers if you don’t want to share an address.</p>
+          <a class="small-link" href="stickers.html" target="_blank">→ Download Digital Pack</a>
+        </div>
+      </div>
+      <button class="secret-transmission" onclick="window.location.href='secret.html'" aria-label="Secret transmission">.</button>
+    </section>
+
+    <section class="panel" id="socials">
+      <h3 style="margin-top:0;color:var(--neon)">Connect</h3>
+      <div class="socials" role="navigation" aria-label="social links">
+        <a href="https://www.instagram.com/amityhayze" target="_blank">Instagram</a>
+        <a href="https://www.tiktok.com/@amity.hayze" target="_blank">TikTok</a>
+        <a href="https://www.youtube.com/channel/UC_pmUMOy38-nuohKv7W9IsQ?sub_confirmation=1" target="_blank">YouTube</a>
+        <a href="https://ps.tribly.fm/kxkd4wr" target="_blank">Tribly</a>
+      </div>
+      <div style="text-align:center;margin-top:14px;color:var(--muted);font-size:13px">
+        <div>Want the archive? Look closely under the merch section.</div>
+      </div>
+    </section>
+
+    <section class="panel" id="contact">
+      <h3 style="margin-top:0;color:var(--neon)">Contact</h3>
+      <p>For press, collaborations, or submissions, contact <a href="mailto:amityhayzemusic@gmail.com" style="color:#0ff;">amityhayzemusic@gmail.com</a></p>
+    </section>
+
+    <footer style="text-align:center;margin:26px 0;color:var(--muted);font-size:13px">
+      <div>© Amity Hayze — transmissions & static</div>
+    </footer>
+  </div>
+
+  <button class="wiki-dot" title="archive" onclick="window.location.href='wiki-unlock.html'">▦</button>
+
+  <div id="thanksOverlay" class="thanks-overlay" aria-hidden="true">
+    <div class="thanks-card" role="dialog" aria-modal="true" aria-labelledby="thanksTitle" aria-describedby="thanksDesc">
+      <h2 id="thanksTitle">Thank you for joining the static ⚡ — Amity Hayze</h2>
+      <p id="thanksDesc" style="color:var(--muted)">Keep an eye on your inbox for transmissions — exclusive drops, demos, and handwritten secrets.</p>
+      <button id="thanksClose" class="thanks-close" aria-label="Close confirmation">Close</button>
+    </div>
+  </div>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FMXRV7YRDY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-FMXRV7YRDY');
+  </script>
+
+  <script>
+    // Reveal panels on scroll
+    function revealPanels() {
+      document.querySelectorAll('.panel').forEach(panel => {
+        const rect = panel.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          panel.classList.add('visible');
+        }
+      });
+    }
+    window.addEventListener('scroll', revealPanels);
+    window.addEventListener('load', revealPanels);
+
+    // Signal bar responsiveness
+    const signalBars = document.querySelectorAll('.signal .bar');
+    window.addEventListener('mousemove', e => {
+      const strength = Math.ceil((e.clientX / window.innerWidth) * signalBars.length);
+      signalBars.forEach((bar, i) => {
+        bar.style.opacity = (i < strength ? '1' : '0.3');
+      });
+    });
+
+    // Parallax background drift
+    window.addEventListener('scroll', () => {
+      document.body.style.backgroundPosition = `center ${window.scrollY * 0.05}px`;
+    });
+
+    // Timestamp for last transmission
+    document.getElementById('timestamp').textContent = new Date().toLocaleString();
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const dest = document.querySelector(a.getAttribute('href'));
+        if (dest) dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Keyboard accessibility for secret / wiki-dot
+    document.querySelectorAll('.secret-transmission, .wiki-dot').forEach(btn => {
+      btn.addEventListener('keydown', e => {
+        if (e.key === 'Enter') btn.click();
+      });
+    });
+
+    // Nav active highlighting
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.main-nav a');
+    window.addEventListener('scroll', () => {
+      let current = "";
+      sections.forEach(sec => {
+        if (!sec.id) return;
+        const rect = sec.getBoundingClientRect();
+        const topOffset = window.pageYOffset + rect.top - 120;
+        if (window.pageYOffset >= topOffset) {
+          current = sec.getAttribute('id');
+        }
+      });
+      navLinks.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current) {
+          a.classList.add('active');
+        }
+          <!-- ===== ADD: Sticky Player ===== -->
+  <div class="sticky-player" aria-label="Now playing">
+    <iframe src="https://open.spotify.com/embed/track/6pT7QZC1gkz9J9?utm_source=generator&theme=0"
+      allow="autoplay; encrypted-media"></iframe>
+  </div>
+
+  <div class="wrap">
+
+    <!-- ===== ADD: Discography ===== -->
+    <section class="panel" id="discography">
+      <h3>Discography</h3>
+      <div class="discography">
+        <div class="release">
+          <h4>Gone Is The Time</h4>
+          <p>Recorded during a rainstorm. About lost potential, self-worth, and watching time slip.</p>
+        </div>
+        <div class="release">
+          <h4>Static Waves</h4>
+          <p>Restlessness, faith, and distortion. Finding god in a parking lot.</p>
+        </div>
+        <div class="release">
+          <h4>Transmission 001</h4>
+          <p>A year-end broadcast. Doubt, memory, and letting the signal fade.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ADD: Inline Mailing List ===== -->
+    <section class="panel">
+      <h3>Subscribe to Transmissions</h3>
+      <div class="mailing-inline">
+        <p>Exclusive demos, unreleased visuals, handwritten notes.</p>
+        <a class="btn btn-pink" href="https://ps.tribly.fm/kxkd4wr" target="_blank">Join the Static</a>
+      </div>
+    </section>
+
+    <!-- ===== ADD: Press / EPK ===== -->
+    <section class="panel">
+      <h3>Press & EPK</h3>
+      <p>High-res photos, bio, links, and contact in one place.</p>
+      <a class="btn" href="press.html">Open Press Kit</a>
+    </section>
+
+    <!-- ===== ADD: Instagram Feed ===== -->
+    <section class="panel">
+      <h3>Visual Archive</h3>
+      <div class="insta-embed">
+        <iframe src="https://snapwidget.com/embed/1064365" loading="lazy"></iframe>
+      </div>
+    </section>
+
+    <!-- ===== ADD: Expanded Footer ===== -->
+    <footer style="text-align:center;margin:30px 0;font-size:13px">
+      <div>© Amity Hayze — transmissions & static</div>
+      <div class="footer-nav">
+        <a href="#music">Music</a>
+        <a href="#visuals">Visuals</a>
+        <a href="#discography">Discography</a>
+        <a href="press.html">Press</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </footer>
+</html>
+ 
