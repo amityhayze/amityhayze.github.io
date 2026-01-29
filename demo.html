@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Amity Hayze — Transmission</title>
 
-  <!-- ====== SEO / Social Preview ====== -->
+  <!-- ====== SEO / Social Preview (edit image/url if you have final assets) ====== -->
   <meta name="description" content="Amity Hayze — transmissions & static. Music for late nights: gone is the time, demos, and exclusive drops.">
   <meta name="keywords" content="Amity Hayze, indie, music, alt, demos, presave, bandcamp, spotify">
   <meta property="og:title" content="Amity Hayze — Transmission">
@@ -13,10 +13,15 @@
   <meta property="og:image" content="https://amityhayze.github.io/images/amity-preview.jpg">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://amityhayze.github.io/">
-  <meta name="twitter:card" content="summary_large_image">
 
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Amity Hayze — Transmission">
+  <meta name="twitter:description" content="Music from the static. Nostalgic alt-rock & late-night transmissions by Amity Hayze.">
+  <meta name="twitter:image" content="https://amityhayze.github.io/images/amity-preview.jpg">
+
+  <!-- FAVICON -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  
+
   <style>
     :root {
       --neon: #00f0ff;
@@ -179,11 +184,46 @@
       opacity: .95;
     }
 
-    .hero-cta {
-      display: flex;
-      justify-content: center;
-      margin: 22px 0 8px;
-    }
+    /* ===== Hero Panel ===== */
+.hero-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.now-playing {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--muted);
+  opacity: 0.85;
+  text-shadow: 0 0 6px var(--neon, #00f0ff);
+}
+
+/* ===== Featured Release ===== */
+.featured-release-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+}
+
+.featured-release-content img {
+  width: 220px;
+  border-radius: 12px;
+  box-shadow: 0 0 28px rgba(0,240,255,0.12);
+}
+
+.featured-release-info {
+  flex: 1;
+  min-width: 220px;
+}
+
+.featured-release-info p {
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+    
     .btn {
       --pad: 14px 28px;
       display: inline-block;
@@ -501,77 +541,7 @@
       border: 1px solid rgba(0,255,255,0.12);
       cursor: pointer;
     }
- /* Sticky Mini Player */
-    .sticky-player {
-      position: fixed;
-      left: 14px;
-      bottom: 14px;
-      width: 260px;
-      background: rgba(0,0,0,0.85);
-      border: 1px solid rgba(0,255,255,0.18);
-      border-radius: 10px;
-      box-shadow: 0 0 24px rgba(0,240,255,0.18);
-      z-index: 1500;
-      overflow: hidden;
-    }
-    .sticky-player iframe {
-      width: 100%;
-      height: 80px;
-      border: 0;
-    }
 
-    /* Discography */
-    .discography {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
-    .release {
-      background: rgba(0,0,0,0.45);
-      border: 1px solid rgba(0,255,255,0.06);
-      border-radius: 10px;
-      padding: 14px;
-    }
-    .release h4 {
-      margin: 0 0 6px;
-    }
-    .release p {
-      font-size: 13px;
-      color: #bfeff8;
-      line-height: 1.4;
-    }
-
-    /* Inline Mailing List */
-    .mailing-inline {
-      margin-top: 18px;
-      padding: 16px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,107,205,0.35);
-      background: linear-gradient(180deg, rgba(255,107,205,0.12), rgba(0,0,0,0.4));
-      text-align: center;
-    }
-
-    /* Instagram Embed */
-    .insta-embed iframe {
-      width: 100%;
-      height: 420px;
-      border: 0;
-    }
-
-    /* Footer Nav */
-    .footer-nav {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-    .footer-nav a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 12px;
-    }
     /* Accessibility: reduce motion */
     @media (prefers-reduced-motion: reduce) {
       * {
@@ -584,6 +554,7 @@
   </style>
 </head>
 
+
 <body>
   <nav class="main-nav" role="navigation" aria-label="Main navigation">
     <a href="press.html">Press + Features</a>
@@ -592,25 +563,35 @@
   </nav>
 
   <div class="wrap">
-    <div class="panel" role="banner">
+    <!-- ===== HERO PANEL (REPLACED) ===== -->
+    <div class="panel hero visible" role="banner">
       <header>
-        <div style="display:flex;align-items:center;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;justify-content:center;flex-direction:column;">
           <h1 class="title" data-text="Amity Hayze">Amity Hayze</h1>
-          <div class="signal" aria-hidden="true" title="Signal strength">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-          </div>
-        </div>
-        <div class="subtitle">
-          You've entered the static ... music for late nights & burnt CD binders
+          <div class="subtitle">You've entered the static ... music for late nights & burnt CD binders</div>
         </div>
       </header>
       <div class="hero-cta">
         <a class="btn pulse" href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf?si=1Tts4ifrQceQLN_-TrWDTw" target="_blank" rel="noopener">Listen Now</a>
       </div>
+      <div class="now-playing">Now Playing: Transmission 001</div>
+      <!-- Secret transmission teaser -->
+      <a href="secret.html" class="btn-pink" style="position:absolute;top:12px;right:12px;font-size:14px;">⚡ Secret Transmission</a>
     </div>
+
+    <!-- ===== FEATURED RELEASE ===== -->
+    <section class="panel" id="featured-release">
+      <h3 style="color:var(--neon);margin-top:0;">Featured Release</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;">
+        <img src="images/transmission001-cover.jpg" alt="Transmission 001" style="width:220px;border-radius:12px;">
+        <div style="flex:1; min-width:220px;">
+          <p style="color:var(--muted);margin-bottom:12px;">Transmission 001 — Nostalgic alt-rock, late-night transmissions</p>
+          <a class="btn pulse" href="https://open.spotify.com/artist/5NMNo5sQFABJdY3jHH53wf" target="_blank" rel="noopener">Listen on Spotify</a>
+          <a class="btn" href="https://amityhayze.bandcamp.com/" target="_blank" rel="noopener">Bandcamp</a>
+          <a class="btn" href="https://music.apple.com/" target="_blank" rel="noopener">Apple Music</a>
+        </div>
+      </div>
+    </section>
 
     <section class="panel" id="about">
       <div class="columns">
@@ -682,6 +663,10 @@
           <p>Download phone wallpapers and PNG stickers if you don’t want to share an address.</p>
           <a class="small-link" href="stickers.html" target="_blank">→ Download Digital Pack</a>
         </div>
+        <div class="card">
+         <h4>Exclusive Merch</h4>
+          <p>Transmission 001 CDs</p>
+          <a class="small-link" href="merch.html" target="_blank">→ AVAILABLE NOW</a>
       </div>
       <button class="secret-transmission" onclick="window.location.href='secret.html'" aria-label="Secret transmission">.</button>
     </section>
@@ -791,67 +776,8 @@
         if (a.getAttribute('href') === '#' + current) {
           a.classList.add('active');
         }
-          <!-- ===== ADD: Sticky Player ===== -->
-  <div class="sticky-player" aria-label="Now playing">
-    <iframe src="https://open.spotify.com/embed/track/6pT7QZC1gkz9J9?utm_source=generator&theme=0"
-      allow="autoplay; encrypted-media"></iframe>
-  </div>
-
-  <div class="wrap">
-
-    <!-- ===== ADD: Discography ===== -->
-    <section class="panel" id="discography">
-      <h3>Discography</h3>
-      <div class="discography">
-        <div class="release">
-          <h4>Gone Is The Time</h4>
-          <p>Recorded during a rainstorm. About lost potential, self-worth, and watching time slip.</p>
-        </div>
-        <div class="release">
-          <h4>Static Waves</h4>
-          <p>Restlessness, faith, and distortion. Finding god in a parking lot.</p>
-        </div>
-        <div class="release">
-          <h4>Transmission 001</h4>
-          <p>A year-end broadcast. Doubt, memory, and letting the signal fade.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== ADD: Inline Mailing List ===== -->
-    <section class="panel">
-      <h3>Subscribe to Transmissions</h3>
-      <div class="mailing-inline">
-        <p>Exclusive demos, unreleased visuals, handwritten notes.</p>
-        <a class="btn btn-pink" href="https://ps.tribly.fm/kxkd4wr" target="_blank">Join the Static</a>
-      </div>
-    </section>
-
-    <!-- ===== ADD: Press / EPK ===== -->
-    <section class="panel">
-      <h3>Press & EPK</h3>
-      <p>High-res photos, bio, links, and contact in one place.</p>
-      <a class="btn" href="press.html">Open Press Kit</a>
-    </section>
-
-    <!-- ===== ADD: Instagram Feed ===== -->
-    <section class="panel">
-      <h3>Visual Archive</h3>
-      <div class="insta-embed">
-        <iframe src="https://snapwidget.com/embed/1064365" loading="lazy"></iframe>
-      </div>
-    </section>
-
-    <!-- ===== ADD: Expanded Footer ===== -->
-    <footer style="text-align:center;margin:30px 0;font-size:13px">
-      <div>© Amity Hayze — transmissions & static</div>
-      <div class="footer-nav">
-        <a href="#music">Music</a>
-        <a href="#visuals">Visuals</a>
-        <a href="#discography">Discography</a>
-        <a href="press.html">Press</a>
-        <a href="#contact">Contact</a>
-      </div>
-    </footer>
+      });
+    });
+  </script>
+</body>
 </html>
- 
