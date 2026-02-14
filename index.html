@@ -45,16 +45,16 @@
     }
     body { padding-top: 62px; }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover no-repeat;
-      opacity: 0.12;
-      z-index: -2;
-      mix-blend-mode: screen;
-      filter: grayscale(30%) contrast(1.05);
-      will-change: opacity, filter;
+  body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url('website.gif') center / cover no-repeat;
+  opacity: 0.12;
+  z-index: -2;
+  mix-blend-mode: screen;
+  filter: grayscale(30%) contrast(1.05);
+  pointer-events: none;
     }
     body::after {
       content: "";
