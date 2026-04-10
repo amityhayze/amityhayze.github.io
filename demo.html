@@ -655,32 +655,36 @@
       </div>
     </section>
 
-    <!-- ✅ NEW SUBMISSION SECTION (separate) -->
-<section class="panel" id="submissions">
-  <h3 style="margin-top:0;color:var(--neon)">Send a Transmission</h3>
+  <section class="panel" id="submissions" style="border:1px solid rgba(255,107,205,0.25); box-shadow: 0 0 30px rgba(255,107,205,0.08);">
+  <h3 style="margin-top:0;margin-bottom:14px;color:var(--neon)">Send a Transmission</h3>
 
-  <p style="color:var(--muted);font-size:14px;">
+  <p style="color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:14px;">
     this isn’t a mass submission playlist.<br>
     i’m building a rotating signal of artists that actually fit a specific feeling —
     shoegaze, emo, alternative… anything that feels like something is missing.
   </p>
 
-  <p style="color:#cbeff4;font-size:14px;">
+  <p style="color:#cbeff4;font-size:14px;line-height:1.6;margin-bottom:22px;">
     not everything gets through.<br>
     tracks are rotated in and out to keep the signal clear.
   </p>
 
-  <div style="margin-top:18px;">
+  <!-- BUTTON (more breathing room above + below) -->
+  <div style="margin:28px 0 22px 0;">
     <a class="btn-pink" href="https://docs.google.com/forms/d/e/1FAIpQLSfrYWqG90i8jaOa9Hc14EWLJXhzD42QZRsIGhd5vL4bD-KWDg/viewform?usp=header" target="_blank" rel="noopener">
-      send your track
+      send a transmission
     </a>
   </div>
 
-  <div style="margin-top:16px;font-size:12px;color:rgba(0,255,255,0.6);letter-spacing:1px;">
+  <div style="font-size:12px;color:rgba(0,255,255,0.6);letter-spacing:1px;margin-bottom:6px;">
     if your track fits, you’ll hear back through the signal
   </div>
 
-  <div style="margin-top:10px;" class="signal" aria-hidden="true">
+  <div style="font-size:11px;color:rgba(0,255,255,0.35);letter-spacing:2px;margin-bottom:14px;">
+    transmission status: listening...
+  </div>
+
+  <div class="signal" aria-hidden="true">
     <div class="bar"></div>
     <div class="bar"></div>
     <div class="bar"></div>
