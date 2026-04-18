@@ -690,7 +690,7 @@
   </div>
 </section>
 
-  <section class="panel" id="submissions" style="border:1px solid rgba(255,107,205,0.25); box-shadow: 0 0 30px rgba(255,107,205,0.08);">
+ <section class="panel" id="submissions" style="border:1px solid rgba(255,107,205,0.25); box-shadow: 0 0 30px rgba(255,107,205,0.08);">
   <h3 style="margin-top:0;margin-bottom:14px;color:var(--neon)">Send a Transmission</h3>
 
   <p style="color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:14px;">
@@ -704,21 +704,98 @@
     tracks are rotated in and out to keep the signal clear.
   </p>
 
-  <!-- BUTTON (more breathing room above + below) -->
-  <div style="margin:28px 0 22px 0;">
-    <a class="btn-pink" href="https://docs.google.com/forms/d/e/1FAIpQLSfrYWqG90i8jaOa9Hc14EWLJXhzD42QZRsIGhd5vL4bD-KWDg/viewform?usp=header" target="_blank" rel="noopener">
-      send a transmission
-    </a>
+  <!-- FORM -->
+  <form id="transmissionForm" style="display:flex;flex-direction:column;gap:14px;">
+
+    <input type="text" name="artist" placeholder="artist name" required class="input-field">
+    <input type="text" name="track" placeholder="track title" required class="input-field">
+    <input type="url" name="link" placeholder="spotify / streaming link" required class="input-field">
+    <input type="email" name="email" placeholder="your email (for reply through the signal)" required class="input-field">
+    
+    <textarea name="notes" placeholder="anything else? (optional transmission data)" rows="3" class="input-field"></textarea>
+
+    <button type="submit" class="btn-pink" id="submitBtn">
+      transmit
+    </button>
+  </form>
+
+  <div id="statusText" style="font-size:12px;color:rgba(0,255,255,0.6);letter-spacing:1px;margin-top:16px;">
+    transmission status: awaiting input...
   </div>
 
-  <div style="font-size:12px;color:rgba(0,255,255,0.6);letter-spacing:1px;margin-bottom:6px;">
-    if your track fits, you’ll hear back through the signal
-  </div>
-
-  <div style="font-size:11px;color:rgba(0,255,255,0.35);letter-spacing:2px;margin-bottom:14px;">
-    transmission status: listening...
+  <div style="margin-top:12px;" class="signal">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
   </div>
 </section>
+
+<!-- INPUT STYLING -->
+<style>
+.input-field {
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,255,255,0.15);
+  color: var(--neon);
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border: 1px solid var(--neon);
+  box-shadow: 0 0 10px rgba(0,240,255,0.25);
+}
+
+textarea.input-field {
+  resize: vertical;
+}
+</style>
+
+<!-- SUBMISSION SCRIPT -->
+<script>
+const form = document.getElementById('transmissionForm');
+const statusText = document.getElementById('statusText');
+const overlay = document.getElementById('thanksOverlay');
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzeT3piDBl-gUZ1hM2doHTqIOv2Igdr9B--u9hnbSRrdIO9psPkOUKJ1uiWQxqgV_BT/exec";
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  statusText.textContent = "transmission status: transmitting...";
+
+  const data = {
+    artist: form.artist.value,
+    track: form.track.value,
+    link: form.link.value,
+    email: form.email.value,
+    notes: form.notes.value
+  };
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(data),
+      mode: "no-cors"
+    });
+
+    statusText.textContent = "transmission status: signal received";
+    overlay.classList.add('visible');
+    form.reset();
+
+  } catch (err) {
+    statusText.textContent = "transmission failed... retry";
+  }
+});
+
+// close overlay
+document.getElementById('thanksClose').addEventListener('click', () => {
+  overlay.classList.remove('visible');
+});
+</script>
         
     <section class="panel" id="contact">
       <h3 style="margin-top:0;color:var(--neon)">Contact</h3>
