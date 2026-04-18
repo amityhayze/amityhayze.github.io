@@ -700,11 +700,8 @@
   </p>
 
   <form id="transmissionForm" style="display:flex;flex-direction:column;gap:14px;">
-
     <input type="text" name="artist" placeholder="artist name" required class="input-field">
-
     <input type="url" name="link" placeholder="spotify track link" required class="input-field">
-
     <textarea name="notes" placeholder="optional message (want to tell me something?)" rows="3" class="input-field"></textarea>
 
     <button type="submit" class="btn-pink">
@@ -749,7 +746,7 @@ textarea.input-field {
 <script>
 const form = document.getElementById('transmissionForm');
 const statusText = document.getElementById('statusText');
-const overlay = document.getElementById('thanksOverlay');
+const overlay = document.getElementById('thanksOverlay'); // optional
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwsJHNg5A49kVMoRdQlIORZ5yY8NaRcNWLuIPlzxikbHF4dJAEoVCeeCtjvPw8Uii0/exec";
 
@@ -764,24 +761,34 @@ form.addEventListener('submit', async (e) => {
   body.append("notes", form.notes.value);
 
   try {
-    await fetch(SCRIPT_URL, {
+    const res = await fetch(SCRIPT_URL, {
       method: "POST",
       body: body
     });
 
+    // Debug safety (helps you confirm it worked)
+    console.log("Submission sent:", res);
+
     statusText.textContent = "signal received";
-    overlay.classList.add('visible');
     form.reset();
 
+    if (overlay) {
+      overlay.classList.add('visible');
+    }
+
   } catch (err) {
-    console.error(err);
-    statusText.textContent = "transmission failed";
+    console.error("Transmission error:", err);
+    statusText.textContent = "transmission failed (check console)";
   }
 });
 
-document.getElementById('thanksClose').addEventListener('click', () => {
-  overlay.classList.remove('visible');
-});
+// Safe close handler (prevents crash if element missing)
+const closeBtn = document.getElementById('thanksClose');
+if (closeBtn && overlay) {
+  closeBtn.addEventListener('click', () => {
+    overlay.classList.remove('visible');
+  });
+}
 </script>
       
 </script>
