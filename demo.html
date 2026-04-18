@@ -751,32 +751,31 @@ const form = document.getElementById('transmissionForm');
 const statusText = document.getElementById('statusText');
 const overlay = document.getElementById('thanksOverlay');
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYjeXTGX-xM0IGlEUvj734WKKdkWkdaICGU1qxyLoovao8fTpFknVPBhsQ1lb8ddw/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwsJHNg5A49kVMoRdQlIORZ5yY8NaRcNWLuIPlzxikbHF4dJAEoVCeeCtjvPw8Uii0/exec;
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  statusText.textContent = "transmission status: transmitting...";
+  statusText.textContent = "transmitting...";
 
-  const data = {
-    artist: form.artist.value,
-    link: form.link.value,
-    notes: form.notes.value
-  };
+  const body = new URLSearchParams();
+  body.append("artist", form.artist.value);
+  body.append("link", form.link.value);
+  body.append("notes", form.notes.value);
 
   try {
     await fetch(SCRIPT_URL, {
       method: "POST",
-      body: JSON.stringify(data),
-      mode: "no-cors"
+      body: body
     });
 
-    statusText.textContent = "transmission status: signal received";
+    statusText.textContent = "signal received";
     overlay.classList.add('visible');
     form.reset();
 
   } catch (err) {
-    statusText.textContent = "transmission failed... retry";
+    console.error(err);
+    statusText.textContent = "transmission failed";
   }
 });
 
@@ -784,7 +783,6 @@ document.getElementById('thanksClose').addEventListener('click', () => {
   overlay.classList.remove('visible');
 });
 </script>
-        
     <section class="panel" id="contact">
       <h3 style="margin-top:0;color:var(--neon)">Contact</h3>
       <p>For press, collaborations, or submissions, contact <a href="mailto:amityhayzemusic@gmail.com" style="color:#0ff;">amityhayzemusic@gmail.com</a></p>
