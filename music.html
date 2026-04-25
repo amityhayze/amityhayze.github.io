@@ -11,6 +11,7 @@
   <meta property="og:description" content="Listen to Transmission 001 and singles from the static.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://amityhayze.com/music.html">
+  <meta property="og:image" content="https://amityhayze.com/preview.jpg">
 
   <meta name="twitter:card" content="summary_large_image">
 
@@ -79,9 +80,15 @@
       text-transform: uppercase;
       font-size: 13px;
       letter-spacing: 1px;
+      transition: all 0.2s ease;
     }
 
     .main-nav a.active {
+      text-shadow: 0 0 10px var(--neon);
+    }
+
+    .main-nav a:hover {
+      color: #fff;
       text-shadow: 0 0 10px var(--neon);
     }
 
@@ -132,6 +139,7 @@
 
     iframe {
       border-radius: 12px;
+      border: 0;
     }
 
     /* RELEASE GRID */
@@ -175,6 +183,14 @@
       font-size: 12px;
       letter-spacing: 1px;
       box-shadow: 0 0 18px rgba(0,240,255,0.15);
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: var(--neon);
+      color: #000;
+      box-shadow: 0 0 30px rgba(0,240,255,0.4);
+      transform: translateY(-2px);
     }
 
     .btn.pink {
@@ -197,39 +213,37 @@
   <nav class="main-nav">
     <a href="index.html">Home</a>
     <a href="music.html" class="active">Music</a>
-    <a href="https://amityhayze.bigcartel.com">Store</a>
+    <a href="https://amityhayze.bigcartel.com" target="_blank" rel="noopener">Store</a>
   </nav>
 
   <div class="wrap">
 
-    <!-- HEADER -->
     <header>
       <h1>Music</h1>
       <p class="subtitle">Broadcasts from the Static</p>
     </header>
 
-    <!-- FEATURED RELEASE -->
+    <!-- FEATURED -->
     <section class="panel featured">
       <h2>Transmission 001</h2>
 
-      <!-- SPOTIFY ALBUM EMBED -->
       <iframe
         src="https://open.spotify.com/embed/album/67nM5f46eYhhnFFy1JjB9x?utm_source=generator"
         width="100%"
         height="380"
-        frameborder="0"
-        allow="encrypted-media">
+        allow="encrypted-media"
+        loading="lazy">
       </iframe>
 
       <div class="btns">
-        <a class="btn" href="https://open.spotify.com/album/67nM5f46eYhhnFFy1JjB9x?utm_source=generator">Spotify</a>
-        <a class="btn pink" href="https://amityhayze.bigcartel.com">Limited CDs/a>
+        <a class="btn" href="https://open.spotify.com/album/67nM5f46eYhhnFFy1JjB9x?utm_source=generator" target="_blank" rel="noopener">Spotify</a>
+        <a class="btn pink" href="https://amityhayze.bigcartel.com" target="_blank" rel="noopener">Limited CDs</a>
       </div>
     </section>
 
     <!-- SINGLES -->
     <section class="panel">
-      <h2>singles</h2>
+      <h2>Singles</h2>
 
       <div class="release-grid">
 
@@ -239,8 +253,8 @@
             src="https://open.spotify.com/embed/track/4DUPHh7E38nB60D3Abdu30?utm_source=generator"
             width="100%"
             height="152"
-            frameborder="0"
-            allow="encrypted-media">
+            allow="encrypted-media"
+            loading="lazy">
           </iframe>
         </div>
 
@@ -250,8 +264,8 @@
             src="https://open.spotify.com/embed/track/6PFL7molp4IIBBCox9Xw6y?utm_source=generator"
             width="100%"
             height="152"
-            frameborder="0"
-            allow="encrypted-media">
+            allow="encrypted-media"
+            loading="lazy">
           </iframe>
         </div>
 
@@ -263,6 +277,18 @@
     </footer>
 
   </div>
+
+  <script>
+    // Auto active nav highlight
+    const links = document.querySelectorAll('.main-nav a');
+    const current = window.location.pathname.split("/").pop();
+
+    links.forEach(link => {
+      if (link.getAttribute("href") === current) {
+        link.classList.add("active");
+      }
+    });
+  </script>
 
 </body>
 </html>
