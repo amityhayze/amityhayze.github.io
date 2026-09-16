@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Amity Hayze — Transmission</title>
+  <title>Amity Hayze </title>
 
   <!-- ====== SEO / Social Preview (edit image/url if you have final assets) ====== -->
   <meta name="description" content="Amity Hayze — transmissions & static. Music for late nights: gone is the time, demos, and exclusive drops.">
-  <meta name="keywords" content="Amity Hayze, indie, music, alt, demos, presave, bandcamp, spotify">
-  <meta property="og:title" content="Amity Hayze — Transmission">
+  <meta name="keywords" content="Amity Hayze, indie, music, alt, demos, presave, bandcamp, spotify, shoegaze, emo, alternative">
+  <meta property="og:title" content="Amity Hayze">
   <meta property="og:description" content="Music from the static. Nostalgic alt-rock & late-night transmissions by Amity Hayze.">
   <meta property="og:image" content="https://amityhayze.github.io/images/amity-preview.jpg">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://amityhayze.github.io/">
+  <meta property="og:url" content="www.amityhayze.com">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Amity Hayze — Transmission">
+  <meta name="twitter:title" content="Amity Hayze">
   <meta name="twitter:description" content="Music from the static. Nostalgic alt-rock & late-night transmissions by Amity Hayze.">
   <meta name="twitter:image" content="https://amityhayze.github.io/images/amity-preview.jpg">
 
@@ -45,16 +45,15 @@
     }
     body { padding-top: 62px; }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif') center/cover no-repeat;
-      opacity: 0.12;
-      z-index: -2;
-      mix-blend-mode: screen;
-      filter: grayscale(30%) contrast(1.05);
-      will-change: opacity, filter;
+  body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url('website.gif') center / cover no-repeat;
+  opacity: 0.6; /* much stronger */
+  z-index: -2;
+  filter: contrast(1.3) brightness(1.2);
+  pointer-events: none;
     }
     body::after {
       content: "";
@@ -541,9 +540,10 @@
 
 <body>
   <nav class="main-nav" role="navigation" aria-label="Main navigation">
-    <a href="press.html">Press + Features</a>
     <a href="music.html">Music</a>
+    <a href="merch.html">Merch</a>
     <a href="visuals.html">Visuals</a>
+    <a href="press.html">Press + Features</a>
   </nav>
 
   <div class="wrap">
@@ -552,7 +552,7 @@
       <header>
         <div style="display:flex;align-items:center;gap:10px;justify-content:center;flex-direction:column;">
           <h1 class="title" data-text="Amity Hayze">Amity Hayze</h1>
-          <div class="subtitle">You've entered the static ... music for late nights & burnt CD binders</div>
+          <div class="subtitle">You've entered the static ... </div>
         </div>
       </header>
   
@@ -560,15 +560,14 @@
     <section class="panel" id="featured-release">
       <h3 style="color:var(--neon);margin-top:0;">Featured Release</h3>
       <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;">
-        <img src="transmission001-cover.jpg" alt="Transmission 001" style="width:220px;border-radius:12px;">
+        <img src="IllCallYouWhenILandCOVERART.png" alt="Transmission 001" style="width:220px;border-radius:12px;">
         <div style="flex:1; min-width:220px;">
-          <p style="color:var(--muted);margin-bottom:12px;">Transmission 001 — Nostalgic alt-rock, late-night transmissions</p>
-          <a class="btn pulse" href="https://open.spotify.com/album/67nM5f46eYhhnFFy1JjB9x?si=z3eUEZPhRMunAd5BfQ6pTw" target="_blank" rel="noopener">Spotify</a>
-          <a class="btn" href="https://music.apple.com/us/album/transmission-001/1862796629" target="_blank" rel="noopener">Apple Music</a>
-          <a class="btn" href="https://www.youtube.com/watch?v=UnX8Bns1Nzg&list=OLAK5uy_kPTrldSlhkYaG7ZqIYdaaJdyiSzGvvxuo" target="_blank" rel="noopener">Youtube</a>
+          <p style="color:var(--muted);margin-bottom:12px;">I'll Call You When I Land : a pop-punk anthem about chasing dreams, missing home, and promising you'll call when you land</p>
+          <a class="btn pulse" href="https://share.amuse.io/track/amity-hayze-i-ll-call-you-when-i-land" target="_blank" rel="noopener">Listen Now</a>
         </div>
       </div>
     </section>
+
 
     <section class="panel" id="about">
       <div class="columns">
@@ -576,9 +575,8 @@
           <div style="margin-bottom:8px;color:var(--muted)">About</div>
           <p>
             <strong>Amity Hayze</strong> writes from the static...mixing washed-out guitar tones,
-            haunting vocals, and honest late-night lyrics. As a multi-instrumentalist producer
-            who records in LA, Amity’s work blends nostalgia and immediacy into short
-            transmissions meant for headphones at 2am.
+            haunting vocals (some would say), and honest late-night lyrics (or are they). As a multi-instrumentalist producer
+            who records in LA, Amity’s work captures the feeling of nostalgia and wanting to text your ex at 2am (regretfully)
           </p>
         </div>
         <div class="col" aria-hidden="false">
@@ -612,7 +610,7 @@
     <section class="panel" id="visuals">
       <h3 style="margin-top:0;color:var(--neon)">Visuals</h3>
       <div class="visuals-preview">
-        <iframe src="https://www.youtube.com/embed/UnX8Bns1Nzg?si=razV9MBcSZ2JYudR"
+        <iframe src="https://www.youtube.com/embed/WNed8gBKtQY?si=K3k78ZgZX8QqGwC5"
                 title="Music Video"
                 frameborder="0"
                 allow="autoplay; encrypted-media; picture-in-picture"
@@ -625,19 +623,19 @@
       <h3 style="margin-top:0;color:var(--neon)">Merch & Stickers</h3>
       <div class="cards">
         <div class="card">
-          <h4>Exclusive Demos and Content</h4>
-          <p>This is where you’ll hear the deep cuts and possibly insane lore drops.</p>
-          <a class="small-link" href="https://ps.tribly.fm/kxkd4wr" target="_blank">→ Join the Static</a>
+          <h4>My NEWEST Song!</h4>
+          <p>"I'll Call You When I Land" released July 24th!</p>
+          <a class="small-link" href="https://share.amuse.io/track/amity-hayze-i-ll-call-you-when-i-land" target="_blank">→ Presave Here!</a>
         </div>
         <div class="card">
-          <h4>Digital Pack</h4>
-          <p>Download phone wallpapers and PNG stickers if you don’t want to share an address.</p>
-          <a class="small-link" href="stickers.html" target="_blank">→ Download Digital Pack</a>
+          <h4>FREE Sticker Pack</h4>
+          <p>Fill out this form and be a part of the Transmission! </p>
+          <a class="small-link" href="sticker-form.html" target="_blank">→ Get Yours Now!</a>
         </div>
         <div class="card">
-         <h4>Exclusive Merch</h4>
+         <h4>EXCLUSIVE Merch!</h4>
           <p>Transmission 001 CDs</p>
-          <a class="small-link" href="merch.html" target="_blank">→ AVAILABLE NOW</a>
+          <a class="small-link" href="merch.html" target="_blank">→ Available NOW!</a>
       </div>
       <button class="secret-transmission" onclick="window.location.href='secret.html'" aria-label="Secret transmission">.</button>
     </section>
@@ -661,14 +659,14 @@
   </h3>
 
   <p style="color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:18px;">
-    a selection of recent transmissions that made it through the signal.
-    updated regularly.
+    a selection of recent transmissions that made it through the signal
+    updated regularly
   </p>
 
   <!-- SPOTIFY PLAYLIST EMBED -->
   <div class="embed" style="margin-bottom:18px;">
     <iframe class="player"
-      src="https://open.spotify.com/embed/playlist/6PnQEKU3CB1nhmNRaMdYCN?utm_source=generator&theme=0"
+      src="https://open.spotify.com/embed/playlist/0FquCic8TU5KkensTRRjlx?utm_source=generator&si=1176f13ef93f488c"
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
       loading="lazy">
     </iframe>
@@ -681,27 +679,19 @@
   <div style="font-size:11px;color:rgba(0,255,255,0.35);letter-spacing:2px;">
     transmission status: active
   </div>
-
-  <div style="margin-top:12px;" class="signal" aria-hidden="true">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-  </div>
 </section>
 
-<section class="panel" id="submissions" style="border:1px solid rgba(255,107,205,0.25); box-shadow: 0 0 30px rgba(255,107,205,0.08);">
+ <section class="panel" id="submissions" style="border:1px solid rgba(255,107,205,0.25); box-shadow: 0 0 30px rgba(255,107,205,0.08);">
   <h3 style="margin-top:0;margin-bottom:14px;color:var(--neon)">Send a Transmission</h3>
 
   <p style="color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:14px;">
-    this isn’t a mass submission playlist.<br>
-    i’m building a rotating signal of artists that actually fit a specific feeling —
-    shoegaze, emo, alternative… anything that feels like something is missing.
+    This is the "Send the Track" Series <br>
+    I want to listen to your music! Any links are accepted, I can't wait to hear yours!
   </p>
 
   <form id="transmissionForm" style="display:flex;flex-direction:column;gap:14px;">
     <input type="text" name="artist" placeholder="artist name" required class="input-field">
-    <input type="url" name="link" placeholder="spotify track link" required class="input-field">
+    <input type="url" name="link" placeholder="track link" required class="input-field">
     <textarea name="notes" placeholder="optional message (want to tell me something?)" rows="3" class="input-field"></textarea>
 
     <button type="submit" class="btn-pink">
@@ -791,7 +781,6 @@ if (closeBtn && overlay) {
 }
 </script>
       
-</script>
     <section class="panel" id="contact">
       <h3 style="margin-top:0;color:var(--neon)">Contact</h3>
       <p>For press, collaborations, or submissions, contact <a href="mailto:amityhayzemusic@gmail.com" style="color:#0ff;">amityhayzemusic@gmail.com</a></p>
