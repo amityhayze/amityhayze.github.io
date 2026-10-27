@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Transmission 002 // Limited Signal | Amity Hayze</title>
+
+  <meta name="description" content="Three physical artifacts. One incoming transmission. Discover Transmission 002 by Amity Hayze, arriving December 18, 2026.">
+  <meta name="theme-color" content="#000000">
+
+  <meta property="og:title" content="Transmission 002 // Limited Signal">
+  <meta property="og:description" content="A limited physical transmission from Amity Hayze. December 18, 2026.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://amityhayze.com/transmission-002-nfc.html">
+  <meta property="og:image" content="https://amityhayze.com/TRANSMISSION%20002.JPEG">
+
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <style>
+    :root {
+      --neon: #00f0ff;
+      --muted: #9beef7;
+      --pink: #ff6bcd;
+      --pink-strong: #e813f0;
+      --bg: #000;
+      --panel: rgba(0, 0, 0, 0.76);
+      --line: rgba(0, 240, 255, 0.18);
+      --wrap: 920px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 62px 0 30px;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--neon);
+      font-family: "Courier New", monospace;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: url("website.gif") center / cover no-repeat;
+      opacity: 0.6;
+      filter: contrast(1.3) brightness(1.2);
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(
+          ellipse at center,
+          rgba(0, 0, 0, 0.05) 0%,
+          rgba(0, 0, 0, 0.62) 80%
+        ),
+        linear-gradient(
+          rgba(0, 255, 255, 0.018) 50%,
+          rgba(0, 0, 0, 0.025) 50%
+        );
+      background-size: auto, 100% 4px;
+    }
+
+    a {
+      color: var(--neon);
+    }
+
+    /* NAVIGATION */
+
+    .main-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.78);
+      border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+      backdrop-filter: blur(6px);
+    }
+
+    .main-nav a {
+      color: var(--neon);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      position: relative;
+      transition: color 0.25s ease;
+    }
+
+    .main-nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 0;
+      height: 1px;
+      background: var(--neon);
+      box-shadow: 0 0 8px var(--neon);
+      transition: width 0.25s ease;
+    }
+
+    .main-nav a:hover::after {
+      width: 100%;
+    }
+
+    .main-nav a:hover {
+      color: #fff;
+    }
+
+    /* MAIN LAYOUT */
+
+    .wrap {
+      width: min(var(--wrap), calc(100% - 30px));
+      margin: 36px auto 0;
+    }
+
+    .panel {
+      position: relative;
+      margin-bottom: 20px;
+      padding: 30px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow:
+        0 0 24px rgba(0, 240, 255, 0.055),
+        inset 0 0 20px rgba(0, 240, 255, 0.015);
+      backdrop-filter: blur(4px);
+      animation: panelIn 0.8s ease both;
+    }
+
+    @keyframes panelIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* SMALL SIGNAL LABEL */
+
+    .eyebrow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .signal-dot {
+      width: 7px;
+      height: 7px;
+      display: inline-block;
+      border-radius: 50%;
+      background: var(--neon);
+      box-shadow: 0 0 10px var(--neon);
+      animation: signalBlink 2s infinite;
+    }
+
+    @keyframes signalBlink {
+      0%, 100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.25;
+      }
+    }
+
+    /* HERO */
+
+    .hero {
+      text-align: center;
+      padding: 46px 28px 40px;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "002";
+      position: absolute;
+      top: 20px;
+      right: -15px;
+      color: rgba(0, 240, 255, 0.035);
+      font-size: clamp(120px, 25vw, 240px);
+      font-weight: bold;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .artist-label {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 16px;
+      color: var(--pink);
+      font-size: 11px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+    }
+
+    .title {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: var(--neon);
+      font-size: clamp(29px, 6vw, 55px);
+      line-height: 1.1;
+      letter-spacing: 2px;
+      text-shadow: 0 0 18px rgba(0, 240, 255, 0.2);
+      overflow-wrap: anywhere;
+    }
+
+    .title::selection {
+      background: var(--neon);
+      color: #000;
+    }
+
+    .subtitle {
+      position: relative;
+      z-index: 1;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 1px;
+      line-height: 1.8;
+    }
+
+    .divider {
+      width: 90px;
+      height: 1px;
+      margin: 25px auto;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--neon),
+        var(--pink),
+        transparent
+      );
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+    }
+
+    .release-date {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: #fff;
+      font-size: clamp(17px, 4vw, 24px);
+      letter-spacing: 4px;
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+    }
+
+    .release-caption {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 3px;
+    }
+
+    /* ALBUM ART */
+
+    .artwork-wrap {
+      width: min(280px, 100%);
+      margin: 30px auto 0;
+      position: relative;
+    }
+
+    .artwork-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(0, 240, 255, 0.24);
+      border-radius: 5px;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.1);
+      pointer-events: none;
+    }
+
+    .artwork {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+      filter: saturate(0.92) contrast(1.04);
+    }
+
+    /* BUTTONS */
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 22px;
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      border-radius: 7px;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 240, 255, 0.1),
+        rgba(0, 240, 255, 0.025)
+      );
+      color: var(--neon);
+      text-decoration: none;
+      text-align: center;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      box-shadow: 0 0 18px rgba(0, 240, 255, 0.055);
+      transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      background: var(--neon);
+      color: #000;
+      box-shadow: 0 0 28px rgba(0, 240, 255, 0.25);
+    }
+
+    .btn-primary {
+      animation: buttonPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes buttonPulse {
+      0%, 100% {
+        box-shadow: 0 0 14px rgba(0, 240, 255, 0.07);
+      }
+
+      50% {
+        box-shadow: 0 0 30px rgba(0, 240, 255, 0.18);
+      }
+    }
+
+    .btn-secondary {
+      border-color: rgba(255, 107, 205, 0.35);
+      color: var(--pink);
+      background: rgba(255, 107, 205, 0.045);
+    }
+
+    .btn-secondary:hover {
+      background: var(--pink);
+      color: #000;
+      box-shadow: 0 0 25px rgba(255, 107, 205, 0.2);
+    }
+
+    /* TRANSMISSION DESCRIPTION */
+
+    .section-label {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .body-copy {
+      max-width: 650px;
+      margin: 0 auto;
+      color: #cbeff4;
+      font-size: 14px;
+      line-height: 1.9;
+      text-align: center;
+    }
+
+    .body-copy strong {
+      color: var(--neon);
+      font-weight: normal;
+    }
+
+    /* THREE NUMBERED CARDS */
+
+    .cards-heading {
+      margin: 0 0 8px;
+      color: var(--neon);
+      font-size: 20px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .cards-intro {
+      margin: 0 auto 25px;
+      max-width: 580px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      position: relative;
+      min-width: 0;
+      padding: 18px 10px;
+      text-align: center;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(0, 240, 255, 0.075),
+          rgba(0, 0, 0, 0.15) 60%,
+          rgba(255, 107, 205, 0.035)
+        );
+      border: 1px solid rgba(0, 240, 255, 0.17);
+      border-radius: 7px;
+      overflow: hidden;
+      transition:
+        border-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(0, 240, 255, 0.55);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.08);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--neon),
+        transparent
+      );
+      opacity: 0.6;
+    }
+
+    .card-index {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: 1px;
+    }
+
+    .card-number {
+      margin: 0;
+      color: var(--neon);
+      font-size: clamp(19px, 3.5vw, 30px);
+      font-weight: bold;
+      letter-spacing: -1px;
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.18);
+    }
+
+    .card-caption {
+      margin: 12px 0 0;
+      color: var(--pink);
+      font-size: 8px;
+      line-height: 1.7;
+      letter-spacing: 1px;
+    }
+
+    .edition-note {
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.8;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    /* SIGNAL DETAILS */
+
+    .signal-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .signal-item {
+      padding: 14px;
+      border-left: 2px solid rgba(0, 240, 255, 0.4);
+      background: rgba(0, 240, 255, 0.025);
+    }
+
+    .signal-item strong {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--neon);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      font-weight: normal;
+    }
+
+    .signal-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 10px 10px 24px;
+      text-align: center;
+    }
+
+    .footer-line {
+      width: 55px;
+      height: 1px;
+      margin: 0 auto 18px;
+      background: var(--neon);
+      opacity: 0.4;
+    }
+
+    footer p {
+      margin: 8px 0;
+      color: rgba(155, 238, 247, 0.65);
+      font-size: 10px;
+      letter-spacing: 1px;
+      line-height: 1.8;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: #fff;
+    }
+
+    .footer-signal {
+      color: rgba(0, 240, 255, 0.4);
+      letter-spacing: 3px;
+      font-size: 9px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 600px) {
+      body {
+        padding-top: 56px;
+      }
+
+      .main-nav {
+        gap: 17px;
+        padding: 13px 8px;
+      }
+
+      .main-nav a {
+        font-size: 10px;
+        letter-spacing: 0.5px;
+      }
+
+      .wrap {
+        width: calc(100% - 20px);
+        margin-top: 18px;
+      }
+
+      .panel {
+        padding: 22px 16px;
+        margin-bottom: 13px;
+      }
+
+      .hero {
+        padding: 36px 16px 30px;
+      }
+
+      .title {
+        letter-spacing: 1px;
+      }
+
+      .subtitle {
+        font-size: 11px;
+      }
+
+      .eyebrow {
+        font-size: 9px;
+        letter-spacing: 2px;
+      }
+
+      .cards {
+        gap: 7px;
+      }
+
+      .card {
+        padding: 15px 5px;
+      }
+
+      .card-index {
+        font-size: 8px;
+        letter-spacing: 0;
+      }
+
+      .card-number {
+        font-size: clamp(16px, 5vw, 25px);
+      }
+
+      .card-caption {
+        font-size: 7px;
+        letter-spacing: 0.5px;
+      }
+
+      .signal-list {
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 14px 10px;
+      }
+
+      .button-row {
+        gap: 10px;
+      }
+
+      .release-date {
+        letter-spacing: 2px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVIGATION -->
+
+  <nav class="main-nav" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="music.html">Engineering</a>
+    <a href="merch.html">Merch</a>
+    <a href="press.html">Features</a>
+  </nav>
+
+  <main class="wrap">
+
+    <!-- HERO / RELEASE INFORMATION -->
+
+    <section class="panel hero">
+
+      <div class="eyebrow">
+        <span class="signal-dot" aria-hidden="true"></span>
+        Signal detected // Incoming transmission
+      </div>
+
+      <p class="artist-label">Amity Hayze presents</p>
+
+      <h1 class="title">TRANSMISSION 002</h1>
+
+      <p class="subtitle">
+        The transmission never stopped.<br>
+        You're receiving this for a reason.
+      </p>
+
+      <div class="divider"></div>
+
+      <p class="release-date">12.18.26</p>
+
+      <p class="release-caption">
+        FRIDAY // DECEMBER 18, 2026
+      </p>
+
+      <div class="artwork-wrap">
+        <img
+          class="artwork"
+          src="TRANSMISSION 002.JPEG"
+          alt="Transmission 002 artwork by Amity Hayze"
+          fetchpriority="high"
+        >
+      </div>
+
+      <div class="button-row">
+
+        <!-- PRE-SAVE LINK: REPLACE WITH STREAMING PAGE AFTER RELEASE -->
+
+        <a
+          class="btn btn-primary"
+          href="https://share.amuse.io/album/amity-hayze-transmission-002"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Presave Transmission 002
+        </a>
+
+      </div>
+
+      <p class="release-caption" style="margin-top:18px;">
+        SAVE THE SIGNAL // DECEMBER 18
+      </p>
+
+    </section>
+
+    <!-- ABOUT THE TRANSMISSION -->
+
+    <section class="panel">
+
+      <h2 class="section-label">Transmission details // 002</h2>
+
+      <p class="body-copy">
+        An ongoing collection of songs, noise, and memories from 2026
+        <br><br>
+        <strong>Transmission 002</strong> arrives December 18, 2026.
+        Some of these songs have already made it into the world.
+        The rest are still waiting for their signal.
+        <br><br>
+        Until then, the transmission is loading...
+      </p>
+
+    </section>
+
+    <!-- LIMITED NFC EDITION -->
+
+    <section class="panel">
+
+      <p class="section-label" style="text-align:center;">
+        Physical signal // Limited edition
+      </p>
+
+      <h2 class="cards-heading">
+        THREE PHYSICAL ARTIFACTS
+      </h2>
+
+      <p class="cards-intro">
+        Three numbered NFC cards. Three individual pieces of the
+        transmission. Tap to access this page and follow the signal.
+      </p>
+
+      <div class="cards">
+
+        <article class="card">
+          <p class="card-index">TRANSMISSION // 001</p>
+          <h3 class="card-number">001<span style="opacity:.45;">/003</span></h3>
+          <p class="card-caption">LIMITED SIGNAL</p>
+        </article>
+
+        <article class="card">
+          <p class="card-index">TRANSMISSION // 002</p>
+          <h3 class="card-number">002<span style="opacity:.45;">/003</span></h3>
+          <p class="card-caption">LIMITED SIGNAL</p>
+        </article>
+
+        <article class="card">
+          <p class="card-index">TRANSMISSION // 003</p>
+          <h3 class="card-number">003<span style="opacity:.45;">/003</span></h3>
+          <p class="card-caption">LIMITED SIGNAL</p>
+        </article>
+
+      </div>
+
+      <p class="edition-note">
+        ONLY THREE CARDS IN THIS EDITION.<br>
+        GIVEAWAY DETAILS WILL BE ANNOUNCED SEPARATELY.
+      </p>
+
+    </section>
+
+    <!-- HOW TO RECEIVE THE SIGNAL -->
+
+    <section class="panel">
+
+      <h2 class="section-label">How to receive the signal</h2>
+
+      <div class="signal-list">
+
+        <div class="signal-item">
+          <strong>01 // TAP IN</strong>
+          <span>
+            Tap your NFC card against a compatible phone
+          </span>
+        </div>
+
+        <div class="signal-item">
+          <strong>02 // SAVE THE DATE</strong>
+          <span>
+            Transmission 002 arrives December 18, 2026.
+          </span>
+        </div>
+
+        <div class="signal-item">
+          <strong>03 // PRESAVE</strong>
+          <span>
+            Use the presave link above to save the upcoming release.
+          </span>
+        </div>
+
+        <div class="signal-item">
+          <strong>04 // STAY TUNED</strong>
+          <span>
+            Follow Amity Hayze for giveaway details, new videos, and release updates!
+          </span>
+        </div>
+
+      </div>
+
+      <div class="button-row">
+        <a
+          class="btn btn-secondary"
+          href="https://www.instagram.com/amityhayze/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Follow the signal
+        </a>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <div class="footer-line"></div>
+
+    <p class="footer-signal">
+      SIGNAL RECEIVED // END OF TRANSMISSION
+    </p>
+
+    <p>
+      <a href="index.html">Return to Amity Hayze</a>
+    </p>
+
+    <p>
+      © Amity Hayze // transmissions & static
+    </p>
+
+  </footer>
+
+</body>
+</html>
