@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#000000">
   <meta name="description" content="A private archive from Amity Hayze. Unreleased audio, recovered footage, and notes from Transmission 002.">
+
   <title>Private Transmission Archive // Amity Hayze</title>
   <link rel="icon" href="favicon.ico">
 
@@ -504,7 +506,7 @@
       <p class="hero-copy">
         you found the other side of the transmission. unfinished things,
         recovered files, and a few things that probably weren't going on
-        the main timeline.
+        the main timeline...
       </p>
 
       <div class="button-row">
@@ -526,9 +528,6 @@
       <div class="release-grid">
 
         <div class="cover-wrap">
-          <!-- Replace this placeholder with your album artwork.
-               Your image file is named TRANSMISSION 002.JPEG. -->
-
           <img
             src="TRANSMISSION 002.JPEG"
             alt="Transmission 002 album artwork"
@@ -597,7 +596,7 @@
       </div>
 
       <p class="small-note">
-        a little something from the archive. don't lose the link.
+        a little something from the archive. don't lose the link...
       </p>
     </section>
 
@@ -614,13 +613,14 @@
         EARLY DEMO // BAREBONES VERSION
       </p>
 
-      <!-- Replace YOUR-DIRECT-AUDIO-FILE-URL.mp3 with the direct URL
-           for your hosted demo audio file. -->
-
-      <audio controls preload="none" aria-label="I'll Call You When I Land early demo">
+      <audio
+        controls
+        preload="none"
+        aria-label="I'll Call You When I Land early demo"
+      >
         <source
           src="I’ll Call You When I Land - (DEMO).m4a"
-          type="audio/mpeg"
+          type="audio/mp4"
         >
         Your browser does not support the audio player.
       </audio>
@@ -645,9 +645,6 @@
       <div class="journal-grid">
 
         <div>
-          <!-- Replace YOUR-JOURNAL-IMAGE.jpg with the exact filename
-               of your uploaded journal photo. -->
-
           <img
             class="journal-image"
             src="002Tracklist.JPG"
@@ -655,12 +652,17 @@
             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
           >
 
+          <div class="journal-placeholder" style="display:none;">
+            Original tracklist photograph unavailable.
+          </div>
+        </div>
+
         <div>
           <h3>Original planning notes</h3>
 
           <p class="section-intro">
             this is where the album started taking shape. the plan changed
-            along the way, but some of the original ideas stayed!
+            along the way, but some of the original ideas stayed...
           </p>
 
           <p class="small-note">
@@ -670,6 +672,9 @@
         </div>
 
       </div>
+    </section>
+
+    <!-- ARCHIVE LOG -->
 
     <section class="section" id="log">
       <div class="section-kicker">System log // updates</div>
@@ -696,15 +701,10 @@
         <span class="log-text">TRANSMISSION RECEIVED.</span>
       </div>
 
-      <p class="small-note">
-        This log is manual. Change the entries whenever you add or update archive material.
-      </p>
-    </section>
-
     <!-- RELEASE-DAY SECTION
-         This section is hidden for now. Remove "hidden-until-release"
-         from the class below when the album is released, then replace
-         YOUR-STREAMING-ALBUM-LINK with the album's streaming URL. -->
+         To reveal this section on release day, remove
+         "hidden-until-release" from its class.
+         Replace YOUR-STREAMING-ALBUM-LINK with the album URL. -->
 
     <section class="section hidden-until-release" id="listen">
       <div class="section-kicker">Transmission received</div>
@@ -712,7 +712,7 @@
       <h2>Listen to Transmission 002</h2>
 
       <p class="section-intro">
-        The full album has arrived.
+        The full album has arrived...
       </p>
 
       <a
@@ -750,3 +750,4 @@
   </main>
 </body>
 </html>
+```
