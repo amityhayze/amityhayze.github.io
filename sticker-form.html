@@ -230,12 +230,11 @@
         source: document.getElementById("source").value
       };
       try {
-        await fetch("https://script.google.com/macros/s/AKfycbxxSjrc92xAfrryBWQMplOJVXUITEZvM9hBjaG7XGE2zpvbtioM12mXfoue0y7q3t3X/exec", {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData)
-        });
+        await fetch("https://script.google.com/macros/s/AKfycbwDsO18b5Iv3d3GXFII3WIS4dAR-SNz2CXfhBSfeqbUDFmnlkefVlJUERwX2X6-6bQ5/exec", {
+  method: "POST",
+  mode: "no-cors",
+  body: new URLSearchParams(formData)
+});
         document.getElementById("stickerForm").style.display = "none";
         document.getElementById("confirmation").style.display = "flex";
         e.target.reset();
