@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#05090d">
+
+<title>Transmission 002 // Physical Copy Terminal</title>
+
+<style>
+:root {
+  --cyan: #00f0ff;
+  --blue: #9beef7;
+  --pink: #e813f0;
+  --black: #05090d;
+  --panel: #0b151d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--black);
+  color: var(--blue);
+  font-family: "Courier New", monospace;
+  overflow-x: hidden;
+}
+
+/* STATIC BACKGROUND */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: .10;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,240,255,.15) 3px,
+    transparent 4px
+  );
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 35%,
+    rgba(0,0,0,.75) 100%
+  );
+}
+
+.container {
+  width: min(100% - 36px, 580px);
+  margin: auto;
+  padding: 35px 0 55px;
+  position: relative;
+  z-index: 2;
+}
+
+/* HEADER */
+
+.topline {
+  text-align: center;
+  color: var(--cyan);
+  font-size: 11px;
+  letter-spacing: 3px;
+  margin-bottom: 35px;
+  opacity: .8;
+}
+
+.logo {
+  text-align: center;
+  font-size: clamp(32px, 8vw, 55px);
+  font-weight: bold;
+  line-height: 1;
+  color: var(--cyan);
+  text-shadow:
+    2px 2px var(--pink),
+    -2px -1px rgba(0,240,255,.4);
+  letter-spacing: -3px;
+  margin: 0;
+  animation: flicker 5s infinite;
+}
+
+@keyframes flicker {
+  0%, 96%, 98%, 100% { opacity: 1; }
+  97% { opacity: .75; }
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--blue);
+  font-size: 12px;
+  letter-spacing: 3px;
+  margin-top: 16px;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--cyan),
+    transparent
+  );
+  margin: 30px 0;
+  opacity: .65;
+}
+
+/* ALBUM PANEL */
+
+.album {
+  border: 1px solid rgba(0,240,255,.4);
+  background: rgba(11,21,29,.85);
+  padding: 25px 20px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(0,240,255,.06);
+}
+
+.status {
+  color: var(--pink);
+  font-size: 10px;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+
+.album-title {
+  font-size: 24px;
+  color: white;
+  margin: 0 0 8px;
+  letter-spacing: -1px;
+}
+
+.artist {
+  font-size: 12px;
+  color: var(--cyan);
+  letter-spacing: 3px;
+}
+
+.price {
+  font-size: 49px;
+  font-weight: bold;
+  color: var(--cyan);
+  margin: 25px 0 4px;
+  text-shadow: 0 0 15px rgba(0,240,255,.3);
+}
+
+.price-caption {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--blue);
+}
+
+.description {
+  font-size: 12px;
+  line-height: 1.9;
+  color: #b4dce2;
+  margin-top: 23px;
+}
+
+/* PAYMENT */
+
+.section-heading {
+  text-align: center;
+  color: var(--cyan);
+  font-size: 12px;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+
+.payment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pay-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 17px 18px;
+  text-decoration: none;
+  color: white;
+  border: 1px solid rgba(0,240,255,.45);
+  background: rgba(11,21,29,.9);
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 1px;
+  transition: .2s ease;
+}
+
+.pay-button:hover {
+  background: rgba(0,240,255,.1);
+  border-color: var(--cyan);
+  box-shadow: 0 0 15px rgba(0,240,255,.15);
+  transform: translateY(-2px);
+}
+
+.pay-button .arrow {
+  color: var(--cyan);
+  font-size: 18px;
+}
+
+.pay-button.paypal {
+  border-color: rgba(0,240,255,.7);
+}
+
+.pay-button.venmo {
+  border-color: rgba(80,150,255,.65);
+}
+
+.pay-button.cashapp {
+  border-color: rgba(0,255,120,.55);
+}
+
+.pay-button.apple {
+  border-color: rgba(232,19,240,.6);
+}
+
+.payment-note {
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.8;
+  color: #77969e;
+  margin-top: 18px;
+}
+
+/* FOOTER */
+
+.footer {
+  text-align: center;
+  font-size: 10px;
+  line-height: 2;
+  color: #64818a;
+  letter-spacing: 1px;
+}
+
+.footer a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: var(--pink);
+}
+
+.signal {
+  color: var(--pink);
+  margin-top: 20px;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+@media(max-width: 420px) {
+  .container {
+    padding-top: 25px;
+  }
+
+  .album {
+    padding: 22px 14px;
+  }
+
+  .pay-button {
+    font-size: 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="container">
+
+  <div class="topline">
+    AMITY HAYZE // INDEPENDENT TRANSMISSION
+  </div>
+
+  <h1 class="logo">TRANSMISSION 002</h1>
+
+  <div class="subtitle">
+    PHYSICAL COPY TERMINAL
+  </div>
+
+  <div class="divider"></div>
+
+  <section class="album">
+
+    <div class="status">
+      [ PHYSICAL EDITION AVAILABLE ]
+    </div>
+
+    <h2 class="album-title">
+      TRANSMISSION 002
+    </h2>
+
+    <div class="artist">
+      AMITY HAYZE
+    </div>
+
+    <div class="price">$5.00</div>
+
+    <div class="price-caption">
+      ONE FULL ALBUM // ONE PHYSICAL CD
+    </div>
+
+    <div class="description">
+      Eleven tracks. One transmission.<br>
+      A collection of songs, recordings,<br>
+      and everything in between.
+      <br><br>
+      Official digital release:<br>
+      DECEMBER 18, 2026
+    </div>
+
+  </section>
+
+  <div class="divider"></div>
+
+  <div class="section-heading">
+    // SELECT PAYMENT METHOD //
+  </div>
+
+ 
+<section class="payment-list">
+
+  <!-- PAYPAL: PRESET $5 -->
+  <a class="pay-button paypal"
+     href="https://www.paypal.com/paypalme/sxreymusic/5"
+     target="_blank"
+     rel="noopener">
+    <span>PAYPAL · $5.00</span>
+    <span class="arrow">→</span>
+  </a>
+
+  <!-- VENMO: PRESET $5 -->
+  <a class="pay-button venmo"
+     href="https://venmo.com/sxreymusic?txn=pay&amount=5.00&note=Transmission%20002%20CD"
+     target="_blank"
+     rel="noopener">
+    <span>VENMO · $5.00</span>
+    <span class="arrow">→</span>
+  </a>
+
+  <!-- CASH APP: PRESET $5 -->
+  <a class="pay-button cashapp"
+     href="https://cash.app/$sxreymusic?amount=5.00"
+     target="_blank"
+     rel="noopener">
+    <span>CASH APP · $5.00</span>
+    <span class="arrow">→</span>
+  </a>
+
+  <!-- APPLE PAY: NOT YET CONFIGURED -->
+  <div class="pay-button apple" style="opacity:.55; cursor:not-allowed;">
+    <span>APPLE PAY · COMING SOON</span>
+    <span class="arrow">—</span>
+  </div>
+
+</section>
+
+  <div class="payment-note">
+    PLEASE INCLUDE "TRANSMISSION 002" IN YOUR PAYMENT NOTE
+    WHEN POSSIBLE.
+    <br>
+    PHYSICAL COPY PROVIDED AT THE MERCH TABLE.
+  </div>
+
+  <div class="divider"></div>
+
+  <footer class="footer">
+
+    THANK YOU FOR SUPPORTING INDEPENDENT MUSIC.
+
+    <div class="signal">
+      [ END OF TRANSMISSION ]
+    </div>
+
+    <br>
+
+    <a href="https://amityhayze.com">
+      WWW.AMITYHAYZE.COM
+    </a>
+
+    <br>
+
+    © 2026 AMITY HAYZE
+
+  </footer>
+
+</main>
+
+</body>
+</html>
